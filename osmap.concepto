@@ -1,0 +1,38 @@
+/**
+Versión mínima de las propiedades de un KeyPoint, para guardar en archivo.
+16 bytes
+*/
+class KeyPointOsmap{
+  float x,y,angle;
+  int octave;
+}
+
+/**
+Versión mínima de las propiedades de un MapPoint, para guardar en archivo.
+56 bytes
+*/
+class MapPointOsmap{
+public:
+  float mWorldPos[12];   // 4 * 12 bytes
+  int mnVisible, mnFound;   // 4 * 2 bytes
+}
+
+/**
+Versión mínima de las propiedades de un KeyFrame, para guardar en archivo.
+48 bytes
+*/
+class KeyFrameOsnap{
+public:
+  float mTcw[12];   // 4 * 12 bytes
+}
+
+
+/**
+Versión mínima de los vectores alineados de KeyFrame: mDescriptors, mvpKeysUn, mvpMapPoints.
+52 bytes
+*/
+class FeatureOsmap{
+  int descriptor[8];  // 32 bytes
+  KeyPointOsmap KeyUn;  // 16 bytes
+  long unsigned mapPointId; // 4 bytes
+}

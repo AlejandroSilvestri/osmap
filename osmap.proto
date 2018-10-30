@@ -1,0 +1,65 @@
+/*
+OSMAP: Definición de la estructura de serialización de mapas para OS1
+Los mensajes representan la serialización mínima de objetos de ORB-SLAM2.  Se omiten valores que no se utilizan, que son efímeros o que se pueden regenerar.
+Se indican como "opcionales" aquéllos datos que pueden omitirse.  El resto son obligatorios y no pueden faltar para el correcto funcionamiento del mapa.  El protocolo permite omitirlos, pero el mapa así serializado será inutilizable por OS1.
+*/
+
+syntax = "proto3";
+
+// 256 bits descriptor: 32 bytes, 8 uint32.  Exactly 8 fixed32 required.
+message SerializedDescriptor{
+  repeated fixed32 block = 1;
+}
+
+// Pose, first 12 elements in an homogeneous 4x4 pose matrix. Exactly 12 float required.
+message SerializedPose{
+  repeated float element = 1;
+}
+
+
+// 3x1 Mat 3D position, all 3 fields required.
+message SerializedPosition{
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+//  KeyPoint, all 4 fields required.
+message SerializedKeypoint{
+  float ptx    = 1;
+  float pty    = 2;
+  float angle  = 3;
+  float octave = 4;
+}
+
+// Intrinsic matrix K, all 4 fields required.
+message SerializedK{
+  float fx = 1;
+  float fy = 2;
+  float cx = 3;
+  float cy = 4;
+}
+
+// MapPoint, all fields optional, should provide position at least.
+message SerializedMappoint{
+  uint32 id                       = 1;  // mnId
+  SerializedPosition position     = 2;  // mWorldPos
+  float visible                   = 3;  // mnVisible
+  float found                     = 4;  // mnFound
+  SerializedDescriptor descriptor = 5;  // mDescriptor, very optional
+}
+
+// KeyFrame, all fields optional, should provide pose at least.
+message SerializedKeyframe{
+  uint32 id             = 1;  // mnId
+  SerializedPose pose   = 2;  // mTcw
+  uint32 k              = 3;  // índice a la lista de matrices K
+}
+
+// Observed features in keyframe.  keyframe_id required.
+message SerializedFeature{
+  uint32 keyframe_id              = 1;  // kfId, keyframe id
+  uint32 mappoint_id              = 2;  // mappoint id used to construct mvpMapPoints
+  SerializedKeypoint keypoint     = 3;  // element of mvKeysUn
+  SerializedDescriptor descriptor = 4;  // row of mDescriptors
+}
