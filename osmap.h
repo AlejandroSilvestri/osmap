@@ -148,6 +148,24 @@ class Osmap{
   );
 
 
+
+
+  /**
+  Serialized array of MapPoints.  This can make a file, or be appended to a multiobject file.
+  @param serializedMapPointArray message to set up.  Data comes from map.
+  @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
+  */
+  int serializeMapPointArray(SerializedMapPointArray *serializedMapPointArray);
+
+
+  /**
+  Retrieves MapPoints from an array, and append them to the map.
+  @param serializedMapPointArray message to set up.  Data goes from map.
+  @returns Number of MapPoints retrieved or -1 if error.
+  Map's MapPoints set should be emptied before calling this method.
+  */
+  int deserializeMapPointArray(SerializedMapPointArray *serializedMapPointArray)
+
   /**
   Saves MapPoints to file.
   @param file output stream of the file being written.

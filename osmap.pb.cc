@@ -21,9 +21,14 @@
 
 namespace protobuf_osmap_2eproto {
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedDescriptor;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedK;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedKeypoint;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedPose;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedPosition;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframe;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframeFeatures;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_SerializedFeature;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_SerializedMappoint;
 }  // namespace protobuf_osmap_2eproto
 class SerializedDescriptorDefaultTypeInternal {
  public:
@@ -50,21 +55,46 @@ class SerializedKDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<SerializedK>
       _instance;
 } _SerializedK_default_instance_;
+class SerializedKArrayDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<SerializedKArray>
+      _instance;
+} _SerializedKArray_default_instance_;
 class SerializedMappointDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<SerializedMappoint>
       _instance;
 } _SerializedMappoint_default_instance_;
+class SerializedMappointArrayDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<SerializedMappointArray>
+      _instance;
+} _SerializedMappointArray_default_instance_;
 class SerializedKeyframeDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<SerializedKeyframe>
       _instance;
 } _SerializedKeyframe_default_instance_;
+class SerializedKeyframeArrayDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<SerializedKeyframeArray>
+      _instance;
+} _SerializedKeyframeArray_default_instance_;
 class SerializedFeatureDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<SerializedFeature>
       _instance;
 } _SerializedFeature_default_instance_;
+class SerializedKeyframeFeaturesDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<SerializedKeyframeFeatures>
+      _instance;
+} _SerializedKeyframeFeatures_default_instance_;
+class SerializedKeyframeFeaturesArrayDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<SerializedKeyframeFeaturesArray>
+      _instance;
+} _SerializedKeyframeFeaturesArray_default_instance_;
 namespace protobuf_osmap_2eproto {
 static void InitDefaultsSerializedDescriptor() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -136,6 +166,21 @@ static void InitDefaultsSerializedK() {
 ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedK =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsSerializedK}, {}};
 
+static void InitDefaultsSerializedKArray() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_SerializedKArray_default_instance_;
+    new (ptr) ::SerializedKArray();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::SerializedKArray::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKArray =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedKArray}, {
+      &protobuf_osmap_2eproto::scc_info_SerializedK.base,}};
+
 static void InitDefaultsSerializedMappoint() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -152,6 +197,21 @@ static void InitDefaultsSerializedMappoint() {
       &protobuf_osmap_2eproto::scc_info_SerializedPosition.base,
       &protobuf_osmap_2eproto::scc_info_SerializedDescriptor.base,}};
 
+static void InitDefaultsSerializedMappointArray() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_SerializedMappointArray_default_instance_;
+    new (ptr) ::SerializedMappointArray();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::SerializedMappointArray::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_SerializedMappointArray =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedMappointArray}, {
+      &protobuf_osmap_2eproto::scc_info_SerializedMappoint.base,}};
+
 static void InitDefaultsSerializedKeyframe() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -166,6 +226,21 @@ static void InitDefaultsSerializedKeyframe() {
 ::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframe =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedKeyframe}, {
       &protobuf_osmap_2eproto::scc_info_SerializedPose.base,}};
+
+static void InitDefaultsSerializedKeyframeArray() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_SerializedKeyframeArray_default_instance_;
+    new (ptr) ::SerializedKeyframeArray();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::SerializedKeyframeArray::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframeArray =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedKeyframeArray}, {
+      &protobuf_osmap_2eproto::scc_info_SerializedKeyframe.base,}};
 
 static void InitDefaultsSerializedFeature() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -183,18 +258,53 @@ static void InitDefaultsSerializedFeature() {
       &protobuf_osmap_2eproto::scc_info_SerializedKeypoint.base,
       &protobuf_osmap_2eproto::scc_info_SerializedDescriptor.base,}};
 
+static void InitDefaultsSerializedKeyframeFeatures() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_SerializedKeyframeFeatures_default_instance_;
+    new (ptr) ::SerializedKeyframeFeatures();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::SerializedKeyframeFeatures::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframeFeatures =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedKeyframeFeatures}, {
+      &protobuf_osmap_2eproto::scc_info_SerializedFeature.base,}};
+
+static void InitDefaultsSerializedKeyframeFeaturesArray() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_SerializedKeyframeFeaturesArray_default_instance_;
+    new (ptr) ::SerializedKeyframeFeaturesArray();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::SerializedKeyframeFeaturesArray::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframeFeaturesArray =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedKeyframeFeaturesArray}, {
+      &protobuf_osmap_2eproto::scc_info_SerializedKeyframeFeatures.base,}};
+
 void InitDefaults() {
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedDescriptor.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedPose.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedPosition.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedKeypoint.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedK.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_SerializedKArray.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedMappoint.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_SerializedMappointArray.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedKeyframe.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_SerializedKeyframeArray.base);
   ::google::protobuf::internal::InitSCC(&scc_info_SerializedFeature.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_SerializedKeyframeFeatures.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_SerializedKeyframeFeaturesArray.base);
 }
 
-::google::protobuf::Metadata file_level_metadata[8];
+::google::protobuf::Metadata file_level_metadata[13];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
@@ -236,6 +346,12 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedK, cx_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedK, cy_),
   ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKArray, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKArray, k_),
+  ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -246,6 +362,12 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, found_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, descriptor_),
   ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappointArray, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappointArray, mappoint_),
+  ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -254,14 +376,32 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, pose_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, k_),
   ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeArray, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeArray, keyframe_),
+  ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, keyframe_id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, mappoint_id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, keypoint_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, descriptor_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeFeatures, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeFeatures, keyframe_id_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeFeatures, feature_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeFeaturesArray, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeFeaturesArray, feature_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::SerializedDescriptor)},
@@ -269,9 +409,14 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 12, -1, sizeof(::SerializedPosition)},
   { 20, -1, sizeof(::SerializedKeypoint)},
   { 29, -1, sizeof(::SerializedK)},
-  { 38, -1, sizeof(::SerializedMappoint)},
-  { 48, -1, sizeof(::SerializedKeyframe)},
-  { 56, -1, sizeof(::SerializedFeature)},
+  { 38, -1, sizeof(::SerializedKArray)},
+  { 44, -1, sizeof(::SerializedMappoint)},
+  { 54, -1, sizeof(::SerializedMappointArray)},
+  { 60, -1, sizeof(::SerializedKeyframe)},
+  { 68, -1, sizeof(::SerializedKeyframeArray)},
+  { 74, -1, sizeof(::SerializedFeature)},
+  { 82, -1, sizeof(::SerializedKeyframeFeatures)},
+  { 89, -1, sizeof(::SerializedKeyframeFeaturesArray)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -280,9 +425,14 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedPosition_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedKeypoint_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedK_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedKArray_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedMappoint_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedMappointArray_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedKeyframe_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedKeyframeArray_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedFeature_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedKeyframeFeatures_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_SerializedKeyframeFeaturesArray_default_instance_),
 };
 
 void protobuf_AssignDescriptors() {
@@ -300,7 +450,7 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 8);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 13);
 }
 
 void AddDescriptorsImpl() {
@@ -313,19 +463,27 @@ void AddDescriptorsImpl() {
       "oint\022\013\n\003ptx\030\001 \001(\002\022\013\n\003pty\030\002 \001(\002\022\r\n\005angle\030"
       "\003 \001(\002\022\016\n\006octave\030\004 \001(\002\"=\n\013SerializedK\022\n\n\002"
       "fx\030\001 \001(\002\022\n\n\002fy\030\002 \001(\002\022\n\n\002cx\030\003 \001(\002\022\n\n\002cy\030\004"
-      " \001(\002\"\222\001\n\022SerializedMappoint\022\n\n\002id\030\001 \001(\r\022"
-      "%\n\010position\030\002 \001(\0132\023.SerializedPosition\022\017"
-      "\n\007visible\030\003 \001(\002\022\r\n\005found\030\004 \001(\002\022)\n\ndescri"
-      "ptor\030\005 \001(\0132\025.SerializedDescriptor\"J\n\022Ser"
-      "ializedKeyframe\022\n\n\002id\030\001 \001(\r\022\035\n\004pose\030\002 \001("
-      "\0132\017.SerializedPose\022\t\n\001k\030\003 \001(\r\"\217\001\n\021Serial"
-      "izedFeature\022\023\n\013keyframe_id\030\001 \001(\r\022\023\n\013mapp"
-      "oint_id\030\002 \001(\r\022%\n\010keypoint\030\003 \001(\0132\023.Serial"
-      "izedKeypoint\022)\n\ndescriptor\030\004 \001(\0132\025.Seria"
-      "lizedDescriptorb\006proto3"
+      " \001(\002\"+\n\020SerializedKArray\022\027\n\001k\030\001 \003(\0132\014.Se"
+      "rializedK\"\222\001\n\022SerializedMappoint\022\n\n\002id\030\001"
+      " \001(\r\022%\n\010position\030\002 \001(\0132\023.SerializedPosit"
+      "ion\022\017\n\007visible\030\003 \001(\002\022\r\n\005found\030\004 \001(\002\022)\n\nd"
+      "escriptor\030\005 \001(\0132\025.SerializedDescriptor\"@"
+      "\n\027SerializedMappointArray\022%\n\010mappoint\030\001 "
+      "\003(\0132\023.SerializedMappoint\"J\n\022SerializedKe"
+      "yframe\022\n\n\002id\030\001 \001(\r\022\035\n\004pose\030\002 \001(\0132\017.Seria"
+      "lizedPose\022\t\n\001k\030\003 \001(\r\"@\n\027SerializedKeyfra"
+      "meArray\022%\n\010keyframe\030\001 \003(\0132\023.SerializedKe"
+      "yframe\"z\n\021SerializedFeature\022\023\n\013mappoint_"
+      "id\030\002 \001(\r\022%\n\010keypoint\030\003 \001(\0132\023.SerializedK"
+      "eypoint\022)\n\ndescriptor\030\004 \001(\0132\025.Serialized"
+      "Descriptor\"V\n\032SerializedKeyframeFeatures"
+      "\022\023\n\013keyframe_id\030\001 \001(\r\022#\n\007feature\030\002 \003(\0132\022"
+      ".SerializedFeature\"O\n\037SerializedKeyframe"
+      "FeaturesArray\022,\n\007feature\030\001 \003(\0132\033.Seriali"
+      "zedKeyframeFeaturesb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 663);
+      descriptor, 987);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "osmap.proto", &protobuf_RegisterTypes);
 }
@@ -1789,6 +1947,235 @@ void SerializedK::InternalSwap(SerializedK* other) {
 
 // ===================================================================
 
+void SerializedKArray::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SerializedKArray::kKFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SerializedKArray::SerializedKArray()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_osmap_2eproto::scc_info_SerializedKArray.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:SerializedKArray)
+}
+SerializedKArray::SerializedKArray(const SerializedKArray& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      k_(from.k_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:SerializedKArray)
+}
+
+void SerializedKArray::SharedCtor() {
+}
+
+SerializedKArray::~SerializedKArray() {
+  // @@protoc_insertion_point(destructor:SerializedKArray)
+  SharedDtor();
+}
+
+void SerializedKArray::SharedDtor() {
+}
+
+void SerializedKArray::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* SerializedKArray::descriptor() {
+  ::protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const SerializedKArray& SerializedKArray::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_osmap_2eproto::scc_info_SerializedKArray.base);
+  return *internal_default_instance();
+}
+
+
+void SerializedKArray::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerializedKArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  k_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool SerializedKArray::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:SerializedKArray)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .SerializedK k = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_k()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:SerializedKArray)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:SerializedKArray)
+  return false;
+#undef DO_
+}
+
+void SerializedKArray::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:SerializedKArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedK k = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->k_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1,
+      this->k(static_cast<int>(i)),
+      output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:SerializedKArray)
+}
+
+::google::protobuf::uint8* SerializedKArray::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:SerializedKArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedK k = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->k_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->k(static_cast<int>(i)), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerializedKArray)
+  return target;
+}
+
+size_t SerializedKArray::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerializedKArray)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // repeated .SerializedK k = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->k_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->k(static_cast<int>(i)));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SerializedKArray::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:SerializedKArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SerializedKArray* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const SerializedKArray>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:SerializedKArray)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:SerializedKArray)
+    MergeFrom(*source);
+  }
+}
+
+void SerializedKArray::MergeFrom(const SerializedKArray& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerializedKArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  k_.MergeFrom(from.k_);
+}
+
+void SerializedKArray::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:SerializedKArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SerializedKArray::CopyFrom(const SerializedKArray& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerializedKArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerializedKArray::IsInitialized() const {
+  return true;
+}
+
+void SerializedKArray::Swap(SerializedKArray* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SerializedKArray::InternalSwap(SerializedKArray* other) {
+  using std::swap;
+  CastToBase(&k_)->InternalSwap(CastToBase(&other->k_));
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata SerializedKArray::GetMetadata() const {
+  protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
 void SerializedMappoint::InitAsDefaultInstance() {
   ::_SerializedMappoint_default_instance_._instance.get_mutable()->position_ = const_cast< ::SerializedPosition*>(
       ::SerializedPosition::internal_default_instance());
@@ -2184,6 +2571,235 @@ void SerializedMappoint::InternalSwap(SerializedMappoint* other) {
 
 // ===================================================================
 
+void SerializedMappointArray::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SerializedMappointArray::kMappointFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SerializedMappointArray::SerializedMappointArray()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_osmap_2eproto::scc_info_SerializedMappointArray.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:SerializedMappointArray)
+}
+SerializedMappointArray::SerializedMappointArray(const SerializedMappointArray& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      mappoint_(from.mappoint_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:SerializedMappointArray)
+}
+
+void SerializedMappointArray::SharedCtor() {
+}
+
+SerializedMappointArray::~SerializedMappointArray() {
+  // @@protoc_insertion_point(destructor:SerializedMappointArray)
+  SharedDtor();
+}
+
+void SerializedMappointArray::SharedDtor() {
+}
+
+void SerializedMappointArray::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* SerializedMappointArray::descriptor() {
+  ::protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const SerializedMappointArray& SerializedMappointArray::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_osmap_2eproto::scc_info_SerializedMappointArray.base);
+  return *internal_default_instance();
+}
+
+
+void SerializedMappointArray::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerializedMappointArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  mappoint_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool SerializedMappointArray::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:SerializedMappointArray)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .SerializedMappoint mappoint = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_mappoint()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:SerializedMappointArray)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:SerializedMappointArray)
+  return false;
+#undef DO_
+}
+
+void SerializedMappointArray::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:SerializedMappointArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedMappoint mappoint = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->mappoint_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1,
+      this->mappoint(static_cast<int>(i)),
+      output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:SerializedMappointArray)
+}
+
+::google::protobuf::uint8* SerializedMappointArray::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:SerializedMappointArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedMappoint mappoint = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->mappoint_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->mappoint(static_cast<int>(i)), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerializedMappointArray)
+  return target;
+}
+
+size_t SerializedMappointArray::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerializedMappointArray)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // repeated .SerializedMappoint mappoint = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->mappoint_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->mappoint(static_cast<int>(i)));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SerializedMappointArray::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:SerializedMappointArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SerializedMappointArray* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const SerializedMappointArray>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:SerializedMappointArray)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:SerializedMappointArray)
+    MergeFrom(*source);
+  }
+}
+
+void SerializedMappointArray::MergeFrom(const SerializedMappointArray& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerializedMappointArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  mappoint_.MergeFrom(from.mappoint_);
+}
+
+void SerializedMappointArray::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:SerializedMappointArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SerializedMappointArray::CopyFrom(const SerializedMappointArray& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerializedMappointArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerializedMappointArray::IsInitialized() const {
+  return true;
+}
+
+void SerializedMappointArray::Swap(SerializedMappointArray* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SerializedMappointArray::InternalSwap(SerializedMappointArray* other) {
+  using std::swap;
+  CastToBase(&mappoint_)->InternalSwap(CastToBase(&other->mappoint_));
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata SerializedMappointArray::GetMetadata() const {
+  protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
 void SerializedKeyframe::InitAsDefaultInstance() {
   ::_SerializedKeyframe_default_instance_._instance.get_mutable()->pose_ = const_cast< ::SerializedPose*>(
       ::SerializedPose::internal_default_instance());
@@ -2498,6 +3114,235 @@ void SerializedKeyframe::InternalSwap(SerializedKeyframe* other) {
 
 // ===================================================================
 
+void SerializedKeyframeArray::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SerializedKeyframeArray::kKeyframeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SerializedKeyframeArray::SerializedKeyframeArray()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_osmap_2eproto::scc_info_SerializedKeyframeArray.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:SerializedKeyframeArray)
+}
+SerializedKeyframeArray::SerializedKeyframeArray(const SerializedKeyframeArray& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      keyframe_(from.keyframe_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:SerializedKeyframeArray)
+}
+
+void SerializedKeyframeArray::SharedCtor() {
+}
+
+SerializedKeyframeArray::~SerializedKeyframeArray() {
+  // @@protoc_insertion_point(destructor:SerializedKeyframeArray)
+  SharedDtor();
+}
+
+void SerializedKeyframeArray::SharedDtor() {
+}
+
+void SerializedKeyframeArray::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* SerializedKeyframeArray::descriptor() {
+  ::protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const SerializedKeyframeArray& SerializedKeyframeArray::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_osmap_2eproto::scc_info_SerializedKeyframeArray.base);
+  return *internal_default_instance();
+}
+
+
+void SerializedKeyframeArray::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerializedKeyframeArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  keyframe_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool SerializedKeyframeArray::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:SerializedKeyframeArray)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .SerializedKeyframe keyframe = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_keyframe()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:SerializedKeyframeArray)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:SerializedKeyframeArray)
+  return false;
+#undef DO_
+}
+
+void SerializedKeyframeArray::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:SerializedKeyframeArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedKeyframe keyframe = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->keyframe_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1,
+      this->keyframe(static_cast<int>(i)),
+      output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:SerializedKeyframeArray)
+}
+
+::google::protobuf::uint8* SerializedKeyframeArray::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:SerializedKeyframeArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedKeyframe keyframe = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->keyframe_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->keyframe(static_cast<int>(i)), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerializedKeyframeArray)
+  return target;
+}
+
+size_t SerializedKeyframeArray::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerializedKeyframeArray)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // repeated .SerializedKeyframe keyframe = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->keyframe_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->keyframe(static_cast<int>(i)));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SerializedKeyframeArray::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:SerializedKeyframeArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SerializedKeyframeArray* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const SerializedKeyframeArray>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:SerializedKeyframeArray)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:SerializedKeyframeArray)
+    MergeFrom(*source);
+  }
+}
+
+void SerializedKeyframeArray::MergeFrom(const SerializedKeyframeArray& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerializedKeyframeArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  keyframe_.MergeFrom(from.keyframe_);
+}
+
+void SerializedKeyframeArray::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:SerializedKeyframeArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SerializedKeyframeArray::CopyFrom(const SerializedKeyframeArray& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerializedKeyframeArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerializedKeyframeArray::IsInitialized() const {
+  return true;
+}
+
+void SerializedKeyframeArray::Swap(SerializedKeyframeArray* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SerializedKeyframeArray::InternalSwap(SerializedKeyframeArray* other) {
+  using std::swap;
+  CastToBase(&keyframe_)->InternalSwap(CastToBase(&other->keyframe_));
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata SerializedKeyframeArray::GetMetadata() const {
+  protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
 void SerializedFeature::InitAsDefaultInstance() {
   ::_SerializedFeature_default_instance_._instance.get_mutable()->keypoint_ = const_cast< ::SerializedKeypoint*>(
       ::SerializedKeypoint::internal_default_instance());
@@ -2505,7 +3350,6 @@ void SerializedFeature::InitAsDefaultInstance() {
       ::SerializedDescriptor::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int SerializedFeature::kKeyframeIdFieldNumber;
 const int SerializedFeature::kMappointIdFieldNumber;
 const int SerializedFeature::kKeypointFieldNumber;
 const int SerializedFeature::kDescriptorFieldNumber;
@@ -2532,9 +3376,7 @@ SerializedFeature::SerializedFeature(const SerializedFeature& from)
   } else {
     descriptor_ = NULL;
   }
-  ::memcpy(&keyframe_id_, &from.keyframe_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&mappoint_id_) -
-    reinterpret_cast<char*>(&keyframe_id_)) + sizeof(mappoint_id_));
+  mappoint_id_ = from.mappoint_id_;
   // @@protoc_insertion_point(copy_constructor:SerializedFeature)
 }
 
@@ -2582,9 +3424,7 @@ void SerializedFeature::Clear() {
     delete descriptor_;
   }
   descriptor_ = NULL;
-  ::memset(&keyframe_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&mappoint_id_) -
-      reinterpret_cast<char*>(&keyframe_id_)) + sizeof(mappoint_id_));
+  mappoint_id_ = 0u;
   _internal_metadata_.Clear();
 }
 
@@ -2598,20 +3438,6 @@ bool SerializedFeature::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // uint32 keyframe_id = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &keyframe_id_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
       // uint32 mappoint_id = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
@@ -2676,11 +3502,6 @@ void SerializedFeature::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint32 keyframe_id = 1;
-  if (this->keyframe_id() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->keyframe_id(), output);
-  }
-
   // uint32 mappoint_id = 2;
   if (this->mappoint_id() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->mappoint_id(), output);
@@ -2711,11 +3532,6 @@ void SerializedFeature::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_to_array_start:SerializedFeature)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
-
-  // uint32 keyframe_id = 1;
-  if (this->keyframe_id() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->keyframe_id(), target);
-  }
 
   // uint32 mappoint_id = 2;
   if (this->mappoint_id() != 0) {
@@ -2767,13 +3583,6 @@ size_t SerializedFeature::ByteSizeLong() const {
         *descriptor_);
   }
 
-  // uint32 keyframe_id = 1;
-  if (this->keyframe_id() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
-        this->keyframe_id());
-  }
-
   // uint32 mappoint_id = 2;
   if (this->mappoint_id() != 0) {
     total_size += 1 +
@@ -2814,9 +3623,6 @@ void SerializedFeature::MergeFrom(const SerializedFeature& from) {
   if (from.has_descriptor()) {
     mutable_descriptor()->::SerializedDescriptor::MergeFrom(from.descriptor());
   }
-  if (from.keyframe_id() != 0) {
-    set_keyframe_id(from.keyframe_id());
-  }
   if (from.mappoint_id() != 0) {
     set_mappoint_id(from.mappoint_id());
   }
@@ -2848,12 +3654,508 @@ void SerializedFeature::InternalSwap(SerializedFeature* other) {
   using std::swap;
   swap(keypoint_, other->keypoint_);
   swap(descriptor_, other->descriptor_);
-  swap(keyframe_id_, other->keyframe_id_);
   swap(mappoint_id_, other->mappoint_id_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata SerializedFeature::GetMetadata() const {
+  protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void SerializedKeyframeFeatures::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SerializedKeyframeFeatures::kKeyframeIdFieldNumber;
+const int SerializedKeyframeFeatures::kFeatureFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SerializedKeyframeFeatures::SerializedKeyframeFeatures()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_osmap_2eproto::scc_info_SerializedKeyframeFeatures.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:SerializedKeyframeFeatures)
+}
+SerializedKeyframeFeatures::SerializedKeyframeFeatures(const SerializedKeyframeFeatures& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      feature_(from.feature_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  keyframe_id_ = from.keyframe_id_;
+  // @@protoc_insertion_point(copy_constructor:SerializedKeyframeFeatures)
+}
+
+void SerializedKeyframeFeatures::SharedCtor() {
+  keyframe_id_ = 0u;
+}
+
+SerializedKeyframeFeatures::~SerializedKeyframeFeatures() {
+  // @@protoc_insertion_point(destructor:SerializedKeyframeFeatures)
+  SharedDtor();
+}
+
+void SerializedKeyframeFeatures::SharedDtor() {
+}
+
+void SerializedKeyframeFeatures::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* SerializedKeyframeFeatures::descriptor() {
+  ::protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const SerializedKeyframeFeatures& SerializedKeyframeFeatures::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_osmap_2eproto::scc_info_SerializedKeyframeFeatures.base);
+  return *internal_default_instance();
+}
+
+
+void SerializedKeyframeFeatures::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerializedKeyframeFeatures)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  feature_.Clear();
+  keyframe_id_ = 0u;
+  _internal_metadata_.Clear();
+}
+
+bool SerializedKeyframeFeatures::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:SerializedKeyframeFeatures)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // uint32 keyframe_id = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &keyframe_id_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated .SerializedFeature feature = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_feature()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:SerializedKeyframeFeatures)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:SerializedKeyframeFeatures)
+  return false;
+#undef DO_
+}
+
+void SerializedKeyframeFeatures::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:SerializedKeyframeFeatures)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 keyframe_id = 1;
+  if (this->keyframe_id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->keyframe_id(), output);
+  }
+
+  // repeated .SerializedFeature feature = 2;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->feature_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2,
+      this->feature(static_cast<int>(i)),
+      output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:SerializedKeyframeFeatures)
+}
+
+::google::protobuf::uint8* SerializedKeyframeFeatures::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:SerializedKeyframeFeatures)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 keyframe_id = 1;
+  if (this->keyframe_id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->keyframe_id(), target);
+  }
+
+  // repeated .SerializedFeature feature = 2;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->feature_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        2, this->feature(static_cast<int>(i)), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerializedKeyframeFeatures)
+  return target;
+}
+
+size_t SerializedKeyframeFeatures::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerializedKeyframeFeatures)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // repeated .SerializedFeature feature = 2;
+  {
+    unsigned int count = static_cast<unsigned int>(this->feature_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->feature(static_cast<int>(i)));
+    }
+  }
+
+  // uint32 keyframe_id = 1;
+  if (this->keyframe_id() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->keyframe_id());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SerializedKeyframeFeatures::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:SerializedKeyframeFeatures)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SerializedKeyframeFeatures* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const SerializedKeyframeFeatures>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:SerializedKeyframeFeatures)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:SerializedKeyframeFeatures)
+    MergeFrom(*source);
+  }
+}
+
+void SerializedKeyframeFeatures::MergeFrom(const SerializedKeyframeFeatures& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerializedKeyframeFeatures)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  feature_.MergeFrom(from.feature_);
+  if (from.keyframe_id() != 0) {
+    set_keyframe_id(from.keyframe_id());
+  }
+}
+
+void SerializedKeyframeFeatures::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:SerializedKeyframeFeatures)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SerializedKeyframeFeatures::CopyFrom(const SerializedKeyframeFeatures& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerializedKeyframeFeatures)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerializedKeyframeFeatures::IsInitialized() const {
+  return true;
+}
+
+void SerializedKeyframeFeatures::Swap(SerializedKeyframeFeatures* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SerializedKeyframeFeatures::InternalSwap(SerializedKeyframeFeatures* other) {
+  using std::swap;
+  CastToBase(&feature_)->InternalSwap(CastToBase(&other->feature_));
+  swap(keyframe_id_, other->keyframe_id_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata SerializedKeyframeFeatures::GetMetadata() const {
+  protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void SerializedKeyframeFeaturesArray::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SerializedKeyframeFeaturesArray::kFeatureFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SerializedKeyframeFeaturesArray::SerializedKeyframeFeaturesArray()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_osmap_2eproto::scc_info_SerializedKeyframeFeaturesArray.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:SerializedKeyframeFeaturesArray)
+}
+SerializedKeyframeFeaturesArray::SerializedKeyframeFeaturesArray(const SerializedKeyframeFeaturesArray& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      feature_(from.feature_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:SerializedKeyframeFeaturesArray)
+}
+
+void SerializedKeyframeFeaturesArray::SharedCtor() {
+}
+
+SerializedKeyframeFeaturesArray::~SerializedKeyframeFeaturesArray() {
+  // @@protoc_insertion_point(destructor:SerializedKeyframeFeaturesArray)
+  SharedDtor();
+}
+
+void SerializedKeyframeFeaturesArray::SharedDtor() {
+}
+
+void SerializedKeyframeFeaturesArray::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* SerializedKeyframeFeaturesArray::descriptor() {
+  ::protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const SerializedKeyframeFeaturesArray& SerializedKeyframeFeaturesArray::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_osmap_2eproto::scc_info_SerializedKeyframeFeaturesArray.base);
+  return *internal_default_instance();
+}
+
+
+void SerializedKeyframeFeaturesArray::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerializedKeyframeFeaturesArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  feature_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool SerializedKeyframeFeaturesArray::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:SerializedKeyframeFeaturesArray)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .SerializedKeyframeFeatures feature = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_feature()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:SerializedKeyframeFeaturesArray)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:SerializedKeyframeFeaturesArray)
+  return false;
+#undef DO_
+}
+
+void SerializedKeyframeFeaturesArray::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:SerializedKeyframeFeaturesArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedKeyframeFeatures feature = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->feature_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1,
+      this->feature(static_cast<int>(i)),
+      output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:SerializedKeyframeFeaturesArray)
+}
+
+::google::protobuf::uint8* SerializedKeyframeFeaturesArray::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:SerializedKeyframeFeaturesArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .SerializedKeyframeFeatures feature = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->feature_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->feature(static_cast<int>(i)), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerializedKeyframeFeaturesArray)
+  return target;
+}
+
+size_t SerializedKeyframeFeaturesArray::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerializedKeyframeFeaturesArray)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // repeated .SerializedKeyframeFeatures feature = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->feature_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->feature(static_cast<int>(i)));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SerializedKeyframeFeaturesArray::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:SerializedKeyframeFeaturesArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SerializedKeyframeFeaturesArray* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const SerializedKeyframeFeaturesArray>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:SerializedKeyframeFeaturesArray)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:SerializedKeyframeFeaturesArray)
+    MergeFrom(*source);
+  }
+}
+
+void SerializedKeyframeFeaturesArray::MergeFrom(const SerializedKeyframeFeaturesArray& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerializedKeyframeFeaturesArray)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  feature_.MergeFrom(from.feature_);
+}
+
+void SerializedKeyframeFeaturesArray::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:SerializedKeyframeFeaturesArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SerializedKeyframeFeaturesArray::CopyFrom(const SerializedKeyframeFeaturesArray& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerializedKeyframeFeaturesArray)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerializedKeyframeFeaturesArray::IsInitialized() const {
+  return true;
+}
+
+void SerializedKeyframeFeaturesArray::Swap(SerializedKeyframeFeaturesArray* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SerializedKeyframeFeaturesArray::InternalSwap(SerializedKeyframeFeaturesArray* other) {
+  using std::swap;
+  CastToBase(&feature_)->InternalSwap(CastToBase(&other->feature_));
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata SerializedKeyframeFeaturesArray::GetMetadata() const {
   protobuf_osmap_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_osmap_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -2877,14 +4179,29 @@ template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedKeypoint* Arena::Creat
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedK* Arena::CreateMaybeMessage< ::SerializedK >(Arena* arena) {
   return Arena::CreateInternal< ::SerializedK >(arena);
 }
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedKArray* Arena::CreateMaybeMessage< ::SerializedKArray >(Arena* arena) {
+  return Arena::CreateInternal< ::SerializedKArray >(arena);
+}
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedMappoint* Arena::CreateMaybeMessage< ::SerializedMappoint >(Arena* arena) {
   return Arena::CreateInternal< ::SerializedMappoint >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedMappointArray* Arena::CreateMaybeMessage< ::SerializedMappointArray >(Arena* arena) {
+  return Arena::CreateInternal< ::SerializedMappointArray >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedKeyframe* Arena::CreateMaybeMessage< ::SerializedKeyframe >(Arena* arena) {
   return Arena::CreateInternal< ::SerializedKeyframe >(arena);
 }
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedKeyframeArray* Arena::CreateMaybeMessage< ::SerializedKeyframeArray >(Arena* arena) {
+  return Arena::CreateInternal< ::SerializedKeyframeArray >(arena);
+}
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedFeature* Arena::CreateMaybeMessage< ::SerializedFeature >(Arena* arena) {
   return Arena::CreateInternal< ::SerializedFeature >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedKeyframeFeatures* Arena::CreateMaybeMessage< ::SerializedKeyframeFeatures >(Arena* arena) {
+  return Arena::CreateInternal< ::SerializedKeyframeFeatures >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SerializedKeyframeFeaturesArray* Arena::CreateMaybeMessage< ::SerializedKeyframeFeaturesArray >(Arena* arena) {
+  return Arena::CreateInternal< ::SerializedKeyframeFeaturesArray >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

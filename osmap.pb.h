@@ -38,7 +38,7 @@ namespace protobuf_osmap_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[8];
+  static const ::google::protobuf::internal::ParseTable schema[13];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -54,15 +54,30 @@ extern SerializedFeatureDefaultTypeInternal _SerializedFeature_default_instance_
 class SerializedK;
 class SerializedKDefaultTypeInternal;
 extern SerializedKDefaultTypeInternal _SerializedK_default_instance_;
+class SerializedKArray;
+class SerializedKArrayDefaultTypeInternal;
+extern SerializedKArrayDefaultTypeInternal _SerializedKArray_default_instance_;
 class SerializedKeyframe;
 class SerializedKeyframeDefaultTypeInternal;
 extern SerializedKeyframeDefaultTypeInternal _SerializedKeyframe_default_instance_;
+class SerializedKeyframeArray;
+class SerializedKeyframeArrayDefaultTypeInternal;
+extern SerializedKeyframeArrayDefaultTypeInternal _SerializedKeyframeArray_default_instance_;
+class SerializedKeyframeFeatures;
+class SerializedKeyframeFeaturesDefaultTypeInternal;
+extern SerializedKeyframeFeaturesDefaultTypeInternal _SerializedKeyframeFeatures_default_instance_;
+class SerializedKeyframeFeaturesArray;
+class SerializedKeyframeFeaturesArrayDefaultTypeInternal;
+extern SerializedKeyframeFeaturesArrayDefaultTypeInternal _SerializedKeyframeFeaturesArray_default_instance_;
 class SerializedKeypoint;
 class SerializedKeypointDefaultTypeInternal;
 extern SerializedKeypointDefaultTypeInternal _SerializedKeypoint_default_instance_;
 class SerializedMappoint;
 class SerializedMappointDefaultTypeInternal;
 extern SerializedMappointDefaultTypeInternal _SerializedMappoint_default_instance_;
+class SerializedMappointArray;
+class SerializedMappointArrayDefaultTypeInternal;
+extern SerializedMappointArrayDefaultTypeInternal _SerializedMappointArray_default_instance_;
 class SerializedPose;
 class SerializedPoseDefaultTypeInternal;
 extern SerializedPoseDefaultTypeInternal _SerializedPose_default_instance_;
@@ -74,9 +89,14 @@ namespace protobuf {
 template<> ::SerializedDescriptor* Arena::CreateMaybeMessage<::SerializedDescriptor>(Arena*);
 template<> ::SerializedFeature* Arena::CreateMaybeMessage<::SerializedFeature>(Arena*);
 template<> ::SerializedK* Arena::CreateMaybeMessage<::SerializedK>(Arena*);
+template<> ::SerializedKArray* Arena::CreateMaybeMessage<::SerializedKArray>(Arena*);
 template<> ::SerializedKeyframe* Arena::CreateMaybeMessage<::SerializedKeyframe>(Arena*);
+template<> ::SerializedKeyframeArray* Arena::CreateMaybeMessage<::SerializedKeyframeArray>(Arena*);
+template<> ::SerializedKeyframeFeatures* Arena::CreateMaybeMessage<::SerializedKeyframeFeatures>(Arena*);
+template<> ::SerializedKeyframeFeaturesArray* Arena::CreateMaybeMessage<::SerializedKeyframeFeaturesArray>(Arena*);
 template<> ::SerializedKeypoint* Arena::CreateMaybeMessage<::SerializedKeypoint>(Arena*);
 template<> ::SerializedMappoint* Arena::CreateMaybeMessage<::SerializedMappoint>(Arena*);
+template<> ::SerializedMappointArray* Arena::CreateMaybeMessage<::SerializedMappointArray>(Arena*);
 template<> ::SerializedPose* Arena::CreateMaybeMessage<::SerializedPose>(Arena*);
 template<> ::SerializedPosition* Arena::CreateMaybeMessage<::SerializedPosition>(Arena*);
 }  // namespace protobuf
@@ -669,6 +689,115 @@ class SerializedK : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 // -------------------------------------------------------------------
 
+class SerializedKArray : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedKArray) */ {
+ public:
+  SerializedKArray();
+  virtual ~SerializedKArray();
+
+  SerializedKArray(const SerializedKArray& from);
+
+  inline SerializedKArray& operator=(const SerializedKArray& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SerializedKArray(SerializedKArray&& from) noexcept
+    : SerializedKArray() {
+    *this = ::std::move(from);
+  }
+
+  inline SerializedKArray& operator=(SerializedKArray&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SerializedKArray& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SerializedKArray* internal_default_instance() {
+    return reinterpret_cast<const SerializedKArray*>(
+               &_SerializedKArray_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  void Swap(SerializedKArray* other);
+  friend void swap(SerializedKArray& a, SerializedKArray& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SerializedKArray* New() const final {
+    return CreateMaybeMessage<SerializedKArray>(NULL);
+  }
+
+  SerializedKArray* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<SerializedKArray>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const SerializedKArray& from);
+  void MergeFrom(const SerializedKArray& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SerializedKArray* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .SerializedK k = 1;
+  int k_size() const;
+  void clear_k();
+  static const int kKFieldNumber = 1;
+  ::SerializedK* mutable_k(int index);
+  ::google::protobuf::RepeatedPtrField< ::SerializedK >*
+      mutable_k();
+  const ::SerializedK& k(int index) const;
+  ::SerializedK* add_k();
+  const ::google::protobuf::RepeatedPtrField< ::SerializedK >&
+      k() const;
+
+  // @@protoc_insertion_point(class_scope:SerializedKArray)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::SerializedK > k_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_osmap_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class SerializedMappoint : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedMappoint) */ {
  public:
   SerializedMappoint();
@@ -704,7 +833,7 @@ class SerializedMappoint : public ::google::protobuf::Message /* @@protoc_insert
                &_SerializedMappoint_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   void Swap(SerializedMappoint* other);
   friend void swap(SerializedMappoint& a, SerializedMappoint& b) {
@@ -812,6 +941,115 @@ class SerializedMappoint : public ::google::protobuf::Message /* @@protoc_insert
 };
 // -------------------------------------------------------------------
 
+class SerializedMappointArray : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedMappointArray) */ {
+ public:
+  SerializedMappointArray();
+  virtual ~SerializedMappointArray();
+
+  SerializedMappointArray(const SerializedMappointArray& from);
+
+  inline SerializedMappointArray& operator=(const SerializedMappointArray& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SerializedMappointArray(SerializedMappointArray&& from) noexcept
+    : SerializedMappointArray() {
+    *this = ::std::move(from);
+  }
+
+  inline SerializedMappointArray& operator=(SerializedMappointArray&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SerializedMappointArray& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SerializedMappointArray* internal_default_instance() {
+    return reinterpret_cast<const SerializedMappointArray*>(
+               &_SerializedMappointArray_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  void Swap(SerializedMappointArray* other);
+  friend void swap(SerializedMappointArray& a, SerializedMappointArray& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SerializedMappointArray* New() const final {
+    return CreateMaybeMessage<SerializedMappointArray>(NULL);
+  }
+
+  SerializedMappointArray* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<SerializedMappointArray>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const SerializedMappointArray& from);
+  void MergeFrom(const SerializedMappointArray& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SerializedMappointArray* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .SerializedMappoint mappoint = 1;
+  int mappoint_size() const;
+  void clear_mappoint();
+  static const int kMappointFieldNumber = 1;
+  ::SerializedMappoint* mutable_mappoint(int index);
+  ::google::protobuf::RepeatedPtrField< ::SerializedMappoint >*
+      mutable_mappoint();
+  const ::SerializedMappoint& mappoint(int index) const;
+  ::SerializedMappoint* add_mappoint();
+  const ::google::protobuf::RepeatedPtrField< ::SerializedMappoint >&
+      mappoint() const;
+
+  // @@protoc_insertion_point(class_scope:SerializedMappointArray)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::SerializedMappoint > mappoint_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_osmap_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedKeyframe) */ {
  public:
   SerializedKeyframe();
@@ -847,7 +1085,7 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
                &_SerializedKeyframe_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   void Swap(SerializedKeyframe* other);
   friend void swap(SerializedKeyframe& a, SerializedKeyframe& b) {
@@ -935,6 +1173,115 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
 };
 // -------------------------------------------------------------------
 
+class SerializedKeyframeArray : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedKeyframeArray) */ {
+ public:
+  SerializedKeyframeArray();
+  virtual ~SerializedKeyframeArray();
+
+  SerializedKeyframeArray(const SerializedKeyframeArray& from);
+
+  inline SerializedKeyframeArray& operator=(const SerializedKeyframeArray& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SerializedKeyframeArray(SerializedKeyframeArray&& from) noexcept
+    : SerializedKeyframeArray() {
+    *this = ::std::move(from);
+  }
+
+  inline SerializedKeyframeArray& operator=(SerializedKeyframeArray&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SerializedKeyframeArray& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SerializedKeyframeArray* internal_default_instance() {
+    return reinterpret_cast<const SerializedKeyframeArray*>(
+               &_SerializedKeyframeArray_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  void Swap(SerializedKeyframeArray* other);
+  friend void swap(SerializedKeyframeArray& a, SerializedKeyframeArray& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SerializedKeyframeArray* New() const final {
+    return CreateMaybeMessage<SerializedKeyframeArray>(NULL);
+  }
+
+  SerializedKeyframeArray* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<SerializedKeyframeArray>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const SerializedKeyframeArray& from);
+  void MergeFrom(const SerializedKeyframeArray& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SerializedKeyframeArray* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .SerializedKeyframe keyframe = 1;
+  int keyframe_size() const;
+  void clear_keyframe();
+  static const int kKeyframeFieldNumber = 1;
+  ::SerializedKeyframe* mutable_keyframe(int index);
+  ::google::protobuf::RepeatedPtrField< ::SerializedKeyframe >*
+      mutable_keyframe();
+  const ::SerializedKeyframe& keyframe(int index) const;
+  ::SerializedKeyframe* add_keyframe();
+  const ::google::protobuf::RepeatedPtrField< ::SerializedKeyframe >&
+      keyframe() const;
+
+  // @@protoc_insertion_point(class_scope:SerializedKeyframeArray)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::SerializedKeyframe > keyframe_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_osmap_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class SerializedFeature : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedFeature) */ {
  public:
   SerializedFeature();
@@ -970,7 +1317,7 @@ class SerializedFeature : public ::google::protobuf::Message /* @@protoc_inserti
                &_SerializedFeature_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    10;
 
   void Swap(SerializedFeature* other);
   friend void swap(SerializedFeature& a, SerializedFeature& b) {
@@ -1046,12 +1393,6 @@ class SerializedFeature : public ::google::protobuf::Message /* @@protoc_inserti
   ::SerializedDescriptor* mutable_descriptor();
   void set_allocated_descriptor(::SerializedDescriptor* descriptor);
 
-  // uint32 keyframe_id = 1;
-  void clear_keyframe_id();
-  static const int kKeyframeIdFieldNumber = 1;
-  ::google::protobuf::uint32 keyframe_id() const;
-  void set_keyframe_id(::google::protobuf::uint32 value);
-
   // uint32 mappoint_id = 2;
   void clear_mappoint_id();
   static const int kMappointIdFieldNumber = 2;
@@ -1064,8 +1405,232 @@ class SerializedFeature : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::SerializedKeypoint* keypoint_;
   ::SerializedDescriptor* descriptor_;
-  ::google::protobuf::uint32 keyframe_id_;
   ::google::protobuf::uint32 mappoint_id_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_osmap_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class SerializedKeyframeFeatures : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedKeyframeFeatures) */ {
+ public:
+  SerializedKeyframeFeatures();
+  virtual ~SerializedKeyframeFeatures();
+
+  SerializedKeyframeFeatures(const SerializedKeyframeFeatures& from);
+
+  inline SerializedKeyframeFeatures& operator=(const SerializedKeyframeFeatures& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SerializedKeyframeFeatures(SerializedKeyframeFeatures&& from) noexcept
+    : SerializedKeyframeFeatures() {
+    *this = ::std::move(from);
+  }
+
+  inline SerializedKeyframeFeatures& operator=(SerializedKeyframeFeatures&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SerializedKeyframeFeatures& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SerializedKeyframeFeatures* internal_default_instance() {
+    return reinterpret_cast<const SerializedKeyframeFeatures*>(
+               &_SerializedKeyframeFeatures_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  void Swap(SerializedKeyframeFeatures* other);
+  friend void swap(SerializedKeyframeFeatures& a, SerializedKeyframeFeatures& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SerializedKeyframeFeatures* New() const final {
+    return CreateMaybeMessage<SerializedKeyframeFeatures>(NULL);
+  }
+
+  SerializedKeyframeFeatures* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<SerializedKeyframeFeatures>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const SerializedKeyframeFeatures& from);
+  void MergeFrom(const SerializedKeyframeFeatures& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SerializedKeyframeFeatures* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .SerializedFeature feature = 2;
+  int feature_size() const;
+  void clear_feature();
+  static const int kFeatureFieldNumber = 2;
+  ::SerializedFeature* mutable_feature(int index);
+  ::google::protobuf::RepeatedPtrField< ::SerializedFeature >*
+      mutable_feature();
+  const ::SerializedFeature& feature(int index) const;
+  ::SerializedFeature* add_feature();
+  const ::google::protobuf::RepeatedPtrField< ::SerializedFeature >&
+      feature() const;
+
+  // uint32 keyframe_id = 1;
+  void clear_keyframe_id();
+  static const int kKeyframeIdFieldNumber = 1;
+  ::google::protobuf::uint32 keyframe_id() const;
+  void set_keyframe_id(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:SerializedKeyframeFeatures)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::SerializedFeature > feature_;
+  ::google::protobuf::uint32 keyframe_id_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_osmap_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class SerializedKeyframeFeaturesArray : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SerializedKeyframeFeaturesArray) */ {
+ public:
+  SerializedKeyframeFeaturesArray();
+  virtual ~SerializedKeyframeFeaturesArray();
+
+  SerializedKeyframeFeaturesArray(const SerializedKeyframeFeaturesArray& from);
+
+  inline SerializedKeyframeFeaturesArray& operator=(const SerializedKeyframeFeaturesArray& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SerializedKeyframeFeaturesArray(SerializedKeyframeFeaturesArray&& from) noexcept
+    : SerializedKeyframeFeaturesArray() {
+    *this = ::std::move(from);
+  }
+
+  inline SerializedKeyframeFeaturesArray& operator=(SerializedKeyframeFeaturesArray&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SerializedKeyframeFeaturesArray& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SerializedKeyframeFeaturesArray* internal_default_instance() {
+    return reinterpret_cast<const SerializedKeyframeFeaturesArray*>(
+               &_SerializedKeyframeFeaturesArray_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  void Swap(SerializedKeyframeFeaturesArray* other);
+  friend void swap(SerializedKeyframeFeaturesArray& a, SerializedKeyframeFeaturesArray& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SerializedKeyframeFeaturesArray* New() const final {
+    return CreateMaybeMessage<SerializedKeyframeFeaturesArray>(NULL);
+  }
+
+  SerializedKeyframeFeaturesArray* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<SerializedKeyframeFeaturesArray>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const SerializedKeyframeFeaturesArray& from);
+  void MergeFrom(const SerializedKeyframeFeaturesArray& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SerializedKeyframeFeaturesArray* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .SerializedKeyframeFeatures feature = 1;
+  int feature_size() const;
+  void clear_feature();
+  static const int kFeatureFieldNumber = 1;
+  ::SerializedKeyframeFeatures* mutable_feature(int index);
+  ::google::protobuf::RepeatedPtrField< ::SerializedKeyframeFeatures >*
+      mutable_feature();
+  const ::SerializedKeyframeFeatures& feature(int index) const;
+  ::SerializedKeyframeFeatures* add_feature();
+  const ::google::protobuf::RepeatedPtrField< ::SerializedKeyframeFeatures >&
+      feature() const;
+
+  // @@protoc_insertion_point(class_scope:SerializedKeyframeFeaturesArray)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::SerializedKeyframeFeatures > feature_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_osmap_2eproto::TableStruct;
 };
@@ -1312,6 +1877,40 @@ inline void SerializedK::set_cy(float value) {
 
 // -------------------------------------------------------------------
 
+// SerializedKArray
+
+// repeated .SerializedK k = 1;
+inline int SerializedKArray::k_size() const {
+  return k_.size();
+}
+inline void SerializedKArray::clear_k() {
+  k_.Clear();
+}
+inline ::SerializedK* SerializedKArray::mutable_k(int index) {
+  // @@protoc_insertion_point(field_mutable:SerializedKArray.k)
+  return k_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::SerializedK >*
+SerializedKArray::mutable_k() {
+  // @@protoc_insertion_point(field_mutable_list:SerializedKArray.k)
+  return &k_;
+}
+inline const ::SerializedK& SerializedKArray::k(int index) const {
+  // @@protoc_insertion_point(field_get:SerializedKArray.k)
+  return k_.Get(index);
+}
+inline ::SerializedK* SerializedKArray::add_k() {
+  // @@protoc_insertion_point(field_add:SerializedKArray.k)
+  return k_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::SerializedK >&
+SerializedKArray::k() const {
+  // @@protoc_insertion_point(field_list:SerializedKArray.k)
+  return k_;
+}
+
+// -------------------------------------------------------------------
+
 // SerializedMappoint
 
 // uint32 id = 1;
@@ -1466,6 +2065,40 @@ inline void SerializedMappoint::set_allocated_descriptor(::SerializedDescriptor*
 
 // -------------------------------------------------------------------
 
+// SerializedMappointArray
+
+// repeated .SerializedMappoint mappoint = 1;
+inline int SerializedMappointArray::mappoint_size() const {
+  return mappoint_.size();
+}
+inline void SerializedMappointArray::clear_mappoint() {
+  mappoint_.Clear();
+}
+inline ::SerializedMappoint* SerializedMappointArray::mutable_mappoint(int index) {
+  // @@protoc_insertion_point(field_mutable:SerializedMappointArray.mappoint)
+  return mappoint_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::SerializedMappoint >*
+SerializedMappointArray::mutable_mappoint() {
+  // @@protoc_insertion_point(field_mutable_list:SerializedMappointArray.mappoint)
+  return &mappoint_;
+}
+inline const ::SerializedMappoint& SerializedMappointArray::mappoint(int index) const {
+  // @@protoc_insertion_point(field_get:SerializedMappointArray.mappoint)
+  return mappoint_.Get(index);
+}
+inline ::SerializedMappoint* SerializedMappointArray::add_mappoint() {
+  // @@protoc_insertion_point(field_add:SerializedMappointArray.mappoint)
+  return mappoint_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::SerializedMappoint >&
+SerializedMappointArray::mappoint() const {
+  // @@protoc_insertion_point(field_list:SerializedMappointArray.mappoint)
+  return mappoint_;
+}
+
+// -------------------------------------------------------------------
+
 // SerializedKeyframe
 
 // uint32 id = 1;
@@ -1552,21 +2185,41 @@ inline void SerializedKeyframe::set_k(::google::protobuf::uint32 value) {
 
 // -------------------------------------------------------------------
 
-// SerializedFeature
+// SerializedKeyframeArray
 
-// uint32 keyframe_id = 1;
-inline void SerializedFeature::clear_keyframe_id() {
-  keyframe_id_ = 0u;
+// repeated .SerializedKeyframe keyframe = 1;
+inline int SerializedKeyframeArray::keyframe_size() const {
+  return keyframe_.size();
 }
-inline ::google::protobuf::uint32 SerializedFeature::keyframe_id() const {
-  // @@protoc_insertion_point(field_get:SerializedFeature.keyframe_id)
-  return keyframe_id_;
+inline void SerializedKeyframeArray::clear_keyframe() {
+  keyframe_.Clear();
 }
-inline void SerializedFeature::set_keyframe_id(::google::protobuf::uint32 value) {
-  
-  keyframe_id_ = value;
-  // @@protoc_insertion_point(field_set:SerializedFeature.keyframe_id)
+inline ::SerializedKeyframe* SerializedKeyframeArray::mutable_keyframe(int index) {
+  // @@protoc_insertion_point(field_mutable:SerializedKeyframeArray.keyframe)
+  return keyframe_.Mutable(index);
 }
+inline ::google::protobuf::RepeatedPtrField< ::SerializedKeyframe >*
+SerializedKeyframeArray::mutable_keyframe() {
+  // @@protoc_insertion_point(field_mutable_list:SerializedKeyframeArray.keyframe)
+  return &keyframe_;
+}
+inline const ::SerializedKeyframe& SerializedKeyframeArray::keyframe(int index) const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframeArray.keyframe)
+  return keyframe_.Get(index);
+}
+inline ::SerializedKeyframe* SerializedKeyframeArray::add_keyframe() {
+  // @@protoc_insertion_point(field_add:SerializedKeyframeArray.keyframe)
+  return keyframe_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::SerializedKeyframe >&
+SerializedKeyframeArray::keyframe() const {
+  // @@protoc_insertion_point(field_list:SerializedKeyframeArray.keyframe)
+  return keyframe_;
+}
+
+// -------------------------------------------------------------------
+
+// SerializedFeature
 
 // uint32 mappoint_id = 2;
 inline void SerializedFeature::clear_mappoint_id() {
@@ -1690,9 +2343,101 @@ inline void SerializedFeature::set_allocated_descriptor(::SerializedDescriptor* 
   // @@protoc_insertion_point(field_set_allocated:SerializedFeature.descriptor)
 }
 
+// -------------------------------------------------------------------
+
+// SerializedKeyframeFeatures
+
+// uint32 keyframe_id = 1;
+inline void SerializedKeyframeFeatures::clear_keyframe_id() {
+  keyframe_id_ = 0u;
+}
+inline ::google::protobuf::uint32 SerializedKeyframeFeatures::keyframe_id() const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframeFeatures.keyframe_id)
+  return keyframe_id_;
+}
+inline void SerializedKeyframeFeatures::set_keyframe_id(::google::protobuf::uint32 value) {
+  
+  keyframe_id_ = value;
+  // @@protoc_insertion_point(field_set:SerializedKeyframeFeatures.keyframe_id)
+}
+
+// repeated .SerializedFeature feature = 2;
+inline int SerializedKeyframeFeatures::feature_size() const {
+  return feature_.size();
+}
+inline void SerializedKeyframeFeatures::clear_feature() {
+  feature_.Clear();
+}
+inline ::SerializedFeature* SerializedKeyframeFeatures::mutable_feature(int index) {
+  // @@protoc_insertion_point(field_mutable:SerializedKeyframeFeatures.feature)
+  return feature_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::SerializedFeature >*
+SerializedKeyframeFeatures::mutable_feature() {
+  // @@protoc_insertion_point(field_mutable_list:SerializedKeyframeFeatures.feature)
+  return &feature_;
+}
+inline const ::SerializedFeature& SerializedKeyframeFeatures::feature(int index) const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframeFeatures.feature)
+  return feature_.Get(index);
+}
+inline ::SerializedFeature* SerializedKeyframeFeatures::add_feature() {
+  // @@protoc_insertion_point(field_add:SerializedKeyframeFeatures.feature)
+  return feature_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::SerializedFeature >&
+SerializedKeyframeFeatures::feature() const {
+  // @@protoc_insertion_point(field_list:SerializedKeyframeFeatures.feature)
+  return feature_;
+}
+
+// -------------------------------------------------------------------
+
+// SerializedKeyframeFeaturesArray
+
+// repeated .SerializedKeyframeFeatures feature = 1;
+inline int SerializedKeyframeFeaturesArray::feature_size() const {
+  return feature_.size();
+}
+inline void SerializedKeyframeFeaturesArray::clear_feature() {
+  feature_.Clear();
+}
+inline ::SerializedKeyframeFeatures* SerializedKeyframeFeaturesArray::mutable_feature(int index) {
+  // @@protoc_insertion_point(field_mutable:SerializedKeyframeFeaturesArray.feature)
+  return feature_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::SerializedKeyframeFeatures >*
+SerializedKeyframeFeaturesArray::mutable_feature() {
+  // @@protoc_insertion_point(field_mutable_list:SerializedKeyframeFeaturesArray.feature)
+  return &feature_;
+}
+inline const ::SerializedKeyframeFeatures& SerializedKeyframeFeaturesArray::feature(int index) const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframeFeaturesArray.feature)
+  return feature_.Get(index);
+}
+inline ::SerializedKeyframeFeatures* SerializedKeyframeFeaturesArray::add_feature() {
+  // @@protoc_insertion_point(field_add:SerializedKeyframeFeaturesArray.feature)
+  return feature_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::SerializedKeyframeFeatures >&
+SerializedKeyframeFeaturesArray::feature() const {
+  // @@protoc_insertion_point(field_list:SerializedKeyframeFeaturesArray.feature)
+  return feature_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

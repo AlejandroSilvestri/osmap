@@ -171,6 +171,36 @@ MapPoint *Osmap::deserializeMappoint(SerializedMappoint *serializedMappoint, Map
   return pMp;
 }
 
+
+int Osmap::serializeMapPointArray(SerializedMapPointArray *serializedMapPointArray){
+  int n = 0;
+  for(
+    auto it = map.mspMapPoints.begin();
+    it != map.mspMapPoints.end();
+    it++, n++
+  )
+    serializeMappoint(*it, serializedMapPointArray->add_mappoint());
+
+  return n;
+}
+
+
+int Osmap::deserializeMapPointArray(SerializedMapPointArray *serializedMapPointArray){
+  for(
+    unsigned int=0;
+    i<serializedMapPointArray->mappoint_size();
+    i++
+  )
+    map.mspMapPoints.insert(
+      deserializeMappoint(serializedMapPointArray->mutable_mappoint(i))
+    );
+
+  return i;
+}
+
+
+
+
 /**
 */
 SerializedKeyframe *Osmap::serializeKeyframe(KeyFrame *pKF, SerializedKeyframe *serializedKeyframe){

@@ -1,3 +1,5 @@
+# Work in progress, not ready yet.
+
 # Osmap
 
 OSMAP stands for Orb-Slam2 Map.  It's a serialization addendum for ORB-SLAM2.

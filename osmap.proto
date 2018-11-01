@@ -40,6 +40,10 @@ message SerializedK{
   float cy = 4;
 }
 
+message SerializedKArray{
+  repeated SerializedK k = 1;
+}
+
 // MapPoint, all fields optional, should provide position at least.
 message SerializedMappoint{
   uint32 id                       = 1;  // mnId
@@ -49,6 +53,11 @@ message SerializedMappoint{
   SerializedDescriptor descriptor = 5;  // mDescriptor, very optional
 }
 
+message SerializedMappointArray{
+  repeated SerializedMappoint mappoint = 1;
+}
+
+
 // KeyFrame, all fields optional, should provide pose at least.
 message SerializedKeyframe{
   uint32 id             = 1;  // mnId
@@ -56,10 +65,24 @@ message SerializedKeyframe{
   uint32 k              = 3;  // índice a la lista de matrices K
 }
 
-// Observed features in keyframe.  keyframe_id required.
+message SerializedKeyframeArray{
+  repeated SerializedKeyframe keyframe = 1;
+}
+
+
+// One observed feature in a keyframe.
 message SerializedFeature{
-  uint32 keyframe_id              = 1;  // kfId, keyframe id
   uint32 mappoint_id              = 2;  // mappoint id used to construct mvpMapPoints
   SerializedKeypoint keypoint     = 3;  // element of mvKeysUn
   SerializedDescriptor descriptor = 4;  // row of mDescriptors
+}
+
+// All observed features in a keyframe.  keyframe_id required.
+message SerializedKeyframeFeatures{
+  uint32 keyframe_id         = 1;  // kfId, keyframe id
+  repeated SerializedFeature feature = 2;
+}
+
+message SerializedKeyframeFeaturesArray{
+  repeated SerializedKeyframeFeatures feature = 1;
 }
