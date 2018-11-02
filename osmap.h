@@ -10,15 +10,6 @@ class KeyPoint;
 class MapPoint;
 class KeyFrame;
 
-/*
-Preprocesador en línea.  En la línea de comando gcc quitar && -a.o y agregar -E
-g++ -std=c++17 -O2 -Wall -pedantic -pthread main.cpp -E
-http://coliru.stacked-crooked.com/
-*/
-
-#define SER(ser, obj) \
-  Serialized ## ser *serialize ## ser(obj*, Serialized ## ser *op = NULL);\
-  obj *deserialize ## ser(Serialized ## ser*, obj *op = NULL);
 
 
 /**
@@ -70,12 +61,7 @@ class Osmap{
   std::set<KeyFrame*>::iterator itLastKF;
 
 
-  // Methods, documented on code file.
-
-  /**
-  Only constructor, the only way to set the orb-slam2 map.
-  */
-  Osmap(Map*);
+  /* Methods, documented on code file.*/
 
   /**
   Saves the map to a set of files in the folder whose name is provided as an argument.
@@ -90,7 +76,15 @@ class Osmap{
   */
   void mapLoad(std::string);
 
-  // Protocol buffer messages serialization for orb-slam2 objects
+  /*
+  Preprocesador en línea.  En la línea de comando gcc quitar && -a.o y agregar -E
+  g++ -std=c++17 -O2 -Wall -pedantic -pthread main.cpp -E
+  http://coliru.stacked-crooked.com/
+
+  #define SER(ser, obj) \
+    Serialized ## ser *serialize ## ser(obj*, Serialized ## ser *op = NULL);\
+    obj *deserialize ## ser(Serialized ## ser*, obj *op = NULL);
+
   SER(K, Mat)
   SER(Descriptor, Mat)
   SER(Pose, Mat)
@@ -98,6 +92,154 @@ class Osmap{
   SER(Keypoint, KeyPoint)
   SER(Mappoint, MapPoint)
   SER(Keyframe, KeyFrame)
+  */
+
+  // Protocol buffer messages serialization for orb-slam2 objects
+
+
+  /**
+  Serialize provided intrinsic camera matrix K to the protocol buffer message.
+  All 4 fields required.
+  */
+  SerializedK *serializeK(Mat*, SerializedK *op = NULL);
+
+  /**
+  Reconstruct the intrinsic camera matrix K from protocol buffer message.
+  All 4 fields are required.
+  */
+  Mat *deserializeK(SerializedK*, Mat *op = NULL);
+
+
+  SerializedDescriptor *serializeDescriptor(Mat*, SerializedDescriptor *op = NULL);
+
+
+  /**
+  Reconstruct a descriptor, an 1x8 int Mat (256 bits).
+  Exactly 8 int required.
+  */
+  Mat *deserializeDescriptor(SerializedDescriptor*, Mat *op = NULL);
+
+
+  /**
+  Serialize a 4x4 float Mat representing a pose in homogeneous coordinates.
+  Exactly 12 float required.
+  */
+  SerializedPose *serializePose(Mat*, SerializedPose *op = NULL);
+
+
+  /**
+  Reconstruct a 4x4 float Mat representing a pose in homogeneous coordinates.
+  Exactly 12 float required.
+  */
+  Mat *deserializePose(SerializedPose*, Mat *op = NULL);
+
+  /**
+  Serialize 3D mappoint position, a 3x1 float Mat.
+  All 3 fields required.
+  */
+  SerializedPosition *serializePosition(Mat*, SerializedPosition *op = NULL);
+
+  /**
+  Reconstructs 3D mappoint position in a 3x1 float Mat.
+  All 3 fields required.
+  */
+  Mat *deserializePosition(SerializedPosition*, Mat *op = NULL);
+
+  /**
+  Serialize 4 properties of a KeyPoint.
+  All 4 fields required.
+  */
+  SerializedKeypoint *serializeKeypoint(KeyPoint*, SerializedKeypoint *op = NULL);
+
+
+  /**
+  Reconstructs a KeyPoint.
+  All 4 fields required.
+  */
+  KeyPoint *deserializeKeypoint(SerializedKeypoint*, KeyPoint *op = NULL);
+
+  /**
+  Serializes a MapPoint, according to options.
+  */
+  SerializedMappoint *serializeMappoint(MapPoint*, SerializedMappoint *op = NULL);
+
+  /**
+  Reconstructs a MapPoint from optional fields.
+  It doesn't perform MapPoint initialization.  This should be done after deserialization.
+  */
+  MapPoint *deserializeMappoint(SerializedMappoint*, MapPoint *op = NULL);
+
+  /**
+  Serialized array of MapPoints.  This can make a file, or be appended to a multiobject file.
+  @param start Inclusive begining of the range of MapPoints to be serialized.  Usually map.mspMapPoints.begin().
+  @param end Exclusive end of the range of MapPoints to be serialized.  Usually map.mspMapPoints.end().
+  @param serializedMapPointArray message to set up.  Data comes from the range iterated.
+  @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
+  */
+  int serializeMapPointArray(InputIterator start, InputIterator end, SerializedMapPointArray *serializedMapPointArray);
+
+  /**
+  Retrieves MapPoints from an array, and append them to the map.
+  @param serializedMapPointArray message to set up.  Data goes to the output iterator.
+  @param output iterator on the destination container.  Usually std::inserter(mspMapPoints, mspMapPoints.end()).  For vector it can be a Back inserter iterator where output is placed in arrival order.  Usually mspMapPoints.begin().  About set back_inserter: https://stackoverflow.com/questions/908272/stdback-inserter-for-a-stdset
+  @returns Number of MapPoints retrieved or -1 if error.
+  Map's MapPoints set should be emptied before calling this method.
+  */
+  int deserializeMapPointArray(SerializedMapPointArray *serializedMapPointArray, OutputIterator output);
+
+  /**
+  Saves MapPoints to file.
+  @param file output stream of the file being written.
+  @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
+  */
+  int serializeMapPointFile(fstream*);
+
+  /**
+  Retrieves MapPoints from a file.
+  @param file input stream of the file being read.
+  @returns Number of MapPoints retrieved or -1 if error.
+  Map's MapPoints set should be emptied before calling this method.
+  */
+  int deserializeMapPointFile(fstream *file);
+
+
+
+
+  SerializedKeyframe *serializeKeyframe(KeyFrame*, SerializedKeyframe *op = NULL);
+  KeyFrame *deserializeKeyframe(SerializedKeyframe*, KeyFrame *op = NULL);
+
+  /**
+  Serialized array of KeyFrames.  This can make a file, or be appended to a multiobject file.
+  @param serializedKeyFrameArray message to set up.  Data comes from map.
+  @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
+  */
+  int serializeKeyFrameArray(SerializedKeyFrameArray *serializedKeyFrameArray);
+
+
+  /**
+  Retrieves MapPoints from an array, and append them to the map.
+  @param serializedMapPointArray message to set up.  Data goes from map.
+  @returns Number of MapPoints retrieved or -1 if error.
+  Map's MapPoints set should be emptied before calling this method.
+  */
+  int deserializeKeyFrameArray(SerializedKeyFrameArray *serializedKeyFrameArray);
+
+
+  /**
+  Saves KeyFrames to file.
+  @param file output stream of the file being written.
+  @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of KeyFrames in the map.
+  */
+  int serializeKeyFrameFile(fstream *file);
+
+  /**
+  Retrieves Keyframes from a file.
+  @param file input stream of the file being read.
+  @returns Number of Keyframes retrieved or -1 if error.
+  Map's Keyframes set should be emptied before calling this method.
+  */
+  int deserializeKeyframeFile(fstream *file);
+
 
   // Feature
 
@@ -150,51 +292,7 @@ class Osmap{
 
 
 
-  /**
-  Serialized array of MapPoints.  This can make a file, or be appended to a multiobject file.
-  @param serializedMapPointArray message to set up.  Data comes from map.
-  @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
-  */
-  int serializeMapPointArray(SerializedMapPointArray *serializedMapPointArray);
 
-
-  /**
-  Retrieves MapPoints from an array, and append them to the map.
-  @param serializedMapPointArray message to set up.  Data goes from map.
-  @returns Number of MapPoints retrieved or -1 if error.
-  Map's MapPoints set should be emptied before calling this method.
-  */
-  int deserializeMapPointArray(SerializedMapPointArray *serializedMapPointArray)
-
-  /**
-  Saves MapPoints to file.
-  @param file output stream of the file being written.
-  @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
-  */
-  int serializeMapPointFile(fstream*);
-
-  /**
-  Retrieves MapPoints from a file.
-  @param file input stream of the file being read.
-  @returns Number of MapPoints retrieved or -1 if error.
-  Map's MapPoints set should be emptied before calling this method.
-  */
-  int deserializeMapPointFile(fstream *file);
-
-  /**
-  Saves KeyFrames to file.
-  @param file output stream of the file being written.
-  @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of KeyFrames in the map.
-  */
-  int serializeKeyFrameFile(fstream *file);
-
-  /**
-  Retrieves Keyframes from a file.
-  @param file input stream of the file being read.
-  @returns Number of Keyframes retrieved or -1 if error.
-  Map's Keyframes set should be emptied before calling this method.
-  */
-  int deserializeKeyframeFile(fstream *file){
 
 
   /**
@@ -229,6 +327,12 @@ class Osmap{
   @returns a pointer to the KeyFrame with the given id, or NULL if not found.
   */
   KeyFrame *getKeyFrame(unsigned int id);
+
+
+  /**
+  Only constructor, the only way to set the orb-slam2 map.
+  */
+  Osmap(Map*);
 }
 
 #endif /* OSMAP_H_ */
