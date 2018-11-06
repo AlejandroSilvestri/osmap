@@ -45,8 +45,25 @@ For MaPPoitn and KeyFrame, object can be either passed by reference or not provi
 class Osmap{
   // Properties
 
-  /** All the options available.*/
-  enum class Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS};
+  /**
+  All the options available.
+  Options are persetted into options property.
+  Default is zero.  Options are activated with 1.
+
+  To test an option:
+  if(options(ONLY_MAPPOINTS_FEATURES))...
+
+  To set an option:
+  options |= ONLY_MAPPOINTS_FEATURES;
+
+  - ONLY_MAPPOINTS_FEATURES: Do not save features not associated to mappoints.  It shrinks the map a lot.  Keyframes will not be suitable to add new mappoints.  Usefull for tracking only.
+  - No_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
+  - SAVE_TIMESTAMP: Not saved by default, it will increase a little keyframes file.  It is usefull only if you will use timestamps.  ORB-SLAM2 doesn't use them.
+  - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
+  - NO_FEATURES_DESCRIPTORS: Don't save descriptors in features file. Mappoints descriptors will be saved instead.  Descriptors take a huge amount of bytes, and this will shrink thw whole map a lot.  Not sure about drawbacks.
+  - K_FILE: Save K camera matrix in a different file using protocol buffers.  By default K is saved in yaml file.  Usually maps has only one K or few different K.  This option is usefulle when each keyframe has a different K.
+  */
+  enum class Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS, K_FILE};
 
   /**
   Set of chosen options for serializing.  User must set options prior to saving a map.  Loading a map should reflect in this property the saved map options.
@@ -58,9 +75,17 @@ class Osmap{
 
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
-  This vector temporarily store different K for setiralization.  This avoids serializing one K per KeyFrame.
+  This vector temporarily store different K for serialization and deserialization.  This avoids serializing one K per KeyFrame.
+  This vector is consumed in keyframe deserialization.
   */
   vector<Mat*> vectorK;
+
+  /**
+  For each index KeyFrame.mnId the value returned is an index to vectorK.
+  The latter is the index saved in each keyframe as k.
+  It is populated only by getVectorKFromKeyframes, and consumed only while saving the map, during keyframe serialization.
+  */
+  vector<unsigned int> keyframeid2vectork;
 
   /**
   Iterador apuntando al último KeyFrame encontrado.
@@ -72,12 +97,14 @@ class Osmap{
   /* Methods, documented on code file.*/
 
   /**
-  Saves the map to a set of files in the path provided as an argument.
+  Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
   If the path leads to a .yaml file name, mapSave takes it as the header file, and saves all other files in its folder.
   If path doesn't have an extension (it doesn't end with .yaml) the path is adopted as a folder, if it doesn't exists saveMap creates it, and saves the map's files in it.
   Any existing file is rewritten.
   This is the entry point to save a map.  This method uses the Osmap object to serialize the map to files.
-  ORB-SLAM2 threads must be stopped before calling this method to assure map is not being modify while saving.
+  Before calling this method:
+  - ORB-SLAM2 threads must be stopped to assure map is not being modify while saving.
+  - Actual directory must be set to the desired destination.  Often a new directory exclusive for the map is created.
 
   @param path Path to .yaml or folder where map's files will be saved.
   */
@@ -86,8 +113,18 @@ class Osmap{
   /**
   Loads the map from a set of files in the folder whose name is provided as an argument.
   This is the entry point to load a map.  This method uses the Osmap object to serialize the map to files.
+  Only these properties are read from yaml:
+  - file nKeyframes
+  - options
+  - camera calibration matrices K
   */
   void mapLoad(std::string);
+
+  /**
+  Traverse map's keyframes looking for different K matrices, and stores them into vectorK.
+  It also populates keyframeid2vectork.
+  */
+  void getVectorKFromKeyframes();
 
   /*
   Preprocesador en línea.  En la línea de comando gcc quitar && -a.o y agregar -E
@@ -126,6 +163,16 @@ class Osmap{
 
   */
   void deserialize(SerializedK&, Mat& k);
+
+
+  /**
+  Serialize an array of camera calibration matrix K.
+  The array should be retrieved from keyframes analisys.
+  Usually there is only one K common to all keyframes.
+  */
+  void serialize(Mat &*k, SerializedKArray &serializedKArray);
+  Mat* deserialize(SerializedKArray&);
+
 
 
   void serialize(Mat&, SerializedDescriptor&);

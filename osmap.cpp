@@ -6,60 +6,164 @@
 Osmap::Osmap(Map* _map): map(_map){}
 
 void Osmap::mapSave(std::string baseFilename){
-  /*
-  std::string baseFilename, directory, extension;
-  int pos = path.rfind("/");
-  baseFilename = path.substr(pos+1);
-  extension = baseFilename.substr(baseFilename.size()-5. 5);
-  if(extension == ".yaml" || extension == ".YAML"){
-    // yaml filename provided
-    directory = path.substr(0, pos);
-    baseFilename = baseFilename.substr(0, baseFilename.size()-5);
-  } else {
-    // directory provided, baseFilename already set
-    directory = path + "/";
-  }
-  */
-
   // Map depuration
 
   // Savings
+
+  // Open YAML file for write, it will be the last file to close.
+  // FileStorage https://docs.opencv.org/3.1.0/da/d56/classcv_1_1FileStorage.html
+  cv::FileStorage headerFile(baseFilename + ".yaml", cv::FileStorage::WRITE);
+  if(!headerFile.isOpened()){
+    // Is this necesary?
+     cerr << "No se pudo crear el archivo " << baseFilename << ".yaml" << endl;
+     return;
+  }
+
+  // Options
+  if(options){
+    headerFile << "Options" << "[:";
+    if(options[ONLY_MAPPOINTS_FEATURES]) headerFile << "ONLY_MAPPOINTS_FEATURES";
+    if(options[NO_ID]) headerFile << "NO_ID";
+    if(options[SAVE_TIMESTAMP]) headerFile << "SAVE_TIMESTAMP";
+    if(options[NO_LOOPS]) headerFile << "NO_LOOPS";
+    if(options[NO_FEATURES_DESCRIPTORS]) headerFile << "NO_FEATURES_DESCRIPTORS";
+    if(options[K_FILE]) headerFile << "K_FILE";
+    headerFile << ":]";
+  }
+
+  // Other files
   ofstream file;
+  string filename;
 
   // MapPoints
-  std::string mappointsFilename = baseFilename + ".mappoints";
-  file.open(directory + mappointsFilename, std::ofstream::binary);
-  SerializedMapPointArray serializedMapPointArray;
-  int nMapPoints = serialize(map.mspMapPoints.begin(), map.mspMapPoints.end(), serializedMapPointArray);
+  filename = baseFilename + ".mappoints";
+  file.open(filename, std::ofstream::binary);
+  unsigned int nMappoints = SerializedMapPointArray serializedMapPointArray;
+  headerFile << "mappointsFile" << filename;
+  headerFile << "nMappoints"
+    << serialize(map.mspMapPoints.begin(), map.mspMapPoints.end(), serializedMapPointArray);
   if (!serializedMapPointArray.SerializeToOstream(&file)) {/*error*/}
   file.close();
 
-  // K
-
   // KeyFrames
-  std::string ketframesFilename = baseFilename + ".keyframes";
-  file.open(directory + ketframesFilename, std::ofstream::binary);
-  SerializedKeyFrameArray serializedKeyFrameArray;
-  int nKeyFrames = serialize(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), serializedKeyFrameArray);
+  filename = baseFilename + ".keyframes";
+  file.open(directory + filename, std::ofstream::binary);
+  unsigned int nKeyframes = SerializedKeyFrameArray serializedKeyFrameArray;
+  headerFile << "keyframesFile" << filename;
+  headerFile << "nKeyframes"
+    << serialize(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), serializedKeyFrameArray);
   if (!serializedKeyFrameArray.SerializeToOstream(&file)) {/*error*/}
   file.close();
 
   // Features
-  std::string featuresFilename = baseFilename + ".features";
-  file.open(directory + featuresFilename, std::ofstream::binary);
-  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-  int nFeatures = serialize(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), serializedKeyframeFeaturesArray);
+  filename = baseFilename + ".features";
+  file.open(directory + filename, std::ofstream::binary);
+  unsigned int nFeatures = SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+  headerFile << "featuresFile" << filename;
+  headerFile << "nFeatures"
+    << serialize(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), serializedKeyframeFeaturesArray);
   if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
   file.close();
 
-  // YAML
 
+
+  // K: camera calibration matrices
+  if(options(K_FILE)){
+    // Save K matrices in a separate file with protocol buffers
+    /*
+    filename = baseFilename + ".kmatrices";
+    headerFile << "kmatricesFile"  << filename;
+    ...
+    */
+  } else {
+    // Save K matrices in header file yaml
+    headerFile << "cameraMatrices" << "[";
+    for(auto it=vectorK.begin(); it<vectorK.end(); it++)
+       headerFile << "{:"  << "fx" << *it.at<float>(0,0) << "fy" << *it.at<float>(1,1) << "cx" << *it.at<float>(0,2) << "cy" << *it.at<float>(1,2) << "}";
+    headerFile << "]";
+  }
+
+  // Save yaml file
+  headerFile.release();
 }
 
-void Osmap::mapLoad(std::string carpeta){
+void Osmap::mapLoad(std::string baseFilename){
+  // Open YAML
+  cv::FileStorage headerFile(baseFilename + ".yaml", cv::FileStorage::READ);
+  ifstream file;
+  string filename;
 
+  // K
+  FileNode cameraMatrices = headerFile["cameraMatrices"];
+  // TODO
+  for(auto it=vectorK.begin(); it<vectorK.end(); it++)
+     headerFile << "{:"  << "fx" << *it.at<float>(0,0) << "fy" << *it.at<float>(1,1) << "cx" << *it.at<float>(0,2) << "cy" << *it.at<float>(1,2) << "}";
+  headerFile << "]";
+
+  // MapPoints
+  filename = headerFile["mappointsFile"];
+  file.open(filename, std::ofstream::binary);
+  SerializedMapPointArray serializedMapPointArray;
+  serializedMapPointArray.ParseFromIstream(file);
+  cout << "Mappoints deserialized: "
+    << deserialize(serializedMapPointArray, std::inserter(map.mspMapPoints, map.mspMapPoints.end()));
+  if (!serializedMapPointArray.SerializeToOstream(&file)) {/*error*/}
+  file.close();
+
+  // KeyFrames
+  filename = headerFile["keyfranesFile"];
+  file.open(directory + filename, std::ofstream::binary);
+  SerializedKeyFrameArray serializedKeyFrameArray;
+  serializedKeyFrameArray.ParseFromIstream(file);
+  cout << "Keyframes deserialized: "
+    << deserialize(serializedKeyFrameArray, std::inserter(map.mspKeyFrames, map.mspKeyFrames.end()));
+  if (!serializedKeyFrameArray.SerializeToOstream(&file)) {/*error*/}
+  file.close();
+
+  // Features
+  filename = headerFile["featuresFile"];
+  file.open(directory + filename, std::ofstream::binary);
+  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+  serializedKeyframeFeaturesArray.ParseFromIstream(file);
+  cout << "Features deserialized: "
+    << deserialize(serializedKeyframeFeaturesArray);
+  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
+  file.close();
+
+  // Close yaml file
+  headerFile.release();
 }
 
+
+void Osmap::getVectorKFromKeyframes(){
+  vectorK.clear();
+  getVectorKFromKeyframes.resize(KeyFrame::nNextId);
+  for(auto iKF=map.mspKeyFrames.begin(); iKF<map.mspKeyFrames.end(); iKF++){
+    // Test if K is new
+    Mat &K = *iKF.mK;
+    unsigned int i=0;
+    for(; i<vectorK.size(); i++){
+      Mat &vK = vectorK[i];
+      // Quick test
+      if(K.data == vK.data) break;
+
+      // Slow test, compare each element
+      if(
+        K.at<float>(0,0) != vK.at<float>(0,0) ||
+        K.at<float>(1,1) != vK.at<float>(1,1) ||
+        K.at<float>(0,2) != vK.at<float>(0,2) ||
+        K.at<float>(1,2) != vK.at<float>(1,2)
+      ) break;
+
+    }
+    if(i<vectorK.size()){
+      // add new K
+      vectorK.pushback(K);
+    }
+    // i is the vectorK index for this keyframe
+    getVectorKFromKeyframes[iKF.mnId] = i;
+  }
+}
 
 // K matrix ================================================================================================
 void Osmap::serialize(Mat &k, SerializedK &serializedK){
@@ -76,6 +180,16 @@ void Osmap::deserialize(SerializedK &serializedK, Mat &m){
   m.at<float>(0,2) = serializedK.cx();
   m.at<float>(1,2) = serializedK.cy();
 }
+
+void Osmap::serialize(Mat &*ks, SerializedKArray &serializedKArray){
+
+}
+
+Mat* Osmap::deserialize(SerializedKArray &serializedKArray){
+
+}
+
+
 
 // Descriptor ================================================================================================
 void Osmap::serialize(Mat &m, SerializedDescriptor &serializedDescriptor){
@@ -181,11 +295,10 @@ int Osmap::deserialize(SerializedMapPointArray &serializedMapPointArray, std::it
 void Osmap::serialize(KeyFrame &keyframe, SerializedKeyframe &serializedKeyframe){
   if(!options[NO_ID]) serializedKeyframe.set_id(keyframe.mnId);
   serialize(keyframe.mTcw, *serializedKeyframe.mutable_pose());
-  // TODO: serialize index to K
+  serializedKeyframe.set_k(keyframeid2vectork[keyframe.mnId]);
 }
 
 KeyFrame *Osmap::deserialize(SerializedKeyframe &serializedKeyframe){
-  // Handle default
   KeyFrame *pKeyframe = new KeyFrame();
 
   if(serializedKeyframe.has_id()) pKeyframe->mnId = serializedKeyframe.mnid();
