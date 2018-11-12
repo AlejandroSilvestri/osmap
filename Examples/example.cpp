@@ -4,6 +4,7 @@ Serialization example of ficticious MapPoints.
 
 #include <iostream>
 #include <fstream>
+#include <opencv>
 #include "osmap.h"
 
 class KeyPoint{
@@ -40,9 +41,8 @@ class Map{
   set<KeyFrame*> mspKeyFrames;
 } map;
 
+using namespace std{ using Omap{ using cv{
 void main(){
-  Osmap osmap(&map);
-
   // Generate MapPoints
   MapPoint *pMP;
   for(int i=0; i<100; i++){
@@ -63,19 +63,41 @@ void main(){
   }
 
 
+  // Initial
+  Osmap osmap(&map);
+
+
   // Save MapPoints
-  std::ofstream outFile;
-  outFile.open("map points.osmap", , ios::out | ios::binary);
-  osmap.serialize(outFile);
+
+  // Copied code from mapSave()
+  // Other files
+  ofstream file;
+  string filename;
+
+  // MapPoints
+  filename = "mappointExample.mappoints";
+  file.open(filename, ofstream::binary);
+  unsigned int nMappoints = SerializedMapPointArray serializedMapPointArray;
+  headerFile << "mappointsFile" << filename;
+  headerFile << "nMappoints"
+    << serialize(map.mspMapPoints.begin(), map.mspMapPoints.end(), serializedMapPointArray);
+  if (!serializedMapPointArray.SerializeToOstream(&file)) {/*error*/}
+  file.close();
 
   cout << "Serialization done!" << endl;
 
   // Load MapPoints
   map.mspMapPoints.clear();
 
-  std::ofstream inFile;
-  inFile.open("map points.osmap", , ios::in | ios::binary);
-  osmap.serializeMapPointFile(inFile);
+  // MapPoints
+  filename = "mappointExample.mappoints";
+  file.open(filename, ofstream::binary);
+  SerializedMapPointArray serializedMapPointArray;
+  serializedMapPointArray.ParseFromIstream(file);
+  cout << "Mappoints deserialized: "
+    << deserialize(serializedMapPointArray, std::inserter(map.mspMapPoints, map.mspMapPoints.end()));
+  if (!serializedMapPointArray.SerializeToOstream(&file)) {/*error*/}
+  file.close();
 
 
 
@@ -86,3 +108,4 @@ void main(){
     vpMP[i]->print();
   }
 }
+}}} // namespaces Osmap & std & cv
