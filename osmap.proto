@@ -50,7 +50,7 @@ message SerializedMappoint{
   SerializedPosition position     = 2;  // mWorldPos
   float visible                   = 3;  // mnVisible
   float found                     = 4;  // mnFound
-  SerializedDescriptor descriptor = 5;  // mDescriptor, very optional
+  SerializedDescriptor briefdescriptor = 5;  // mDescriptor, very optional.  This field is named briefdescriptor instead of descriptor because the latter es a reserved word in protocol buffers.
 }
 
 message SerializedMappointArray{
@@ -74,7 +74,7 @@ message SerializedKeyframeArray{
 message SerializedFeature{
   uint32 mappoint_id              = 2;  // mappoint id used to construct mvpMapPoints
   SerializedKeypoint keypoint     = 3;  // element of mvKeysUn
-  SerializedDescriptor descriptor = 4;  // row of mDescriptors
+  SerializedDescriptor briefdescriptor = 4;  // row of mDescriptors.  This field is named briefdescriptor instead of descriptor because the latter es a reserved word in protocol buffers.
 }
 
 // All observed features in a keyframe.  keyframe_id required.

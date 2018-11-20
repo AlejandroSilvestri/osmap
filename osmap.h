@@ -1,16 +1,37 @@
 #ifndef OSMAP_H_
 #define OSMAP_H_
 
-#include <string>
-#include <vector>
+//#include <string>
+#include <set>
+#include <bitset>
+#include <iterator>
 #include "osmap.pb.h"
-class Map;
-class Mat;
-class KeyPoint;
-class MapPoint;
-class KeyFrame;
 
+/* For debuging and examples porpouses, dummymap.h contains minimal definitions of these orb-slam2 classes:
+ * - Map
+ * - MapPoint
+ * - KeyFrame
+ *
+ * dummymap.h allows osmap to run without orb-slam.  This is handy for:
+ * - debuging porpouses
+ * - running the examples
+ * - implementing your own map analyser
+ *
+ * This way you should be able to serialize maps in your own application without the need of including the whole orb-slam2 code.
+ *
+ * In order to append osmap to orb-slam2, this include must be replaced by the following:
 
+#include <set>
+#include <opencv2/core.hpp>
+#include "KeyFrame.h"
+#include "Map.h"
+#include "MapPoint.h"
+
+ */
+#include "dummymap.h"
+
+using namespace std;
+using namespace cv;
 
 /**
 This is a class for a singleton attached to ORB-SLAM2's map.
@@ -35,7 +56,7 @@ Some of these objects has another object like KeyPoint, nested serialized with t
 
 Methods:
 
-- serialize(object, message): this method provides many signatures for many pairs {object, message},
+- serialize(object, message): this method provides many signatures for many pairs {object, message},const
 where object, passed by reference, is the instance to be serialized (Mat, MapPoint, KeyFrame, etc.) and message is the protocol buffers destination object.
 - deserialize(message, object): this method provides many signatures for many pairs {object, message},
 where message is the protocol buffers source object, and object (Mat, MapPoint, KeyFrame, etc.) is the actual destination.
@@ -43,6 +64,7 @@ For MaPPoitn and KeyFrame, object can be either passed by reference or not provi
 
 */
 class Osmap{
+public:
   // Properties
 
   /**
@@ -51,10 +73,10 @@ class Osmap{
   Default is zero.  Options are activated with 1.
 
   To test an option:
-  if(options(ONLY_MAPPOINTS_FEATURES))...
+  if(options[ONLY_MAPPOINTS_FEATURES])...
 
   To set an option:
-  options |= ONLY_MAPPOINTS_FEATURES;
+  options.set(ONLY_MAPPOINTS_FEATURES);
 
   - ONLY_MAPPOINTS_FEATURES: Do not save features not associated to mappoints.  It shrinks the map a lot.  Keyframes will not be suitable to add new mappoints.  Usefull for tracking only.
   - No_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
@@ -62,8 +84,10 @@ class Osmap{
   - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
   - NO_FEATURES_DESCRIPTORS: Don't save descriptors in features file. Mappoints descriptors will be saved instead.  Descriptors take a huge amount of bytes, and this will shrink thw whole map a lot.  Not sure about drawbacks.
   - K_FILE: Save K camera matrix in a different file using protocol buffers.  By default K is saved in yaml file.  Usually maps has only one K or few different K.  This option is usefulle when each keyframe has a different K.
+
+  New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
   */
-  enum class Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS, K_FILE};
+  enum Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS, K_FILE};
 
   /**
   Set of chosen options for serializing.  User must set options prior to saving a map.  Loading a map should reflect in this property the saved map options.
@@ -71,7 +95,7 @@ class Osmap{
   bitset<32> options = 0;
 
   /** ORB-SLAM2 map to be serialized. */
-  Map *map;
+  Map &map;
 
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
@@ -162,19 +186,35 @@ class Osmap{
   @param k Destination to be reconstruted.  K matrix, also known as calibration matrix, instrinsic matrix and camera matrix, 3x3 float Mat, usually from KeyFrame::mK.
 
   */
-  void deserialize(SerializedK&, Mat& k);
+  void deserialize(const SerializedK&, Mat& k);
 
 
   /**
   Serialize an array of camera calibration matrix K.
   The array should be retrieved from keyframes analisys.
   Usually there is only one K common to all keyframes.
+  @param vK The vector of K matrices to serialize.
+  @param serializedKArray The serialization destination object.
   */
-  void serialize(Mat &*k, SerializedKArray &serializedKArray);
-  Mat* deserialize(SerializedKArray&);
+  void serialize(vector<Mat*>& vK, SerializedKArray &serializedKArray);
+
+
+  /**
+  Reconstruct an array of camera calibration matrix K.
+  The array should be retrieved from keyframes analisys.
+  Usually there is only one K common to all keyframes.
+  @param serializedKArray The serialization destination object.
+  @param vK The vector of K matrices to serialize.  Usually Osmap::vectorK member.
+
+  */
+  void deserialize(const SerializedKArray &serializedKArray, vector<Mat*> &vK);
 
 
 
+  /**
+  Serializes a descriptor, an 1x8 int Mat (256 bits).
+  Exactly 8 int required.
+  */
   void serialize(Mat&, SerializedDescriptor&);
 
 
@@ -182,7 +222,7 @@ class Osmap{
   Reconstruct a descriptor, an 1x8 int Mat (256 bits).
   Exactly 8 int required.
   */
-  void deserialize(SerializedDescriptor&, Mat&);
+  void deserialize(const SerializedDescriptor&, Mat&);
 
 
   /**
@@ -196,7 +236,7 @@ class Osmap{
   Reconstruct a 4x4 float Mat representing a pose in homogeneous coordinates.
   Exactly 12 float required.
   */
-  void deserialize(SerializedPose&, Mat&);
+  void deserialize(const SerializedPose&, Mat&);
 
   /**
   Serialize 3D mappoint position, a 3x1 float Mat.
@@ -208,7 +248,7 @@ class Osmap{
   Reconstructs 3D mappoint position in a 3x1 float Mat.
   All 3 fields required.
   */
-  void deserialize(SerializedPosition&, Mat&);
+  void deserialize(const SerializedPosition&, Mat&);
 
   /**
   Serialize 4 properties of a KeyPoint.
@@ -221,7 +261,7 @@ class Osmap{
   Reconstructs a KeyPoint.
   All 4 fields required.
   */
-  void deserialize(SerializedKeypoint&, KeyPoint&);
+  void deserialize(const SerializedKeypoint&, KeyPoint&);
 
   /**
   Serializes a MapPoint, according to options.
@@ -234,7 +274,7 @@ class Osmap{
   @param serializedMappoint Protocol buffers source message.
   @returns *MapPoint A pointer to the newly created MapPoint, ready to be added to the map.
   */
-  MapPoint *deserialize(SerializedMappoint& serializedMappoint);
+  MapPoint *deserialize(const SerializedMappoint& serializedMappoint);
 
   /**
   Serialized array of MapPoints.  This can make a file, or be appended to a multiobject file.
@@ -243,7 +283,8 @@ class Osmap{
   @param serializedMapPointArray message to set up.  Data comes from the range iterated.
   @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
   */
-  int serializeMapPointArray(std::iterator<std::input_iterator_tag, MapPoint*> start, std::iterator<std::input_iterator_tag, MapPoint*> end, SerializedMapPointArray *serializedMapPointArray);
+  //int serialize(iterator<input_iterator_tag, MapPoint*> start, iterator<input_iterator_tag, MapPoint*> end, SerializedMappointArray &serializedMapPointArray);
+  int serialize(set<MapPoint*>&, SerializedMappointArray &);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -252,14 +293,14 @@ class Osmap{
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  int deserializeMapPointArray(SerializedMapPointArray *serializedMapPointArray, std::iterator<std::ouput_iterator_tag, MapPoint*> output);
-
+  //int deserialize(const SerializedMappointArray &serializedMapPointArray, iterator<output_iterator_tag, MapPoint*> output);
+  int deserialize(const SerializedMappointArray &, set<MapPoint*>&);
   /**
   Saves MapPoints to file.
   @param file output stream of the file being written.
   @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
   */
-  int serializeMapPointFile(fstream*);
+  //int serializeMapPointFile(fstream*);
 
   /**
   Retrieves MapPoints from a file.
@@ -267,7 +308,7 @@ class Osmap{
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  int deserializeMapPointFile(fstream *file);
+  //int deserializeMapPointFile(fstream *file);
 
 
 
@@ -284,15 +325,15 @@ class Osmap{
   Reconstructs a KeyFrame from optional fields.
   It doesn't perform KeyFrame initialization.  This should be done after deserialization.
   */
-  KeyFrame *deserialize(SerializedKeyframe*);
+  KeyFrame *deserialize(const SerializedKeyframe*);
 
   /**
   Serialized array of KeyFrames.  This can make a file, or be appended to a multiobject file.
   @param serializedKeyFrameArray message to set up.  Data comes from map.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
   */
-  int serialize(std::iterator<std::input_iterator_tag, KeyFrame*> start, std::iterator<std::input_iterator_tag, KeyFrame*> end, SerializedKeyFrameArray *serializedKeyFrameArray);
-
+  //int serialize(std::iterator<std::input_iterator_tag, KeyFrame*> start, std::iterator<std::input_iterator_tag, KeyFrame*> end, SerializedKeyframeArray &serializedKeyFrameArray);
+  int serialize(set<KeyFrame*>&, SerializedKeyframeArray&);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -300,7 +341,8 @@ class Osmap{
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  int deserializeKeyFrameArray(SerializedKeyFrameArray *serializedKeyFrameArray, std::iterator<std::ouput_iterator_tag, MapPoint*> output);
+  //int deserialize(const SerializedKeyframeArray &serializedKeyFrameArray, iterator<output_iterator_tag, MapPoint*> output);
+  int deserialize(const SerializedKeyframeArray&, set<KeyFrame*>&);
 
 
   /**
@@ -308,7 +350,7 @@ class Osmap{
   @param file output stream of the file being written.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of KeyFrames in the map.
   */
-  int serializeKeyFrameFile(fstream *file);
+  //int serializeKeyFrameFile(fstream *file);
 
   /**
   Retrieves Keyframes from a file.
@@ -316,7 +358,7 @@ class Osmap{
   @returns Number of Keyframes retrieved or -1 if error.
   Map's Keyframes set should be emptied before calling this method.
   */
-  int deserializeKeyframeFile(fstream *file);
+  //int deserializeKeyframeFile(fstream *file);
 
 
   // Feature ====================================================================================================
@@ -337,12 +379,13 @@ class Osmap{
   @param pKF KeyFrame owner of the feature.  The features will be stored in this KeyFrame's containers.
   @param index
   */
-  KeyFrame *deserialize(SerializedKeyframeFeatures&);
+  KeyFrame *deserialize(const SerializedKeyframeFeatures&);
 
-  int serialize(std::iterator<std::input_iterator_tag, KeyFrame*> start, std::iterator<std::input_iterator_tag, KeyFrame*> end, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray);
+  //int serialize(iterator<input_iterator_tag, KeyFrame*> start, iterator<input_iterator_tag, KeyFrame*> end, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray);
+  int serialize(set<KeyFrame*>&, SerializedKeyframeFeaturesArray&);
 
-  int deserialize(SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, std::iterator<std::ouput_iterator_tag, MapPoint*> output);
-
+  //int deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, iterator<output_iterator_tag, MapPoint*> output);
+  int deserialize(const SerializedKeyframeFeaturesArray&, set<KeyFrame*>&);
 
 
   /**
@@ -383,7 +426,7 @@ class Osmap{
   @param file output stream of the file being written.
   @returns Number of features serialized or -1 if error.  The number of features serialized should be the same number of features in all KeyFrames in the map.
   */
-  int serializeFeatureFile(fstream *file);
+  //int serializeFeatureFile(fstream *file);
 
   /**
   Retrieves KeyFrame's features from a file.
@@ -391,7 +434,7 @@ class Osmap{
   @returns Number of features retrieved or -1 if error.  The number of features serialized should be the same number of features in all KeyFrames in the map.
   All KeyFrames should be deserialized and put in map before calling this method.
   */
-  int deserializeFeatureFile(fstream *file);
+  //int deserializeFeatureFile(fstream *file);
 
 
 
@@ -408,6 +451,7 @@ class Osmap{
   Keyframes are usually stored in ascending id order.  This function will be more probably called in the same way, so it is optimized for this expected behaviour.  It uses itLastKF.
   @param id Id of the KeyFrame to look for.
   @returns a pointer to the KeyFrame with the given id, or NULL if not found.
+  Used only in Osmap::deserialize(const SerializedKeyframeFeatures&).
   */
   KeyFrame *getKeyFrame(unsigned int id);
 
@@ -418,7 +462,8 @@ class Osmap{
   /**
   Only constructor, the only way to set the orb-slam2 map.
   */
-  Osmap(Map*);
-}
+  Osmap(Map &_map): map(_map){}
+
+};
 
 #endif /* OSMAP_H_ */

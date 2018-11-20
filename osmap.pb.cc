@@ -360,7 +360,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, position_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, visible_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, found_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, descriptor_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappoint, briefdescriptor_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedMappointArray, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -388,7 +388,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, mappoint_id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, keypoint_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, descriptor_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedFeature, briefdescriptor_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeFeatures, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -464,26 +464,26 @@ void AddDescriptorsImpl() {
       "\003 \001(\002\022\016\n\006octave\030\004 \001(\002\"=\n\013SerializedK\022\n\n\002"
       "fx\030\001 \001(\002\022\n\n\002fy\030\002 \001(\002\022\n\n\002cx\030\003 \001(\002\022\n\n\002cy\030\004"
       " \001(\002\"+\n\020SerializedKArray\022\027\n\001k\030\001 \003(\0132\014.Se"
-      "rializedK\"\222\001\n\022SerializedMappoint\022\n\n\002id\030\001"
+      "rializedK\"\227\001\n\022SerializedMappoint\022\n\n\002id\030\001"
       " \001(\r\022%\n\010position\030\002 \001(\0132\023.SerializedPosit"
-      "ion\022\017\n\007visible\030\003 \001(\002\022\r\n\005found\030\004 \001(\002\022)\n\nd"
-      "escriptor\030\005 \001(\0132\025.SerializedDescriptor\"@"
-      "\n\027SerializedMappointArray\022%\n\010mappoint\030\001 "
-      "\003(\0132\023.SerializedMappoint\"J\n\022SerializedKe"
-      "yframe\022\n\n\002id\030\001 \001(\r\022\035\n\004pose\030\002 \001(\0132\017.Seria"
-      "lizedPose\022\t\n\001k\030\003 \001(\r\"@\n\027SerializedKeyfra"
-      "meArray\022%\n\010keyframe\030\001 \003(\0132\023.SerializedKe"
-      "yframe\"z\n\021SerializedFeature\022\023\n\013mappoint_"
-      "id\030\002 \001(\r\022%\n\010keypoint\030\003 \001(\0132\023.SerializedK"
-      "eypoint\022)\n\ndescriptor\030\004 \001(\0132\025.Serialized"
-      "Descriptor\"V\n\032SerializedKeyframeFeatures"
-      "\022\023\n\013keyframe_id\030\001 \001(\r\022#\n\007feature\030\002 \003(\0132\022"
-      ".SerializedFeature\"O\n\037SerializedKeyframe"
-      "FeaturesArray\022,\n\007feature\030\001 \003(\0132\033.Seriali"
-      "zedKeyframeFeaturesb\006proto3"
+      "ion\022\017\n\007visible\030\003 \001(\002\022\r\n\005found\030\004 \001(\002\022.\n\017b"
+      "riefdescriptor\030\005 \001(\0132\025.SerializedDescrip"
+      "tor\"@\n\027SerializedMappointArray\022%\n\010mappoi"
+      "nt\030\001 \003(\0132\023.SerializedMappoint\"J\n\022Seriali"
+      "zedKeyframe\022\n\n\002id\030\001 \001(\r\022\035\n\004pose\030\002 \001(\0132\017."
+      "SerializedPose\022\t\n\001k\030\003 \001(\r\"@\n\027SerializedK"
+      "eyframeArray\022%\n\010keyframe\030\001 \003(\0132\023.Seriali"
+      "zedKeyframe\"\177\n\021SerializedFeature\022\023\n\013mapp"
+      "oint_id\030\002 \001(\r\022%\n\010keypoint\030\003 \001(\0132\023.Serial"
+      "izedKeypoint\022.\n\017briefdescriptor\030\004 \001(\0132\025."
+      "SerializedDescriptor\"V\n\032SerializedKeyfra"
+      "meFeatures\022\023\n\013keyframe_id\030\001 \001(\r\022#\n\007featu"
+      "re\030\002 \003(\0132\022.SerializedFeature\"O\n\037Serializ"
+      "edKeyframeFeaturesArray\022,\n\007feature\030\001 \003(\013"
+      "2\033.SerializedKeyframeFeaturesb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 987);
+      descriptor, 997);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "osmap.proto", &protobuf_RegisterTypes);
 }
@@ -2179,7 +2179,7 @@ void SerializedKArray::InternalSwap(SerializedKArray* other) {
 void SerializedMappoint::InitAsDefaultInstance() {
   ::_SerializedMappoint_default_instance_._instance.get_mutable()->position_ = const_cast< ::SerializedPosition*>(
       ::SerializedPosition::internal_default_instance());
-  ::_SerializedMappoint_default_instance_._instance.get_mutable()->descriptor_ = const_cast< ::SerializedDescriptor*>(
+  ::_SerializedMappoint_default_instance_._instance.get_mutable()->briefdescriptor_ = const_cast< ::SerializedDescriptor*>(
       ::SerializedDescriptor::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -2187,7 +2187,7 @@ const int SerializedMappoint::kIdFieldNumber;
 const int SerializedMappoint::kPositionFieldNumber;
 const int SerializedMappoint::kVisibleFieldNumber;
 const int SerializedMappoint::kFoundFieldNumber;
-const int SerializedMappoint::kDescriptorFieldNumber;
+const int SerializedMappoint::kBriefdescriptorFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SerializedMappoint::SerializedMappoint()
@@ -2206,10 +2206,10 @@ SerializedMappoint::SerializedMappoint(const SerializedMappoint& from)
   } else {
     position_ = NULL;
   }
-  if (from.has_descriptor()) {
-    descriptor_ = new ::SerializedDescriptor(*from.descriptor_);
+  if (from.has_briefdescriptor()) {
+    briefdescriptor_ = new ::SerializedDescriptor(*from.briefdescriptor_);
   } else {
-    descriptor_ = NULL;
+    briefdescriptor_ = NULL;
   }
   ::memcpy(&id_, &from.id_,
     static_cast<size_t>(reinterpret_cast<char*>(&found_) -
@@ -2230,7 +2230,7 @@ SerializedMappoint::~SerializedMappoint() {
 
 void SerializedMappoint::SharedDtor() {
   if (this != internal_default_instance()) delete position_;
-  if (this != internal_default_instance()) delete descriptor_;
+  if (this != internal_default_instance()) delete briefdescriptor_;
 }
 
 void SerializedMappoint::SetCachedSize(int size) const {
@@ -2257,10 +2257,10 @@ void SerializedMappoint::Clear() {
     delete position_;
   }
   position_ = NULL;
-  if (GetArenaNoVirtual() == NULL && descriptor_ != NULL) {
-    delete descriptor_;
+  if (GetArenaNoVirtual() == NULL && briefdescriptor_ != NULL) {
+    delete briefdescriptor_;
   }
-  descriptor_ = NULL;
+  briefdescriptor_ = NULL;
   ::memset(&id_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&found_) -
       reinterpret_cast<char*>(&id_)) + sizeof(found_));
@@ -2331,12 +2331,12 @@ bool SerializedMappoint::MergePartialFromCodedStream(
         break;
       }
 
-      // .SerializedDescriptor descriptor = 5;
+      // .SerializedDescriptor briefdescriptor = 5;
       case 5: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_descriptor()));
+               input, mutable_briefdescriptor()));
         } else {
           goto handle_unusual;
         }
@@ -2390,10 +2390,10 @@ void SerializedMappoint::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->found(), output);
   }
 
-  // .SerializedDescriptor descriptor = 5;
-  if (this->has_descriptor()) {
+  // .SerializedDescriptor briefdescriptor = 5;
+  if (this->has_briefdescriptor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5, this->_internal_descriptor(), output);
+      5, this->_internal_briefdescriptor(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2432,11 +2432,11 @@ void SerializedMappoint::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->found(), target);
   }
 
-  // .SerializedDescriptor descriptor = 5;
-  if (this->has_descriptor()) {
+  // .SerializedDescriptor briefdescriptor = 5;
+  if (this->has_briefdescriptor()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        5, this->_internal_descriptor(), deterministic, target);
+        5, this->_internal_briefdescriptor(), deterministic, target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2463,11 +2463,11 @@ size_t SerializedMappoint::ByteSizeLong() const {
         *position_);
   }
 
-  // .SerializedDescriptor descriptor = 5;
-  if (this->has_descriptor()) {
+  // .SerializedDescriptor briefdescriptor = 5;
+  if (this->has_briefdescriptor()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *descriptor_);
+        *briefdescriptor_);
   }
 
   // uint32 id = 1;
@@ -2517,8 +2517,8 @@ void SerializedMappoint::MergeFrom(const SerializedMappoint& from) {
   if (from.has_position()) {
     mutable_position()->::SerializedPosition::MergeFrom(from.position());
   }
-  if (from.has_descriptor()) {
-    mutable_descriptor()->::SerializedDescriptor::MergeFrom(from.descriptor());
+  if (from.has_briefdescriptor()) {
+    mutable_briefdescriptor()->::SerializedDescriptor::MergeFrom(from.briefdescriptor());
   }
   if (from.id() != 0) {
     set_id(from.id());
@@ -2556,7 +2556,7 @@ void SerializedMappoint::Swap(SerializedMappoint* other) {
 void SerializedMappoint::InternalSwap(SerializedMappoint* other) {
   using std::swap;
   swap(position_, other->position_);
-  swap(descriptor_, other->descriptor_);
+  swap(briefdescriptor_, other->briefdescriptor_);
   swap(id_, other->id_);
   swap(visible_, other->visible_);
   swap(found_, other->found_);
@@ -3346,13 +3346,13 @@ void SerializedKeyframeArray::InternalSwap(SerializedKeyframeArray* other) {
 void SerializedFeature::InitAsDefaultInstance() {
   ::_SerializedFeature_default_instance_._instance.get_mutable()->keypoint_ = const_cast< ::SerializedKeypoint*>(
       ::SerializedKeypoint::internal_default_instance());
-  ::_SerializedFeature_default_instance_._instance.get_mutable()->descriptor_ = const_cast< ::SerializedDescriptor*>(
+  ::_SerializedFeature_default_instance_._instance.get_mutable()->briefdescriptor_ = const_cast< ::SerializedDescriptor*>(
       ::SerializedDescriptor::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int SerializedFeature::kMappointIdFieldNumber;
 const int SerializedFeature::kKeypointFieldNumber;
-const int SerializedFeature::kDescriptorFieldNumber;
+const int SerializedFeature::kBriefdescriptorFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SerializedFeature::SerializedFeature()
@@ -3371,10 +3371,10 @@ SerializedFeature::SerializedFeature(const SerializedFeature& from)
   } else {
     keypoint_ = NULL;
   }
-  if (from.has_descriptor()) {
-    descriptor_ = new ::SerializedDescriptor(*from.descriptor_);
+  if (from.has_briefdescriptor()) {
+    briefdescriptor_ = new ::SerializedDescriptor(*from.briefdescriptor_);
   } else {
-    descriptor_ = NULL;
+    briefdescriptor_ = NULL;
   }
   mappoint_id_ = from.mappoint_id_;
   // @@protoc_insertion_point(copy_constructor:SerializedFeature)
@@ -3393,7 +3393,7 @@ SerializedFeature::~SerializedFeature() {
 
 void SerializedFeature::SharedDtor() {
   if (this != internal_default_instance()) delete keypoint_;
-  if (this != internal_default_instance()) delete descriptor_;
+  if (this != internal_default_instance()) delete briefdescriptor_;
 }
 
 void SerializedFeature::SetCachedSize(int size) const {
@@ -3420,10 +3420,10 @@ void SerializedFeature::Clear() {
     delete keypoint_;
   }
   keypoint_ = NULL;
-  if (GetArenaNoVirtual() == NULL && descriptor_ != NULL) {
-    delete descriptor_;
+  if (GetArenaNoVirtual() == NULL && briefdescriptor_ != NULL) {
+    delete briefdescriptor_;
   }
-  descriptor_ = NULL;
+  briefdescriptor_ = NULL;
   mappoint_id_ = 0u;
   _internal_metadata_.Clear();
 }
@@ -3464,12 +3464,12 @@ bool SerializedFeature::MergePartialFromCodedStream(
         break;
       }
 
-      // .SerializedDescriptor descriptor = 4;
+      // .SerializedDescriptor briefdescriptor = 4;
       case 4: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_descriptor()));
+               input, mutable_briefdescriptor()));
         } else {
           goto handle_unusual;
         }
@@ -3513,10 +3513,10 @@ void SerializedFeature::SerializeWithCachedSizes(
       3, this->_internal_keypoint(), output);
   }
 
-  // .SerializedDescriptor descriptor = 4;
-  if (this->has_descriptor()) {
+  // .SerializedDescriptor briefdescriptor = 4;
+  if (this->has_briefdescriptor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      4, this->_internal_descriptor(), output);
+      4, this->_internal_briefdescriptor(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3545,11 +3545,11 @@ void SerializedFeature::SerializeWithCachedSizes(
         3, this->_internal_keypoint(), deterministic, target);
   }
 
-  // .SerializedDescriptor descriptor = 4;
-  if (this->has_descriptor()) {
+  // .SerializedDescriptor briefdescriptor = 4;
+  if (this->has_briefdescriptor()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        4, this->_internal_descriptor(), deterministic, target);
+        4, this->_internal_briefdescriptor(), deterministic, target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3576,11 +3576,11 @@ size_t SerializedFeature::ByteSizeLong() const {
         *keypoint_);
   }
 
-  // .SerializedDescriptor descriptor = 4;
-  if (this->has_descriptor()) {
+  // .SerializedDescriptor briefdescriptor = 4;
+  if (this->has_briefdescriptor()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *descriptor_);
+        *briefdescriptor_);
   }
 
   // uint32 mappoint_id = 2;
@@ -3620,8 +3620,8 @@ void SerializedFeature::MergeFrom(const SerializedFeature& from) {
   if (from.has_keypoint()) {
     mutable_keypoint()->::SerializedKeypoint::MergeFrom(from.keypoint());
   }
-  if (from.has_descriptor()) {
-    mutable_descriptor()->::SerializedDescriptor::MergeFrom(from.descriptor());
+  if (from.has_briefdescriptor()) {
+    mutable_briefdescriptor()->::SerializedDescriptor::MergeFrom(from.briefdescriptor());
   }
   if (from.mappoint_id() != 0) {
     set_mappoint_id(from.mappoint_id());
@@ -3653,7 +3653,7 @@ void SerializedFeature::Swap(SerializedFeature* other) {
 void SerializedFeature::InternalSwap(SerializedFeature* other) {
   using std::swap;
   swap(keypoint_, other->keypoint_);
-  swap(descriptor_, other->descriptor_);
+  swap(briefdescriptor_, other->briefdescriptor_);
   swap(mappoint_id_, other->mappoint_id_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }

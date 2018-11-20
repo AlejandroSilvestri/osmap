@@ -897,17 +897,17 @@ class SerializedMappoint : public ::google::protobuf::Message /* @@protoc_insert
   ::SerializedPosition* mutable_position();
   void set_allocated_position(::SerializedPosition* position);
 
-  // .SerializedDescriptor descriptor = 5;
-  bool has_descriptor() const;
-  void clear_descriptor();
-  static const int kDescriptorFieldNumber = 5;
+  // .SerializedDescriptor briefdescriptor = 5;
+  bool has_briefdescriptor() const;
+  void clear_briefdescriptor();
+  static const int kBriefdescriptorFieldNumber = 5;
   private:
-  const ::SerializedDescriptor& _internal_descriptor() const;
+  const ::SerializedDescriptor& _internal_briefdescriptor() const;
   public:
-  const ::SerializedDescriptor& descriptor() const;
-  ::SerializedDescriptor* release_descriptor();
-  ::SerializedDescriptor* mutable_descriptor();
-  void set_allocated_descriptor(::SerializedDescriptor* descriptor);
+  const ::SerializedDescriptor& briefdescriptor() const;
+  ::SerializedDescriptor* release_briefdescriptor();
+  ::SerializedDescriptor* mutable_briefdescriptor();
+  void set_allocated_briefdescriptor(::SerializedDescriptor* briefdescriptor);
 
   // uint32 id = 1;
   void clear_id();
@@ -932,7 +932,7 @@ class SerializedMappoint : public ::google::protobuf::Message /* @@protoc_insert
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::SerializedPosition* position_;
-  ::SerializedDescriptor* descriptor_;
+  ::SerializedDescriptor* briefdescriptor_;
   ::google::protobuf::uint32 id_;
   float visible_;
   float found_;
@@ -1381,17 +1381,17 @@ class SerializedFeature : public ::google::protobuf::Message /* @@protoc_inserti
   ::SerializedKeypoint* mutable_keypoint();
   void set_allocated_keypoint(::SerializedKeypoint* keypoint);
 
-  // .SerializedDescriptor descriptor = 4;
-  bool has_descriptor() const;
-  void clear_descriptor();
-  static const int kDescriptorFieldNumber = 4;
+  // .SerializedDescriptor briefdescriptor = 4;
+  bool has_briefdescriptor() const;
+  void clear_briefdescriptor();
+  static const int kBriefdescriptorFieldNumber = 4;
   private:
-  const ::SerializedDescriptor& _internal_descriptor() const;
+  const ::SerializedDescriptor& _internal_briefdescriptor() const;
   public:
-  const ::SerializedDescriptor& descriptor() const;
-  ::SerializedDescriptor* release_descriptor();
-  ::SerializedDescriptor* mutable_descriptor();
-  void set_allocated_descriptor(::SerializedDescriptor* descriptor);
+  const ::SerializedDescriptor& briefdescriptor() const;
+  ::SerializedDescriptor* release_briefdescriptor();
+  ::SerializedDescriptor* mutable_briefdescriptor();
+  void set_allocated_briefdescriptor(::SerializedDescriptor* briefdescriptor);
 
   // uint32 mappoint_id = 2;
   void clear_mappoint_id();
@@ -1404,7 +1404,7 @@ class SerializedFeature : public ::google::protobuf::Message /* @@protoc_inserti
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::SerializedKeypoint* keypoint_;
-  ::SerializedDescriptor* descriptor_;
+  ::SerializedDescriptor* briefdescriptor_;
   ::google::protobuf::uint32 mappoint_id_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_osmap_2eproto::TableStruct;
@@ -2009,58 +2009,58 @@ inline void SerializedMappoint::set_found(float value) {
   // @@protoc_insertion_point(field_set:SerializedMappoint.found)
 }
 
-// .SerializedDescriptor descriptor = 5;
-inline bool SerializedMappoint::has_descriptor() const {
-  return this != internal_default_instance() && descriptor_ != NULL;
+// .SerializedDescriptor briefdescriptor = 5;
+inline bool SerializedMappoint::has_briefdescriptor() const {
+  return this != internal_default_instance() && briefdescriptor_ != NULL;
 }
-inline void SerializedMappoint::clear_descriptor() {
-  if (GetArenaNoVirtual() == NULL && descriptor_ != NULL) {
-    delete descriptor_;
+inline void SerializedMappoint::clear_briefdescriptor() {
+  if (GetArenaNoVirtual() == NULL && briefdescriptor_ != NULL) {
+    delete briefdescriptor_;
   }
-  descriptor_ = NULL;
+  briefdescriptor_ = NULL;
 }
-inline const ::SerializedDescriptor& SerializedMappoint::_internal_descriptor() const {
-  return *descriptor_;
+inline const ::SerializedDescriptor& SerializedMappoint::_internal_briefdescriptor() const {
+  return *briefdescriptor_;
 }
-inline const ::SerializedDescriptor& SerializedMappoint::descriptor() const {
-  const ::SerializedDescriptor* p = descriptor_;
-  // @@protoc_insertion_point(field_get:SerializedMappoint.descriptor)
+inline const ::SerializedDescriptor& SerializedMappoint::briefdescriptor() const {
+  const ::SerializedDescriptor* p = briefdescriptor_;
+  // @@protoc_insertion_point(field_get:SerializedMappoint.briefdescriptor)
   return p != NULL ? *p : *reinterpret_cast<const ::SerializedDescriptor*>(
       &::_SerializedDescriptor_default_instance_);
 }
-inline ::SerializedDescriptor* SerializedMappoint::release_descriptor() {
-  // @@protoc_insertion_point(field_release:SerializedMappoint.descriptor)
+inline ::SerializedDescriptor* SerializedMappoint::release_briefdescriptor() {
+  // @@protoc_insertion_point(field_release:SerializedMappoint.briefdescriptor)
   
-  ::SerializedDescriptor* temp = descriptor_;
-  descriptor_ = NULL;
+  ::SerializedDescriptor* temp = briefdescriptor_;
+  briefdescriptor_ = NULL;
   return temp;
 }
-inline ::SerializedDescriptor* SerializedMappoint::mutable_descriptor() {
+inline ::SerializedDescriptor* SerializedMappoint::mutable_briefdescriptor() {
   
-  if (descriptor_ == NULL) {
+  if (briefdescriptor_ == NULL) {
     auto* p = CreateMaybeMessage<::SerializedDescriptor>(GetArenaNoVirtual());
-    descriptor_ = p;
+    briefdescriptor_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:SerializedMappoint.descriptor)
-  return descriptor_;
+  // @@protoc_insertion_point(field_mutable:SerializedMappoint.briefdescriptor)
+  return briefdescriptor_;
 }
-inline void SerializedMappoint::set_allocated_descriptor(::SerializedDescriptor* descriptor) {
+inline void SerializedMappoint::set_allocated_briefdescriptor(::SerializedDescriptor* briefdescriptor) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == NULL) {
-    delete descriptor_;
+    delete briefdescriptor_;
   }
-  if (descriptor) {
+  if (briefdescriptor) {
     ::google::protobuf::Arena* submessage_arena = NULL;
     if (message_arena != submessage_arena) {
-      descriptor = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, descriptor, submessage_arena);
+      briefdescriptor = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, briefdescriptor, submessage_arena);
     }
     
   } else {
     
   }
-  descriptor_ = descriptor;
-  // @@protoc_insertion_point(field_set_allocated:SerializedMappoint.descriptor)
+  briefdescriptor_ = briefdescriptor;
+  // @@protoc_insertion_point(field_set_allocated:SerializedMappoint.briefdescriptor)
 }
 
 // -------------------------------------------------------------------
@@ -2289,58 +2289,58 @@ inline void SerializedFeature::set_allocated_keypoint(::SerializedKeypoint* keyp
   // @@protoc_insertion_point(field_set_allocated:SerializedFeature.keypoint)
 }
 
-// .SerializedDescriptor descriptor = 4;
-inline bool SerializedFeature::has_descriptor() const {
-  return this != internal_default_instance() && descriptor_ != NULL;
+// .SerializedDescriptor briefdescriptor = 4;
+inline bool SerializedFeature::has_briefdescriptor() const {
+  return this != internal_default_instance() && briefdescriptor_ != NULL;
 }
-inline void SerializedFeature::clear_descriptor() {
-  if (GetArenaNoVirtual() == NULL && descriptor_ != NULL) {
-    delete descriptor_;
+inline void SerializedFeature::clear_briefdescriptor() {
+  if (GetArenaNoVirtual() == NULL && briefdescriptor_ != NULL) {
+    delete briefdescriptor_;
   }
-  descriptor_ = NULL;
+  briefdescriptor_ = NULL;
 }
-inline const ::SerializedDescriptor& SerializedFeature::_internal_descriptor() const {
-  return *descriptor_;
+inline const ::SerializedDescriptor& SerializedFeature::_internal_briefdescriptor() const {
+  return *briefdescriptor_;
 }
-inline const ::SerializedDescriptor& SerializedFeature::descriptor() const {
-  const ::SerializedDescriptor* p = descriptor_;
-  // @@protoc_insertion_point(field_get:SerializedFeature.descriptor)
+inline const ::SerializedDescriptor& SerializedFeature::briefdescriptor() const {
+  const ::SerializedDescriptor* p = briefdescriptor_;
+  // @@protoc_insertion_point(field_get:SerializedFeature.briefdescriptor)
   return p != NULL ? *p : *reinterpret_cast<const ::SerializedDescriptor*>(
       &::_SerializedDescriptor_default_instance_);
 }
-inline ::SerializedDescriptor* SerializedFeature::release_descriptor() {
-  // @@protoc_insertion_point(field_release:SerializedFeature.descriptor)
+inline ::SerializedDescriptor* SerializedFeature::release_briefdescriptor() {
+  // @@protoc_insertion_point(field_release:SerializedFeature.briefdescriptor)
   
-  ::SerializedDescriptor* temp = descriptor_;
-  descriptor_ = NULL;
+  ::SerializedDescriptor* temp = briefdescriptor_;
+  briefdescriptor_ = NULL;
   return temp;
 }
-inline ::SerializedDescriptor* SerializedFeature::mutable_descriptor() {
+inline ::SerializedDescriptor* SerializedFeature::mutable_briefdescriptor() {
   
-  if (descriptor_ == NULL) {
+  if (briefdescriptor_ == NULL) {
     auto* p = CreateMaybeMessage<::SerializedDescriptor>(GetArenaNoVirtual());
-    descriptor_ = p;
+    briefdescriptor_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:SerializedFeature.descriptor)
-  return descriptor_;
+  // @@protoc_insertion_point(field_mutable:SerializedFeature.briefdescriptor)
+  return briefdescriptor_;
 }
-inline void SerializedFeature::set_allocated_descriptor(::SerializedDescriptor* descriptor) {
+inline void SerializedFeature::set_allocated_briefdescriptor(::SerializedDescriptor* briefdescriptor) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == NULL) {
-    delete descriptor_;
+    delete briefdescriptor_;
   }
-  if (descriptor) {
+  if (briefdescriptor) {
     ::google::protobuf::Arena* submessage_arena = NULL;
     if (message_arena != submessage_arena) {
-      descriptor = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, descriptor, submessage_arena);
+      briefdescriptor = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, briefdescriptor, submessage_arena);
     }
     
   } else {
     
   }
-  descriptor_ = descriptor;
-  // @@protoc_insertion_point(field_set_allocated:SerializedFeature.descriptor)
+  briefdescriptor_ = briefdescriptor;
+  // @@protoc_insertion_point(field_set_allocated:SerializedFeature.briefdescriptor)
 }
 
 // -------------------------------------------------------------------
