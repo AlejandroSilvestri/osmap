@@ -9,12 +9,14 @@ Serialization example of ficticious MapPoints.
 using namespace std;
 using namespace cv;
 
+unsigned int KeyFrame::nNextId = 0;	// Compiler requires it, this example doesn't use it.
 
 int main(){
   Map map;
 
   // Generate MapPoints
   MapPoint *pMP;
+  int dataInt[] = {0,1,2,3,4,5,6,7};
   for(int i=0; i<100; i++){
     pMP = new MapPoint();
     pMP->mnId = i;
@@ -27,7 +29,6 @@ int main(){
     data[1] = 0;
     data[2] = -500+i;
 
-    int dataInt[] = {0,1,2,3,4,5,6,7};
     pMP->mDescriptor = Mat(1, 8, CV_32S, dataInt);
     map.mspMapPoints.insert(pMP);
   }
@@ -35,7 +36,6 @@ int main(){
 
   // Initial
   Osmap osmap(map);
-
 
   // Save MapPoints
 
@@ -47,14 +47,13 @@ int main(){
   // MapPoints
   filename = "mappointExample.mappoints";
   fileOutput.open(filename, ofstream::binary);
-  //unsigned int nMappoints;
   SerializedMappointArray serializedMappointArray;
-  cout << "Mappoints serialized: "
-  	  << "MapPoints count: " << osmap.serialize(map.mspMapPoints, serializedMappointArray) << endl;
+  cout << "Options: " << osmap.options << endl
+	<< "Mappoints serialized: " << osmap.serialize(map.mspMapPoints, serializedMappointArray) << endl;
   if (!serializedMappointArray.SerializeToOstream(&fileOutput)) {/*error*/};
   fileOutput.close();
 
-  cout << "Serialization done!" << endl;
+  cout << "Serialization done!" << endl << endl;
 
   // Load MapPoints
   map.mspMapPoints.clear();
@@ -62,21 +61,16 @@ int main(){
   // MapPoints
   filename = "mappointExample.mappoints";
   fileInput.open(filename, ofstream::binary);
-  //SerializedMappointArray serializedMappointArray;
   serializedMappointArray.ParseFromIstream(&fileInput);
   cout << "Mappoints deserialized: "
-    << osmap.deserialize(serializedMappointArray, map.mspMapPoints);
+    << osmap.deserialize(serializedMappointArray, map.mspMapPoints) << endl << endl;
   fileInput.close();
 
 
-
-
   // Imprimir vector
-  cout << "MapPoints retrieved:" << endl;
+  cout << "MapPoints retrieved: " << endl;
   for(auto pMP : map.mspMapPoints)
-    cout << "mnId: " << pMP->mnId << ", mWorldPos: " << pMP->mWorldPos << ", mnVisible: " << pMP->mnVisible << ", mnFound: " << pMP->mnFound << ", mDescriptor: " << pMP->mDescriptor << endl;
-
+    cout << "mnId: " << pMP->mnId << ", mnVisible: " << pMP->mnVisible << ", mnFound: " << pMP->mnFound << ", mDescriptor: " << pMP->mDescriptor << ", mWorldPos: " << pMP->mWorldPos << endl;
 
   return 0;
 }
-//}}} // namespaces Osmap & std & cv

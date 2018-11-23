@@ -60,7 +60,15 @@ Methods:
 where object, passed by reference, is the instance to be serialized (Mat, MapPoint, KeyFrame, etc.) and message is the protocol buffers destination object.
 - deserialize(message, object): this method provides many signatures for many pairs {object, message},
 where message is the protocol buffers source object, and object (Mat, MapPoint, KeyFrame, etc.) is the actual destination.
-For MaPPoitn and KeyFrame, object can be either passed by reference or not provided at all, the method creates an empty one, and returns it deserialized.
+For MapPoint and KeyFrame, object can be either passed by reference or not provided at all, the method creates an empty one, and returns it deserialized.
+- messageArray is a message with only one field of repeated messages.  messageArray serialized MapPoints, KeyFrames, Features...
+
+General rules:
+- deserialize get a const message
+- serialize need a mutable message, it asks for a pointer to mutable message, as provided by protocol buferrs' mutable_field and add_field
+- serializeArray and deserializeArray serialize a messageArray, i.e. set of objects
+- unlike serialize, serializeArray uses a messageArray, not a pointer to it.
+
 
 */
 class Osmap{
@@ -171,13 +179,15 @@ public:
   // Protocol buffer messages serialization for orb-slam2 objects
 
 
+  // K matrix ====================================================================================================
+
   /**
   Serialize provided intrinsic camera matrix K to the protocol buffer message.
   All 4 fields required.
   @param k Source to be serialized.  K matrix, also known as calibration matrix, instrinsic matrix and camera matrix, 3x3 float Mat, usually from KeyFrame::mK.
   @param serializedK Protocol buffers destination message to be serialized.
   */
-  void serialize(Mat& k, SerializedK& serializedK);
+  void serialize(Mat &k, SerializedK *serializedK);
 
   /**
   Reconstruct the intrinsic camera matrix K from protocol buffer message.
@@ -196,7 +206,7 @@ public:
   @param vK The vector of K matrices to serialize.
   @param serializedKArray The serialization destination object.
   */
-  void serialize(vector<Mat*>& vK, SerializedKArray &serializedKArray);
+  void serialize(vector<Mat*> &vK, SerializedKArray &serializedKArray);
 
 
   /**
@@ -210,12 +220,13 @@ public:
   void deserialize(const SerializedKArray &serializedKArray, vector<Mat*> &vK);
 
 
+  // Descriptor ====================================================================================================
 
   /**
   Serializes a descriptor, an 1x8 int Mat (256 bits).
   Exactly 8 int required.
   */
-  void serialize(Mat&, SerializedDescriptor&);
+  void serialize(Mat&, SerializedDescriptor*);
 
 
   /**
@@ -225,11 +236,14 @@ public:
   void deserialize(const SerializedDescriptor&, Mat&);
 
 
+
+  // Pose matrix ====================================================================================================
+
   /**
   Serialize a 4x4 float Mat representing a pose in homogeneous coordinates.
   Exactly 12 float required.
   */
-  void serialize(Mat&, SerializedPose&);
+  void serialize(Mat&, SerializedPose*);
 
 
   /**
@@ -238,11 +252,14 @@ public:
   */
   void deserialize(const SerializedPose&, Mat&);
 
+
+  // Position vector ====================================================================================================
+
   /**
   Serialize 3D mappoint position, a 3x1 float Mat.
   All 3 fields required.
   */
-  void serialize(Mat&, SerializedPosition&);
+  void serialize(Mat&, SerializedPosition*);
 
   /**
   Reconstructs 3D mappoint position in a 3x1 float Mat.
@@ -250,11 +267,13 @@ public:
   */
   void deserialize(const SerializedPosition&, Mat&);
 
+
+  // KeyPoint ====================================================================================================
   /**
   Serialize 4 properties of a KeyPoint.
   All 4 fields required.
   */
-  void serialize(KeyPoint&, SerializedKeypoint&);
+  void serialize(KeyPoint&, SerializedKeypoint*);
 
 
   /**
@@ -263,10 +282,17 @@ public:
   */
   void deserialize(const SerializedKeypoint&, KeyPoint&);
 
+
+
+
+
+
+  // MapPoint ====================================================================================================
+
   /**
   Serializes a MapPoint, according to options.
   */
-  void serialize(MapPoint&, SerializedMappoint&);
+  void serialize(MapPoint&, SerializedMappoint*);
 
   /**
   Creates and fills a MapPoint from optional message fields.
@@ -314,25 +340,24 @@ public:
 
 
 
-
+  // KeyFrame ====================================================================================================
 
   /**
   */
-  void serialize(KeyFrame&, SerializedKeyframe&);
+  void serialize(KeyFrame&, SerializedKeyframe*);
 
 
   /**
   Reconstructs a KeyFrame from optional fields.
   It doesn't perform KeyFrame initialization.  This should be done after deserialization.
   */
-  KeyFrame *deserialize(const SerializedKeyframe*);
+  KeyFrame *deserialize(const SerializedKeyframe&);
 
   /**
   Serialized array of KeyFrames.  This can make a file, or be appended to a multiobject file.
   @param serializedKeyFrameArray message to set up.  Data comes from map.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
   */
-  //int serialize(std::iterator<std::input_iterator_tag, KeyFrame*> start, std::iterator<std::input_iterator_tag, KeyFrame*> end, SerializedKeyframeArray &serializedKeyFrameArray);
   int serialize(set<KeyFrame*>&, SerializedKeyframeArray&);
 
   /**
@@ -341,7 +366,6 @@ public:
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  //int deserialize(const SerializedKeyframeArray &serializedKeyFrameArray, iterator<output_iterator_tag, MapPoint*> output);
   int deserialize(const SerializedKeyframeArray&, set<KeyFrame*>&);
 
 
@@ -369,7 +393,7 @@ public:
   @param SerializedKeyframeFeatures Message destination of serialization.
   @returns The serialized message object.
   */
-  void serialize(KeyFrame&, SerializedKeyframeFeatures&);
+  void serialize(KeyFrame&, SerializedKeyframeFeatures*);
 
   /**
   Retrieves one feature.  Keyframe must be provided, and to that end keyframe_id must be deserialized before.

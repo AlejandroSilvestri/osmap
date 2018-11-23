@@ -42,7 +42,7 @@ class Map{
 public:
   set<MapPoint*> mspMapPoints;
   set<KeyFrame*> mspKeyFrames;
-} map;
+};
 
 
 
