@@ -79,7 +79,8 @@ int main(){
   // Show loaded KeyFrames
   cout << "KeyFrames retrieved: " << endl;
   for(auto pKF : map.mspKeyFrames)
-    cout << "mnId: " << pKF->mnId << ", mnVisible: " << pKF->mTcw << ", N: " << pKF->N << ", mDescriptor: " << pKF->mDescriptors << /*", KeyPoints: " << pKF->mvKeysUn <<*/ endl << endl;
+    cout << "mnId: " << pKF->mnId << ", N: " << pKF->N << "\nmTcw:\n" << pKF->mTcw << "\n\nmDescriptors:\n" << pKF->mDescriptors << endl << endl;
 
+  cout << endl << "Closing example.cpp" << endl;
   return 0;
 }

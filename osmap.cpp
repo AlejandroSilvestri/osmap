@@ -123,7 +123,7 @@ void Osmap::mapLoad(string baseFilename){
   file.close();
 
   // KeyFrames
-  headerFile["keyfranesFile"] >> filename;
+  headerFile["keyframesFile"] >> filename;
   file.open(filename, ifstream::binary);
   SerializedKeyframeArray serializedKeyFrameArray;
   serializedKeyFrameArray.ParseFromIstream(&file);
@@ -301,9 +301,9 @@ int Osmap::serialize(const set<MapPoint*>& setMapPoints, SerializedMappointArray
 
 
 int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, set<MapPoint*>& setMapPoints){
-  int i;
-  for(i=0; i<serializedMappointArray.mappoint_size(); i++)
-	  setMapPoints.insert(deserialize(serializedMappointArray.mappoint(i)));
+  int i, n = serializedMappointArray.mappoint_size();
+  for(i=0; i<n; i++)
+	setMapPoints.insert(deserialize(serializedMappointArray.mappoint(i)));
 
   return i;
 }
@@ -338,10 +338,10 @@ int Osmap::serialize(const set<KeyFrame*>& setKeyFrame, SerializedKeyframeArray 
 }
 
 
-int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, set<KeyFrame*>& setKeyFrame){
-  int i;
-  for(i=0; i<serializedKeyframeArray.keyframe_size(); i++)
-		setKeyFrame.insert(deserialize(serializedKeyframeArray.keyframe(i)));
+int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, set<KeyFrame*>& setKeyFrames){
+  int i, n = serializedKeyframeArray.keyframe_size();
+  for(i=0; i<n; i++)
+	setKeyFrames.insert(deserialize(serializedKeyframeArray.keyframe(i)));
 
   return i;
 }
@@ -379,28 +379,28 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyfram
 			descriptor.copyTo(pKF->mDescriptors.row(i));
 		}
 	  }
-  }
+  } else {}	// KeyFrame id not found: skipped.  Inconsistence between keyframes and features serialization files.
   return pKF;
 }
 
 
 int Osmap::serialize(const set<KeyFrame*> &setKeyFrame, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray){
-  //unsigned int n = 0;
-  //for(auto it = start; it != end; it++, n++;)
-  for(auto pKF:setKeyFrame)
+  unsigned int nFeatures = 0;
+  for(auto pKF:setKeyFrame){
     serialize(*pKF, serializedKeyframeFeaturesArray.add_feature());
+    nFeatures += pKF->N;
+  }
 
-  return setKeyFrame.size();
+  return nFeatures;
 }
 
 
 int Osmap::deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, set<KeyFrame*> &setKeyFrame){
-//  itLastKF = setKeyFrame.begin();
-  int i;
-  for(i=0; i<serializedKeyframeFeaturesArray.feature_size(); i++)
-	setKeyFrame.insert(deserialize(serializedKeyframeFeaturesArray.feature(i)));
+  int nFeatures = 0, i, n = serializedKeyframeFeaturesArray.feature_size();
+  for(i=0; i<n; i++)
+	nFeatures += deserialize(serializedKeyframeFeaturesArray.feature(i))->N;
 
-  return i;
+  return nFeatures;
 }
 
 
@@ -432,7 +432,7 @@ KeyFrame *Osmap::getKeyFrame(unsigned int id){
   }
 */
 
-  for(auto it = map.mspKeyFrames.end(); it != map.mspKeyFrames.end(); ++it){
+  for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it){
 	if((*it)->mnId == id){
 	  itLastKF = it;
 	  return *it;
