@@ -114,7 +114,7 @@ void Osmap::mapLoad(string baseFilename){
   SerializedMappointArray serializedMappointArray;
   serializedMappointArray.ParseFromIstream(&file);
   cout << "Mappoints deserialized: "
-    << deserialize(serializedMappointArray, map.mspMapPoints);
+    << deserialize(serializedMappointArray, map.mspMapPoints) << endl;
   file.close();
 
   // KeyFrames
@@ -123,7 +123,7 @@ void Osmap::mapLoad(string baseFilename){
   SerializedKeyframeArray serializedKeyFrameArray;
   serializedKeyFrameArray.ParseFromIstream(&file);
   cout << "Keyframes deserialized: "
-    << deserialize(serializedKeyFrameArray, map.mspKeyFrames);
+    << deserialize(serializedKeyFrameArray, map.mspKeyFrames) << endl;
   file.close();
 
   // Features
@@ -132,7 +132,7 @@ void Osmap::mapLoad(string baseFilename){
   SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
   serializedKeyframeFeaturesArray.ParseFromIstream(&file);
   cout << "Features deserialized: "
-    << deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames);
+    << deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
   if (!serializedKeyframeFeaturesArray.ParseFromIstream(&file)) {/*error*/}
   file.close();
 
@@ -220,6 +220,7 @@ void Osmap::serialize(const Mat &m, SerializedPose *serializedPose){
 }
 
 void Osmap::deserialize(const SerializedPose &serializedPose, Mat &m){
+  assert(serializedPose.element_size() == 12);
   m = Mat::eye(4,4,CV_32F);
   float *pElement = (float*) m.data;
   for(unsigned int i = 0; i<12; i++)
@@ -357,18 +358,23 @@ void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframeFeatures *seri
 
 KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyframeFeatures){
   KeyFrame *pKF = getKeyFrame(serializedKeyframeFeatures.keyframe_id());
-  unsigned int n = serializedKeyframeFeatures.feature_size();
-  for(unsigned int i=0; i<n; i++){
-    const SerializedFeature &feature = serializedKeyframeFeatures.feature(i);
-    if(feature.mappoint_id())		  pKF->mvpMapPoints[i] = getMapPoint(feature.mappoint_id());
-    if(feature.has_keypoint())    	  deserialize(feature.keypoint(), pKF->mvKeysUn[i]);
-    if(feature.has_briefdescriptor()){
-    	Mat descriptor;
-    	deserialize(feature.briefdescriptor(), descriptor);
-    	pKF->mDescriptors.push_back(descriptor);
-    }
+  if(pKF){
+	  unsigned int n = serializedKeyframeFeatures.feature_size();
+	  pKF->N = n;
+	  pKF->mvKeysUn.resize(n);
+	  pKF->mvpMapPoints.resize(n);
+	  pKF->mDescriptors = Mat(n, 8, CV_32S);	// n descriptors
+	  for(unsigned int i=0; i<n; i++){
+		const SerializedFeature &feature = serializedKeyframeFeatures.feature(i);
+		if(feature.mappoint_id())		  pKF->mvpMapPoints[i] = getMapPoint(feature.mappoint_id());
+		if(feature.has_keypoint())    	  deserialize(feature.keypoint(), pKF->mvKeysUn[i]);
+		if(feature.has_briefdescriptor()){
+			Mat descriptor;
+			deserialize(feature.briefdescriptor(), descriptor);
+			descriptor.copyTo(pKF->mDescriptors.row(i));
+		}
+	  }
   }
-
   return pKF;
 }
 
@@ -384,7 +390,7 @@ int Osmap::serialize(const set<KeyFrame*> &setKeyFrame, SerializedKeyframeFeatur
 
 
 int Osmap::deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, set<KeyFrame*> &setKeyFrame){
-  itLastKF = setKeyFrame.begin();
+//  itLastKF = setKeyFrame.begin();
   int i;
   for(i=0; i<serializedKeyframeFeaturesArray.feature_size(); i++)
 	setKeyFrame.insert(deserialize(serializedKeyframeFeaturesArray.feature(i)));
@@ -403,6 +409,8 @@ MapPoint *Osmap::getMapPoint(unsigned int id){
 
 KeyFrame *Osmap::getKeyFrame(unsigned int id){
   // Starts from itLastKF
+  //static auto itLastKF = map.mspKeyFrames.begin();
+/*
   for(auto it = itLastKF; it != map.mspKeyFrames.end(); ++it){
     if((*it)->mnId == id){
       itLastKF = it;
@@ -416,6 +424,14 @@ KeyFrame *Osmap::getKeyFrame(unsigned int id){
       itLastKF = it;
       return *it;
     }
+  }
+*/
+
+  for(auto it = map.mspKeyFrames.end(); it != map.mspKeyFrames.end(); ++it){
+	if((*it)->mnId == id){
+	  itLastKF = it;
+	  return *it;
+	}
   }
 
   // After a whole cycle, not found

@@ -123,13 +123,18 @@ public:
   vector<unsigned int> keyframeid2vectork;
 
   /**
-  Iterador apuntando al último KeyFrame encontrado.
+  Iterator pointing to last found KeyFrame.
   Variable pseudoestática usada en Osmap::getKeyFrame , que requiere ser inicializada fuera del método.
   */
   set<KeyFrame*>::iterator itLastKF;
 
 
   /* Methods, documented on code file.*/
+
+  /**
+  Only constructor, the only way to set the orb-slam2 map.
+  */
+  Osmap(Map &_map): map(_map){}
 
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
@@ -178,6 +183,25 @@ public:
   SER(Mappoint, MapPoint)
   SER(Keyframe, KeyFrame)
   */
+
+  /**
+  Looks for a mappoint by its id in the map.
+  @param id Id of the MapPoint to look for.
+  @returns a pointer to the MapPoint with the given id, or NULL if not found.
+  */
+  MapPoint *getMapPoint(unsigned int id);
+
+
+  /**
+  Looks for a KeyFrame id in the map.
+  Keyframes are usually stored in ascending id order.  This function will be more probably called in the same way, so it is optimized for this expected behaviour.  It uses itLastKF.
+  @param id Id of the KeyFrame to look for.
+  @returns a pointer to the KeyFrame with the given id, or NULL if not found.
+  Used only in Osmap::deserialize(const SerializedKeyframeFeatures&).
+  */
+  KeyFrame *getKeyFrame(unsigned int id);
+
+
 
   // Protocol buffer messages serialization for orb-slam2 objects
 
@@ -399,19 +423,23 @@ public:
   void serialize(const KeyFrame&, SerializedKeyframeFeatures*);
 
   /**
-  Retrieves one feature.  Keyframe must be provided, and to that end keyframe_id must be deserialized before.
-  keyframe_id required.
-  Puts the KeyPoint, MapPoint* and descriptor in their respective containters of the provided KeyFrame, at the index provided.
-  Containers must have that index available, no check is performed in this regard.
-  @param pKF KeyFrame owner of the feature.  The features will be stored in this KeyFrame's containers.
-  @param index
+  Retrieves all features belonging to one keyframe.
+  First it takes the required keyframe_id field, and look in map for the keyframe with that id.  Hence, keyframes must be already deserialized in map.
+
+  Puts all KeyPoints, MapPoints* and descriptors in their respective containters of the provided KeyFrame.
+
+  @param SerializedKeyframeFeatures Object to be deserialized.
   */
   KeyFrame *deserialize(const SerializedKeyframeFeatures&);
 
-  //int serialize(iterator<input_iterator_tag, KeyFrame*> start, iterator<input_iterator_tag, KeyFrame*> end, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray);
+  /**
+   * Serialize all keyframe's features from provided keyframes container, to the specified serialization object.
+   */
   int serialize(const set<KeyFrame*>&, SerializedKeyframeFeaturesArray&);
 
-  //int deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, iterator<output_iterator_tag, MapPoint*> output);
+  /**
+   * Retrieves all keyframe's features to provided keyframes container, from the specified serialization object.
+   */
   int deserialize(const SerializedKeyframeFeaturesArray&, set<KeyFrame*>&);
 
 
@@ -441,56 +469,6 @@ public:
     google::protobuf::io::ZeroCopyInputStream* rawInput,
     google::protobuf::MessageLite* message
   );
-
-
-
-
-
-
-
-  /**
-  Saves KeyFrame's features.
-  @param file output stream of the file being written.
-  @returns Number of features serialized or -1 if error.  The number of features serialized should be the same number of features in all KeyFrames in the map.
-  */
-  //int serializeFeatureFile(fstream *file);
-
-  /**
-  Retrieves KeyFrame's features from a file.
-  @param file input stream of the file being read.
-  @returns Number of features retrieved or -1 if error.  The number of features serialized should be the same number of features in all KeyFrames in the map.
-  All KeyFrames should be deserialized and put in map before calling this method.
-  */
-  //int deserializeFeatureFile(fstream *file);
-
-
-
-  /**
-  Looks for a mappoint by its id in the map.
-  @param id Id of the MapPoint to look for.
-  @returns a pointer to the MapPoint with the given id, or NULL if not found.
-  */
-  MapPoint *getMapPoint(unsigned int id);
-
-
-  /**
-  Looks for a KeyFrame id in the map.
-  Keyframes are usually stored in ascending id order.  This function will be more probably called in the same way, so it is optimized for this expected behaviour.  It uses itLastKF.
-  @param id Id of the KeyFrame to look for.
-  @returns a pointer to the KeyFrame with the given id, or NULL if not found.
-  Used only in Osmap::deserialize(const SerializedKeyframeFeatures&).
-  */
-  KeyFrame *getKeyFrame(unsigned int id);
-
-
-
-
-
-  /**
-  Only constructor, the only way to set the orb-slam2 map.
-  */
-  Osmap(Map &_map): map(_map){}
-
 };
 
 #endif /* OSMAP_H_ */
