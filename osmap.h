@@ -91,11 +91,14 @@ public:
   - SAVE_TIMESTAMP: Not saved by default, it will increase a little keyframes file.  It is usefull only if you will use timestamps.  ORB-SLAM2 doesn't use them.
   - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
   - NO_FEATURES_DESCRIPTORS: Don't save descriptors in features file. Mappoints descriptors will be saved instead.  Descriptors take a huge amount of bytes, and this will shrink thw whole map a lot.  Not sure about drawbacks.
-  - K_FILE: Save K camera matrix in a different file using protocol buffers.  By default K is saved in yaml file.  Usually maps has only one K or few different K.  This option is usefulle when each keyframe has a different K.
+  - K_IN_KEYFRAME: Save K camera matrix in each keyframe, and not in YAML file.  By default K is saved in yaml file.  Usually maps has only one K or few different K.  This option is usefull when each keyframe has a different K.
+  - NO_MAPPOINTS_FILE: Avoid saving MapPoints file.  Useful when analysing some other file, to save serialization time.
+  - NO_KEYFRAMES_FILE: Avoid saving KeyFrames file.  Useful when analysing some other file, to save serialization time.
+  - NO_FEATURES_FILE:   Avoid saving Features file.  Useful when analysing some other file, to save serialization time.
 
   New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
   */
-  enum Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS, K_FILE};
+  enum Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS, K_IN_KEYFRAME, NO_MAPPOINTS_FILE, NO_KEYFRAMES_FILE, NO_FEATURES_FILE};
 
   /**
   Set of chosen options for serializing.  User must set options prior to saving a map.  Loading a map should reflect in this property the saved map options.
@@ -114,7 +117,7 @@ public:
 
   /**
   For each index KeyFrame.mnId the value returned is an index to vectorK.
-  The latter is the index saved in each keyframe as k.
+  The later is the index saved in each keyframe as k.
   It is populated only by getVectorKFromKeyframes, and consumed only while saving the map, during keyframe serialization.
   */
   vector<unsigned int> keyframeid2vectork;
@@ -123,7 +126,7 @@ public:
   Iterador apuntando al último KeyFrame encontrado.
   Variable pseudoestática usada en Osmap::getKeyFrame , que requiere ser inicializada fuera del método.
   */
-  std::set<KeyFrame*>::iterator itLastKF;
+  set<KeyFrame*>::iterator itLastKF;
 
 
   /* Methods, documented on code file.*/
@@ -187,7 +190,7 @@ public:
   @param k Source to be serialized.  K matrix, also known as calibration matrix, instrinsic matrix and camera matrix, 3x3 float Mat, usually from KeyFrame::mK.
   @param serializedK Protocol buffers destination message to be serialized.
   */
-  void serialize(Mat &k, SerializedK *serializedK);
+  void serialize(const Mat &k, SerializedK *serializedK);
 
   /**
   Reconstruct the intrinsic camera matrix K from protocol buffer message.
@@ -206,7 +209,7 @@ public:
   @param vK The vector of K matrices to serialize.
   @param serializedKArray The serialization destination object.
   */
-  void serialize(vector<Mat*> &vK, SerializedKArray &serializedKArray);
+  void serialize(const vector<Mat*> &vK, SerializedKArray &serializedKArray);
 
 
   /**
@@ -226,7 +229,7 @@ public:
   Serializes a descriptor, an 1x8 int Mat (256 bits).
   Exactly 8 int required.
   */
-  void serialize(Mat&, SerializedDescriptor*);
+  void serialize(const Mat&, SerializedDescriptor*);
 
 
   /**
@@ -243,7 +246,7 @@ public:
   Serialize a 4x4 float Mat representing a pose in homogeneous coordinates.
   Exactly 12 float required.
   */
-  void serialize(Mat&, SerializedPose*);
+  void serialize(const Mat&, SerializedPose*);
 
 
   /**
@@ -259,7 +262,7 @@ public:
   Serialize 3D mappoint position, a 3x1 float Mat.
   All 3 fields required.
   */
-  void serialize(Mat&, SerializedPosition*);
+  void serialize(const Mat&, SerializedPosition*);
 
   /**
   Reconstructs 3D mappoint position in a 3x1 float Mat.
@@ -273,7 +276,7 @@ public:
   Serialize 4 properties of a KeyPoint.
   All 4 fields required.
   */
-  void serialize(KeyPoint&, SerializedKeypoint*);
+  void serialize(const KeyPoint&, SerializedKeypoint*);
 
 
   /**
@@ -292,7 +295,7 @@ public:
   /**
   Serializes a MapPoint, according to options.
   */
-  void serialize(MapPoint&, SerializedMappoint*);
+  void serialize(const MapPoint&, SerializedMappoint*);
 
   /**
   Creates and fills a MapPoint from optional message fields.
@@ -310,7 +313,7 @@ public:
   @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
   */
   //int serialize(iterator<input_iterator_tag, MapPoint*> start, iterator<input_iterator_tag, MapPoint*> end, SerializedMappointArray &serializedMapPointArray);
-  int serialize(set<MapPoint*>&, SerializedMappointArray &);
+  int serialize(const set<MapPoint*>&, SerializedMappointArray &);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -344,7 +347,7 @@ public:
 
   /**
   */
-  void serialize(KeyFrame&, SerializedKeyframe*);
+  void serialize(const KeyFrame&, SerializedKeyframe*);
 
 
   /**
@@ -358,7 +361,7 @@ public:
   @param serializedKeyFrameArray message to set up.  Data comes from map.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
   */
-  int serialize(set<KeyFrame*>&, SerializedKeyframeArray&);
+  int serialize(const set<KeyFrame*>&, SerializedKeyframeArray&);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -393,7 +396,7 @@ public:
   @param SerializedKeyframeFeatures Message destination of serialization.
   @returns The serialized message object.
   */
-  void serialize(KeyFrame&, SerializedKeyframeFeatures*);
+  void serialize(const KeyFrame&, SerializedKeyframeFeatures*);
 
   /**
   Retrieves one feature.  Keyframe must be provided, and to that end keyframe_id must be deserialized before.
@@ -406,7 +409,7 @@ public:
   KeyFrame *deserialize(const SerializedKeyframeFeatures&);
 
   //int serialize(iterator<input_iterator_tag, KeyFrame*> start, iterator<input_iterator_tag, KeyFrame*> end, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray);
-  int serialize(set<KeyFrame*>&, SerializedKeyframeFeaturesArray&);
+  int serialize(const set<KeyFrame*>&, SerializedKeyframeFeaturesArray&);
 
   //int deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, iterator<output_iterator_tag, MapPoint*> output);
   int deserialize(const SerializedKeyframeFeaturesArray&, set<KeyFrame*>&);

@@ -4,12 +4,15 @@ Serialization example of ficticious MapPoints.
 
 #include <iostream>
 #include <fstream>
+//#include <string>
 #include "../osmap.h"
 
 using namespace std;
 using namespace cv;
 
-unsigned int KeyFrame::nNextId = 0;	// Compiler requires it, this example doesn't use it.
+#define N_MAPPOINTS 100	// Number of fake MapPoints in map
+#define N_KEYFRAMES 11	// Number of fake KeyFrames in map
+#define N_FEATURES 19	// Number of fake features in each KeyFrame
 
 int main(){
   Map map;
@@ -17,7 +20,8 @@ int main(){
   // Generate MapPoints
   MapPoint *pMP;
   int dataInt[] = {0,1,2,3,4,5,6,7};
-  for(int i=0; i<100; i++){
+  Mat descriptorModelo = Mat(1, 8, CV_32S, dataInt);
+  for(int i=0; i<N_MAPPOINTS; i++){
     pMP = new MapPoint();
     pMP->mnId = i;
     pMP->mnVisible = 200 + i;
@@ -29,48 +33,53 @@ int main(){
     data[1] = 0;
     data[2] = -500+i;
 
-    pMP->mDescriptor = Mat(1, 8, CV_32S, dataInt);
+    pMP->mDescriptor = descriptorModelo;
     map.mspMapPoints.insert(pMP);
   }
 
+  // Generate KeyFrames
+  KeyFrame *pKF;
+  Mat K = Mat::eye(3,3,CV_32F);
+  auto itMP = map.mspMapPoints.begin();
+  for(int i=0; i<N_KEYFRAMES; i++){
+	  pKF = new KeyFrame();
+	  pKF->N = N_FEATURES;
+	  pKF->mK = K;
+	  pKF->mTcw = Mat::eye(4,4,CV_32F);
+	  pKF->mnId = i;
 
-  // Initial
+	  // Generate Features
+	  pKF->mvKeysUn.resize(N_FEATURES);
+	  pKF->mvpMapPoints.resize(N_FEATURES);
+	  for(int j=0; j<N_FEATURES; j++){
+		  pKF->mvKeysUn.push_back(KeyPoint(i, j, 0, 1, 0, 0));
+		  pKF->mDescriptors.push_back(descriptorModelo);
+		  pKF->mvpMapPoints.push_back(*itMP);
+		  if(++itMP == map.mspMapPoints.end())
+			  itMP = map.mspMapPoints.begin();
+	  }
+	  map.mspKeyFrames.insert(pKF);
+  }
+  KeyFrame::nNextId = N_KEYFRAMES;
+
+  // Save map
   Osmap osmap(map);
+  osmap.mapSave("exampleDummyMap");
 
-  // Save MapPoints
-
-  // Copied code from mapSave()
-  // Other files
-  ofstream fileOutput;
-  string filename;
-
-  // MapPoints
-  filename = "mappointExample.mappoints";
-  fileOutput.open(filename, ofstream::binary);
-  SerializedMappointArray serializedMappointArray;
-  cout << "Options: " << osmap.options << endl
-	<< "Mappoints serialized: " << osmap.serialize(map.mspMapPoints, serializedMappointArray) << endl;
-  if (!serializedMappointArray.SerializeToOstream(&fileOutput)) {/*error*/};
-  fileOutput.close();
-
-  cout << "Serialization done!" << endl << endl;
-
-  // Load MapPoints
+  // Clear and load map
   map.mspMapPoints.clear();
-  ifstream fileInput;
-  // MapPoints
-  filename = "mappointExample.mappoints";
-  fileInput.open(filename, ofstream::binary);
-  serializedMappointArray.ParseFromIstream(&fileInput);
-  cout << "Mappoints deserialized: "
-    << osmap.deserialize(serializedMappointArray, map.mspMapPoints) << endl << endl;
-  fileInput.close();
+  map.mspKeyFrames.clear();
+  osmap.mapLoad("exampleDummyMap");
 
-
-  // Imprimir vector
+  // Show loaded MapPoints
   cout << "MapPoints retrieved: " << endl;
   for(auto pMP : map.mspMapPoints)
     cout << "mnId: " << pMP->mnId << ", mnVisible: " << pMP->mnVisible << ", mnFound: " << pMP->mnFound << ", mDescriptor: " << pMP->mDescriptor << ", mWorldPos: " << pMP->mWorldPos << endl;
+
+  // Show loaded KeyFrames
+  cout << "KeyFrames retrieved: " << endl;
+  for(auto pKF : map.mspKeyFrames)
+    cout << "mnId: " << pKF->mnId << ", mnVisible: " << pKF->mTcw << ", N: " << pKF->N << ", mDescriptor: " << pKF->mDescriptors << /*", KeyPoints: " << pKF->mvKeysUn <<*/ endl << endl;
 
   return 0;
 }

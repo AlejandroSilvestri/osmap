@@ -33,9 +33,6 @@ public:
   unsigned int N;
   vector<KeyPoint> mvKeysUn;
   vector<MapPoint*> mvpMapPoints;
-/*  void print(){
-    cout << "mnId: " << mnId << ", pose: " << mTcw << ", N: " << N << endl;
-  }*/
 };
 
 class Map{
