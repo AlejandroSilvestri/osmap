@@ -12,14 +12,14 @@ unsigned int KeyFrame::nNextId = 0;
 void Osmap::mapSave(string baseFilename){
   // Map depuration
 
-  // Savings
+  // "Savings"
 
   // Open YAML file for write, it will be the last file to close.
   // FileStorage https://docs.opencv.org/3.1.0/da/d56/classcv_1_1FileStorage.html
   cv::FileStorage headerFile(baseFilename + ".yaml", cv::FileStorage::WRITE);
   if(!headerFile.isOpened()){
     // Is this necesary?
-     cerr << "No se pudo crear el archivo " << baseFilename << ".yaml" << endl;
+     cerr << "Couldn't create file " << baseFilename << ".yaml" << endl;
      return;
   }
 
@@ -40,36 +40,41 @@ void Osmap::mapSave(string baseFilename){
   string filename;
 
   // MapPoints
-  filename = baseFilename + ".mappoints";
-  file.open(filename, std::ofstream::binary);
-  SerializedMappointArray serializedMappointArray;
-  headerFile << "mappointsFile" << filename;
-  headerFile << "nMappoints" << serialize(map.mspMapPoints, serializedMappointArray);
-  if (!serializedMappointArray.SerializeToOstream(&file)) {/*error*/}
-  file.close();
+  if(!options[NO_MAPPOINTS_FILE]){
+	  filename = baseFilename + ".mappoints";
+	  file.open(filename, std::ofstream::binary);
+	  SerializedMappointArray serializedMappointArray;
+	  headerFile << "mappointsFile" << filename;
+	  headerFile << "nMappoints" << serialize(map.mspMapPoints, serializedMappointArray);
+	  if (!serializedMappointArray.SerializeToOstream(&file)) {/*error*/}
+	  file.close();
+  }
 
   // K: grab camera calibration matrices.  Will be saved to yaml file later.
-  getVectorKFromKeyframes();
+  if(!options[K_IN_KEYFRAME]) getVectorKFromKeyframes();
 
   // KeyFrames
-  filename = baseFilename + ".keyframes";
-  file.open(filename, ofstream::binary);
-  SerializedKeyframeArray serializedKeyFrameArray;
-  headerFile << "keyframesFile" << filename;
-  headerFile << "nKeyframes" << serialize(map.mspKeyFrames, serializedKeyFrameArray);
-  if (!serializedKeyFrameArray.SerializeToOstream(&file)) {/*error*/}
-  file.close();
+  if(!options[NO_KEYFRAMES_FILE]){
+	  filename = baseFilename + ".keyframes";
+	  file.open(filename, ofstream::binary);
+	  SerializedKeyframeArray serializedKeyFrameArray;
+	  headerFile << "keyframesFile" << filename;
+	  headerFile << "nKeyframes" << serialize(map.mspKeyFrames, serializedKeyFrameArray);
+	  if (!serializedKeyFrameArray.SerializeToOstream(&file)) {/*error*/}
+	  file.close();
+  }
 
   // Features
-  filename = baseFilename + ".features";
-  file.open(filename, ofstream::binary);
-  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-  headerFile << "featuresFile" << filename;
-  headerFile << "nFeatures"
-    << serialize(map.mspKeyFrames, serializedKeyframeFeaturesArray);
-  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
-  file.close();
-
+  if(!options[NO_FEATURES_FILE]){
+	  filename = baseFilename + ".features";
+	  file.open(filename, ofstream::binary);
+	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+	  headerFile << "featuresFile" << filename;
+	  headerFile << "nFeatures"
+		<< serialize(map.mspKeyFrames, serializedKeyframeFeaturesArray);
+	  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
+	  file.close();
+  }
 
 
   // K: camera calibration matrices, save to yaml at the end of file.
