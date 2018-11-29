@@ -38,7 +38,11 @@ Right now osmap aims monocular SLAM only, so it won't serialize some variables n
 Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because that project could still receive minor changes, this is the recipe to merge osmap with up to date orb-slam2.  It need some editing and compiling.
 
 1- Add default constructors to MapPoint and KeyFrame.
+
 2- Add osmap as friend class to MapPoint, KeyFrame and Map, so osmap can access private and protected attributes that need to be serialized.
+
 3- Add commands to save and load maps in the human machine interface.  One way is add buttons on visualizer.cc.  In order to call save and load, this file must include osmap.h and create one osmap instance.
+
 4- Add Osmap files to ORB-SLAM2 project.  Copy the .cpp and .cc files to src folder, and .h files to include folder.
-5- Compile and run.
+
+5- Compile, fix errors and run.

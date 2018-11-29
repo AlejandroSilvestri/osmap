@@ -19,7 +19,7 @@ void Osmap::mapSave(string baseFilename){
   // FileStorage https://docs.opencv.org/3.1.0/da/d56/classcv_1_1FileStorage.html
   cv::FileStorage headerFile(baseFilename + ".yaml", cv::FileStorage::WRITE);
   if(!headerFile.isOpened()){
-    // Is this necesary?
+    // Is this necessary?
      cerr << "Couldn't create file " << baseFilename << ".yaml" << endl;
      return;
   }
@@ -94,7 +94,7 @@ void Osmap::mapSave(string baseFilename){
 	  headerFile << "featuresFile" << filename;
 	  if( options[FEATURES_FILE_DELIMITED] || (!options[FEATURES_FILE_NOT_DELIMITED] && countFeatures() > FEATURES_MESSAGE_LIMIT) ){
 		  options.set(FEATURES_FILE_DELIMITED);
-		  // Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kenda Varda function
+		  // Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kendon Varda's function
 		  int nFeatures;
 		  vector<KeyFrame*> vectorBlock;
 		  vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
@@ -196,11 +196,20 @@ void Osmap::mapLoad(string baseFilename){
   if(!options[NO_FEATURES_FILE]){
 	  headerFile["featuresFile"] >> filename;
 	  file.open(filename, ifstream::binary);
+	  auto *googleStream = new ::google::protobuf::io::OstreamOutputStream(&file);
 	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-	  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
-	  cout << "Features deserialized: "
-		<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
-	  if (!serializedKeyframeFeaturesArray.ParseFromIstream(&file)) {/*error*/}
+	  if(options[FEATURES_FILE_DELIMITED]){
+		  while(readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray)){
+			  cout << "Features deserialized: "
+				<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
+		  }
+	  } else {
+		  // Not delimited, pure protocol buffer
+		  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
+		  cout << "Features deserialized: "
+			<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
+		  //if (!serializedKeyframeFeaturesArray.ParseFromIstream(&file)) {/*error*/}
+	  }
 	  file.close();
   }
 
