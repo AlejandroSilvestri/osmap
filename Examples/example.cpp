@@ -6,6 +6,7 @@ Serialization example of ficticious MapPoints.
 #include <fstream>
 //#include <string>
 #include "../osmap.h"
+#include <cstdlib>
 
 using namespace std;
 using namespace cv;
@@ -14,7 +15,25 @@ using namespace cv;
 #define N_KEYFRAMES 11	// Number of fake KeyFrames in map
 #define N_FEATURES 19	// Number of fake features in each KeyFrame
 
-int main(){
+/*
+ * main arguments:
+ *
+ * 1º argument: file name.  Defaults to exampleDummyMap.
+ * 2º argument: options, a number.  Defaults to 0.
+ */
+int main(int argc, char **argv){
+
+  // Arguments
+  string filename;
+  int options = 0;
+  if(argc == 1)
+	  filename = "exampleDummyMap";
+  else{
+	  filename = argv[1];
+	  if(argc>2)
+		options = stoi(argv[2]);
+  }
+
   Map map;
 
   // Generate MapPoints
@@ -63,13 +82,14 @@ int main(){
   KeyFrame::nNextId = N_KEYFRAMES;
 
   // Save map
-  Osmap osmap(map);
-  osmap.mapSave("exampleDummyMap");
+  Osmap osmap(map);	// Create singleton
+  osmap.options = options;	// Set saving options
+  osmap.mapSave(filename);	// Save the map to files
 
   // Clear and load map
   map.mspMapPoints.clear();
   map.mspKeyFrames.clear();
-  osmap.mapLoad("exampleDummyMap");
+  osmap.mapLoad(filename);
 
   // Show loaded MapPoints
   cout << "MapPoints retrieved: " << endl;

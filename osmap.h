@@ -3,6 +3,7 @@
 
 //#include <string>
 #include <set>
+#include <vector>
 #include <bitset>
 #include <iterator>
 #include "osmap.pb.h"
@@ -30,6 +31,15 @@
  */
 #include "dummymap.h"
 
+/**
+ * FEATURES_MESSAGE_LIMIT is the maximum number of features allowed in a single protocol buffer's message, to avoid known size problems in protocol buffers.
+ * When a map exceed this limit, mapSave will save features file in delimited form, sequencing many messages each of them below this limit.
+ * This constant can be defined elsewhere before this point, or else is defined here.
+ */
+#ifndef FEATURES_MESSAGE_LIMIT
+#define FEATURES_MESSAGE_LIMIT 1000000
+#endif
+
 using namespace std;
 using namespace cv;
 
@@ -38,20 +48,15 @@ This is a class for a singleton attached to ORB-SLAM2's map.
 
 Its constructor attaches it to the map.  Its methods mapLoad and mapSave load and save a map.
 
-A map is saved to a set of files in a named folder:
-- key frames.osmap
-- map points.osmap
-- features.osmap
-- K.osmap
-- osmap.yaml, the header
+A map is saved to a set of files in the actual folder, with a filename provided:
+- filename.keyframes
+- filename.mappoints
+- filename.features
+- filename.yaml, the header
 
-*.osmap files store binary data using an adaptation of protocol buffer.
+These files execpt .yaml store binary data using an adaptation of protocol buffer.
 
-Map serialization implies serializing each of these .somap files with the appropiate method, like Osmap::serializeMapPointFile.
-
-This file serialization loops serializing object in protocol buffer messages, like serializeMapPoint.
-
-Some of these objects has another object like KeyPoint, nested serialized with the appropiate serializeKeypoint.
+Some of these objects has another object like KeyPoint, nested serialized with the appropiate serialize signature.
 
 
 Methods:
@@ -86,19 +91,43 @@ public:
   To set an option:
   options.set(ONLY_MAPPOINTS_FEATURES);
 
-  - ONLY_MAPPOINTS_FEATURES: Do not save features not associated to mappoints.  It shrinks the map a lot.  Keyframes will not be suitable to add new mappoints.  Usefull for tracking only.
-  - No_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
   - SAVE_TIMESTAMP: Not saved by default, it will increase a little keyframes file.  It is usefull only if you will use timestamps.  ORB-SLAM2 doesn't use them.
+
+  - NO_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
   - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
   - NO_FEATURES_DESCRIPTORS: Don't save descriptors in features file. Mappoints descriptors will be saved instead.  Descriptors take a huge amount of bytes, and this will shrink thw whole map a lot.  Not sure about drawbacks.
+
   - K_IN_KEYFRAME: Save K camera matrix in each keyframe, and not in YAML file.  By default K is saved in yaml file.  Usually maps has only one K or few different K.  This option is usefull when each keyframe has a different K.
+  - ONLY_MAPPOINTS_FEATURES: Do not save features not associated to mappoints.  It shrinks the map a lot.  Keyframes will not be suitable to add new mappoints.  Usefull for tracking only.
+
+  - FEATURES_FILE_DELIMITED: Features file is delimited, Kenda Varda's function is needed to retrieve.  On save, force delimited.
+  - FEATURES_FILE_NOT_DELIMITED: Features file is not delimited, file can be read with protocol buffers in the usual way.  On save, force not delimited.  If any of these is set on save, the decision is automatic.
+
   - NO_MAPPOINTS_FILE: Avoid saving MapPoints file.  Useful when analysing some other file, to save serialization time.
   - NO_KEYFRAMES_FILE: Avoid saving KeyFrames file.  Useful when analysing some other file, to save serialization time.
   - NO_FEATURES_FILE:   Avoid saving Features file.  Useful when analysing some other file, to save serialization time.
 
   New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
   */
-  enum Options {ONLY_MAPPOINTS_FEATURES, NO_ID, SAVE_TIMESTAMP, NO_LOOPS, NO_FEATURES_DESCRIPTORS, K_IN_KEYFRAME, NO_MAPPOINTS_FILE, NO_KEYFRAMES_FILE, NO_FEATURES_FILE};
+  enum Options {
+	  SAVE_TIMESTAMP,
+
+	  NO_ID,
+	  NO_LOOPS,
+	  NO_FEATURES_DESCRIPTORS,
+
+	  K_IN_KEYFRAME,
+	  ONLY_MAPPOINTS_FEATURES,
+
+	  FEATURES_FILE_DELIMITED,
+	  FEATURES_FILE_NOT_DELIMITED,
+
+	  NO_MAPPOINTS_FILE,
+	  NO_KEYFRAMES_FILE,
+	  NO_FEATURES_FILE,
+
+	  OPTIONS_SIZE
+  };
 
   /**
   Set of chosen options for serializing.  User must set options prior to saving a map.  Loading a map should reflect in this property the saved map options.
@@ -122,11 +151,25 @@ public:
   */
   vector<unsigned int> keyframeid2vectork;
 
+
+  /**
+   * Buffer where map's mappoints are stored in ascending id order, to save them to file in this order.
+   * This vector is set in mapSave, and it's left ontouched for user interest.
+   * This vector is consumed in serialize
+   */
+  vector<MapPoint*> vectorMapPoints;
+
+  /**
+   * Buffer where map's keyframes are stored in ascending id order, to save them to file in this order.
+   * This vector is set in mapSave, and it's left ontouched for user interest.
+   */
+  vector<KeyFrame*> vectorKeyFrames;
+
   /**
   Iterator pointing to last found KeyFrame.
   Variable pseudoestática usada en Osmap::getKeyFrame , que requiere ser inicializada fuera del método.
   */
-  set<KeyFrame*>::iterator itLastKF;
+  //set<KeyFrame*>::iterator itLastKF;
 
 
   /* Methods, documented on code file.*/
@@ -145,10 +188,16 @@ public:
   Before calling this method:
   - ORB-SLAM2 threads must be stopped to assure map is not being modify while saving.
   - Actual directory must be set to the desired destination.  Often a new directory exclusive for the map is created.
+  - options must be set.
 
-  @param path Path to .yaml or folder where map's files will be saved.
+  @param basefilename File name without extenion.  Many files will be created with this filename and different extensions.
+
+  MapSave copy map's mappoints and keyframes sets to vectorMapPoints and vectorKeyFrames and sort them, to save objects in ascending id order.
+  MapLoad doesn't use those vector.
+
+  If features number exceed an arbitrary maximum, in order to avoid size related protocol buffer problems,  mapSave limit the size of protocol buffer's messages saving features file in delimited form, using Kendon Varda writeDelimitedTo function.
   */
-  void mapSave(std::string path);
+  void mapSave(std::string basefilename);
 
   /**
   Loads the map from a set of files in the folder whose name is provided as an argument.
@@ -166,24 +215,6 @@ public:
   */
   void getVectorKFromKeyframes();
 
-  /*
-  Preprocesador en línea.  En la línea de comando gcc quitar && -a.o y agregar -E
-  g++ -std=c++17 -O2 -Wall -pedantic -pthread main.cpp -E
-  http://coliru.stacked-crooked.com/
-
-  #define SER(ser, obj) \
-    Serialized ## ser *serialize ## ser(obj*, Serialized ## ser *op = NULL);\
-    obj *deserialize ## ser(Serialized ## ser*, obj *op = NULL);
-
-  SER(K, Mat)
-  SER(Descriptor, Mat)
-  SER(Pose, Mat)
-  SER(Position, Mat)
-  SER(Keypoint, KeyPoint)
-  SER(Mappoint, MapPoint)
-  SER(Keyframe, KeyFrame)
-  */
-
   /**
   Looks for a mappoint by its id in the map.
   @param id Id of the MapPoint to look for.
@@ -200,6 +231,13 @@ public:
   Used only in Osmap::deserialize(const SerializedKeyframeFeatures&).
   */
   KeyFrame *getKeyFrame(unsigned int id);
+
+
+  /**
+   * Count the number of features in vectorKeyFrames.
+   * Invoked by mapSave to decide to use or not delimited form of feature file.
+   */
+  int countFeatures();
 
 
 
@@ -330,6 +368,7 @@ public:
   MapPoint *deserialize(const SerializedMappoint& serializedMappoint);
 
   /**
+   * TODO: doc
   Serialized array of MapPoints.  This can make a file, or be appended to a multiobject file.
   @param start Inclusive begining of the range of MapPoints to be serialized.  Usually map.mspMapPoints.begin().
   @param end Exclusive end of the range of MapPoints to be serialized.  Usually map.mspMapPoints.end().
@@ -337,7 +376,8 @@ public:
   @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
   */
   //int serialize(iterator<input_iterator_tag, MapPoint*> start, iterator<input_iterator_tag, MapPoint*> end, SerializedMappointArray &serializedMapPointArray);
-  int serialize(const set<MapPoint*>&, SerializedMappointArray &);
+  //int serialize(const set<MapPoint*>&, SerializedMappointArray &);
+  int serialize(const vector<MapPoint*>&, SerializedMappointArray &);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -385,7 +425,8 @@ public:
   @param serializedKeyFrameArray message to set up.  Data comes from map.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
   */
-  int serialize(const set<KeyFrame*>&, SerializedKeyframeArray&);
+  //int serialize(const set<KeyFrame*>&, SerializedKeyframeArray&);
+  int serialize(const vector<KeyFrame*>&, SerializedKeyframeArray&);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -434,8 +475,10 @@ public:
 
   /**
    * Serialize all keyframe's features from provided keyframes container, to the specified serialization object.
+   * @param vKF vector of KeyFrames to save, usually vectorKeyFrames member order by mnId.
+   * @param serializedKeyframeFeaturesArray output serialization object.
    */
-  int serialize(const set<KeyFrame*>&, SerializedKeyframeFeaturesArray&);
+  int serialize(const vector<KeyFrame*>& vKF, SerializedKeyframeFeaturesArray& serializedKeyframeFeaturesArray);
 
   /**
    * Retrieves all keyframe's features to provided keyframes container, from the specified serialization object.

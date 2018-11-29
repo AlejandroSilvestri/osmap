@@ -3,6 +3,7 @@
 #include <iostream>
 #include <assert.h>
 #include <opencv2/core.hpp>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 
 using namespace std;
 using namespace cv;
@@ -41,12 +42,23 @@ void Osmap::mapSave(string baseFilename){
 
   // MapPoints
   if(!options[NO_MAPPOINTS_FILE]){
+	  // Order keyframes by mnId
+	  vectorMapPoints.clear();
+	  vectorMapPoints.reserve(map.mspMapPoints.size());
+	  vectorMapPoints.assign(map.mspMapPoints.begin(), map.mspMapPoints.end());
+	  //copy(map.mspMapPoints.begin(), map.mspMapPoints.end(), vectorMapPoints.begin());//back_inserter(vectorMapPoints));
+	  sort(vectorMapPoints.begin(), vectorMapPoints.end(), [](const MapPoint* a, const MapPoint* b){return a->mnId < b->mnId;});
+
+	  // New file
 	  filename = baseFilename + ".mappoints";
 	  file.open(filename, std::ofstream::binary);
+
+	  // Serialize
 	  SerializedMappointArray serializedMappointArray;
 	  headerFile << "mappointsFile" << filename;
-	  headerFile << "nMappoints" << serialize(map.mspMapPoints, serializedMappointArray);
+	  headerFile << "nMappoints" << serialize(vectorMapPoints, serializedMappointArray);
 	  if (!serializedMappointArray.SerializeToOstream(&file)) {/*error*/}
+
 	  file.close();
   }
 
@@ -55,12 +67,23 @@ void Osmap::mapSave(string baseFilename){
 
   // KeyFrames
   if(!options[NO_KEYFRAMES_FILE]){
+	  // Order keyframes by mnId
+	  vectorKeyFrames.clear();
+	  vectorKeyFrames.reserve(map.mspKeyFrames.size());
+	  vectorKeyFrames.assign(map.mspKeyFrames.begin(), map.mspKeyFrames.end());
+	  //copy(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), vectorKeyFrames.begin());//back_inserter(vectorKeyFrames));
+	  sort(vectorKeyFrames.begin(), vectorKeyFrames.end(), [](const KeyFrame *a, const KeyFrame *b){return a->mnId < b->mnId;});
+
+	  // New file
 	  filename = baseFilename + ".keyframes";
 	  file.open(filename, ofstream::binary);
+
+	  // Serialize
 	  SerializedKeyframeArray serializedKeyFrameArray;
 	  headerFile << "keyframesFile" << filename;
-	  headerFile << "nKeyframes" << serialize(map.mspKeyFrames, serializedKeyFrameArray);
+	  headerFile << "nKeyframes" << serialize(vectorKeyFrames, serializedKeyFrameArray);
 	  if (!serializedKeyFrameArray.SerializeToOstream(&file)) {/*error*/}
+
 	  file.close();
   }
 
@@ -68,14 +91,43 @@ void Osmap::mapSave(string baseFilename){
   if(!options[NO_FEATURES_FILE]){
 	  filename = baseFilename + ".features";
 	  file.open(filename, ofstream::binary);
-	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 	  headerFile << "featuresFile" << filename;
-	  headerFile << "nFeatures"
-		<< serialize(map.mspKeyFrames, serializedKeyframeFeaturesArray);
-	  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
+	  if( options[FEATURES_FILE_DELIMITED] || (!options[FEATURES_FILE_NOT_DELIMITED] && countFeatures() > FEATURES_MESSAGE_LIMIT) ){
+		  options.set(FEATURES_FILE_DELIMITED);
+		  // Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kenda Varda function
+		  int nFeatures;
+		  vector<KeyFrame*> vectorBlock;
+		  vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
+		  auto it = vectorKeyFrames.begin();
+		  auto *googleStream = new ::google::protobuf::io::OstreamOutputStream(&file);
+		  while(it != vectorKeyFrames.end()){
+			  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+			  unsigned int n = (*it)->N;
+			  do{
+				  vectorBlock.push_back(*it);
+				  ++it;
+				  if(it != vectorKeyFrames.end()) break;
+				  KeyFrame* KF = *it;
+				  n += KF->N;
+				  //n += (*it)->N;
+			  } while(n <= FEATURES_MESSAGE_LIMIT);
+			  nFeatures += serialize(vectorBlock, serializedKeyframeFeaturesArray);
+			  writeDelimitedTo(serializedKeyframeFeaturesArray, googleStream);
+			  headerFile << "nFeatures" << nFeatures;
+		  }
+	  }else{
+		  options.set(FEATURES_FILE_NOT_DELIMITED);
+		  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+		  headerFile << "nFeatures"
+			<< serialize(vectorKeyFrames, serializedKeyframeFeaturesArray);
+		  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
+	  }
 	  file.close();
   }
 
+
+  // Save options, as an int
+  headerFile << "Options" << (int) options.to_ulong();
 
   // K: camera calibration matrices, save to yaml at the end of file.
   if(!options[K_IN_KEYFRAME]){
@@ -95,51 +147,62 @@ void Osmap::mapLoad(string baseFilename){
   cv::FileStorage headerFile(baseFilename + ".yaml", cv::FileStorage::READ);
   ifstream file;
   string filename;
+  int intOptions;
+
+  // Options
+  headerFile["Options"] >> intOptions;
+  options = intOptions;
 
   // K
-
-  FileNode cameraMatrices = headerFile["cameraMatrices"];
-  FileNodeIterator it = cameraMatrices.begin(), it_end = cameraMatrices.end();
-  for( ; it != it_end; ++it){
-	  // TODO
-	  Mat *k = new Mat();
-	  *k = Mat::eye(3,3,CV_32F);
-	  k->at<float>(0,0) = (*it)["fx"];
-	  k->at<float>(1,1) = (*it)["fy"];
-	  k->at<float>(2,0) = (*it)["cx"];
-	  k->at<float>(2,1) = (*it)["cy"];
-	  vectorK.push_back(k);
+  if(!options[K_IN_KEYFRAME]){
+	  FileNode cameraMatrices = headerFile["cameraMatrices"];
+	  FileNodeIterator it = cameraMatrices.begin(), it_end = cameraMatrices.end();
+	  for( ; it != it_end; ++it){
+		  // TODO
+		  Mat *k = new Mat();
+		  *k = Mat::eye(3,3,CV_32F);
+		  k->at<float>(0,0) = (*it)["fx"];
+		  k->at<float>(1,1) = (*it)["fy"];
+		  k->at<float>(2,0) = (*it)["cx"];
+		  k->at<float>(2,1) = (*it)["cy"];
+		  vectorK.push_back(k);
+	  }
   }
 
 
-
   // MapPoints
-  headerFile["mappointsFile"] >> filename;
-  file.open(filename, ifstream::binary);
-  SerializedMappointArray serializedMappointArray;
-  serializedMappointArray.ParseFromIstream(&file);
-  cout << "Mappoints deserialized: "
-    << deserialize(serializedMappointArray, map.mspMapPoints) << endl;
-  file.close();
+  if(!options[NO_MAPPOINTS_FILE]){
+	  headerFile["mappointsFile"] >> filename;
+	  file.open(filename, ifstream::binary);
+	  SerializedMappointArray serializedMappointArray;
+	  serializedMappointArray.ParseFromIstream(&file);
+	  cout << "Mappoints deserialized: "
+		<< deserialize(serializedMappointArray, map.mspMapPoints) << endl;
+	  file.close();
+  }
 
-  // KeyFrames
-  headerFile["keyframesFile"] >> filename;
-  file.open(filename, ifstream::binary);
-  SerializedKeyframeArray serializedKeyFrameArray;
-  serializedKeyFrameArray.ParseFromIstream(&file);
-  cout << "Keyframes deserialized: "
-    << deserialize(serializedKeyFrameArray, map.mspKeyFrames) << endl;
-  file.close();
+  if(!options[NO_KEYFRAMES_FILE]){
+	  // KeyFrames
+	  headerFile["keyframesFile"] >> filename;
+	  file.open(filename, ifstream::binary);
+	  SerializedKeyframeArray serializedKeyFrameArray;
+	  serializedKeyFrameArray.ParseFromIstream(&file);
+	  cout << "Keyframes deserialized: "
+		<< deserialize(serializedKeyFrameArray, map.mspKeyFrames) << endl;
+	  file.close();
+  }
 
   // Features
-  headerFile["featuresFile"] >> filename;
-  file.open(filename, ifstream::binary);
-  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
-  cout << "Features deserialized: "
-    << deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
-  if (!serializedKeyframeFeaturesArray.ParseFromIstream(&file)) {/*error*/}
-  file.close();
+  if(!options[NO_FEATURES_FILE]){
+	  headerFile["featuresFile"] >> filename;
+	  file.open(filename, ifstream::binary);
+	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+	  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
+	  cout << "Features deserialized: "
+		<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
+	  if (!serializedKeyframeFeaturesArray.ParseFromIstream(&file)) {/*error*/}
+	  file.close();
+  }
 
   // Close yaml file
   headerFile.release();
@@ -175,6 +238,16 @@ void Osmap::getVectorKFromKeyframes(){
     keyframeid2vectork[ pKF->mnId ] = i;
   }
 }
+
+int Osmap::countFeatures(){
+	int n=0;
+	for(auto pKP : vectorKeyFrames)
+		n += pKP->N;
+
+	return n;
+}
+
+
 
 // K matrix ================================================================================================
 void Osmap::serialize(const Mat &k, SerializedK *serializedK){
@@ -288,7 +361,7 @@ MapPoint *Osmap::deserialize(const SerializedMappoint &serializedMappoint){
   return pMappoint;
 }
 
-
+/*
 int Osmap::serialize(const set<MapPoint*>& setMapPoints, SerializedMappointArray &serializedMappointArray){
   //int n = 0;
   //for(auto it = setMapPoints.begin(); it != setMapPoints.end(); it++, n++;)
@@ -298,6 +371,16 @@ int Osmap::serialize(const set<MapPoint*>& setMapPoints, SerializedMappointArray
 
   return setMapPoints.size();
 }
+*/
+
+int Osmap::serialize(const vector<MapPoint*>& vectorMP, SerializedMappointArray &serializedMappointArray){
+  for(auto pMP : vectorMP)
+    serialize(*pMP, serializedMappointArray.add_mappoint());
+
+  return vectorMP.size();
+}
+
+
 
 
 int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, set<MapPoint*>& setMapPoints){
@@ -329,14 +412,22 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
   return pKeyframe;
 }
 
+int Osmap::serialize(const vector<KeyFrame*>& vectorKF, SerializedKeyframeArray &serializedKeyframeArray){
+  for(auto pKF: vectorKF)
+    serialize(*pKF, serializedKeyframeArray.add_keyframe());
 
+  return vectorKF.size();
+}
+
+
+/*
 int Osmap::serialize(const set<KeyFrame*>& setKeyFrame, SerializedKeyframeArray &serializedKeyframeArray){
   for(auto pKF: setKeyFrame)
     serialize(*pKF, serializedKeyframeArray.add_keyframe());
 
   return setKeyFrame.size();
 }
-
+*/
 
 int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, set<KeyFrame*>& setKeyFrames){
   int i, n = serializedKeyframeArray.keyframe_size();
@@ -384,9 +475,9 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyfram
 }
 
 
-int Osmap::serialize(const set<KeyFrame*> &setKeyFrame, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray){
+int Osmap::serialize(const vector<KeyFrame*> &vectorKF, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray){
   unsigned int nFeatures = 0;
-  for(auto pKF:setKeyFrame){
+  for(auto pKF:vectorKF){
     serialize(*pKF, serializedKeyframeFeaturesArray.add_feature());
     nFeatures += pKF->N;
   }
@@ -413,85 +504,17 @@ MapPoint *Osmap::getMapPoint(unsigned int id){
 }
 
 KeyFrame *Osmap::getKeyFrame(unsigned int id){
-  // Starts from itLastKF
-  //static auto itLastKF = map.mspKeyFrames.begin();
-/*
-  for(auto it = itLastKF; it != map.mspKeyFrames.end(); ++it){
-    if((*it)->mnId == id){
-      itLastKF = it;
-      return *it;
-    }
-  }
-
-  // After the end, restarts from the begining
-  for(auto it = map.mspKeyFrames.begin(); it != itLastKF; ++it){
-    if((*it)->mnId == id){
-      itLastKF = it;
-      return *it;
-    }
-  }
-*/
-
-  for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it){
-	if((*it)->mnId == id){
-	  itLastKF = it;
+  for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it)
+	if((*it)->mnId == id)
 	  return *it;
-	}
-  }
 
-  // After a whole cycle, not found
+  // If not found
   return NULL;
 }
 
 
 
-
-
-
-/*
-int Osmap::serialize(fstream *file){
-  int n = 0;
-  SerializedFeature serializedFeature;
-  for(auto pKF:map.mspKeyFrames){
-    unsigned int kfId = pKF->mnId;
-    for(unsigned int i=0; i < pKF->N; i++){
-      serialize(*pKF, i, &serializedFeature);
-      writeDelimitedTo(serializedFeature, file);
-      n++;
-    }
-  }
-  return n;
-
-}
-*//*
-int Osmap::deserialize(fstream *file){
-  int n = 0;
-  SerializedFeature serializedFeature;
-  auto it = map.mspKeyFrames.begin();
-  for(
-    auto itKF = map.mspKeyFrames.begin();
-    itKF != map.mspKeyFrames.end();
-    itKF++;
-  ){
-    unsigned int kfId = itKF->mnId;
-    for(unsigned int i=0; i<itKF->N; i++){
-      readDelimitedTo(serializedKeyframe, file)
-      if(!readDelimitedTo(serializedFeature, file)) return -1;
-      deserializeFeature(&serializedFeature, *itKF, i);
-      n++;
-    }
-    it++;
-    n++;
-  }
-  return n;
-
-}
-*/
-
-
-
-
-// Kendon Varda code to serialize many messages in one file, from https://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
+// Kendon Varda's code to serialize many messages in one file, from https://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
 
 bool Osmap::writeDelimitedTo(
     const google::protobuf::MessageLite& message,
