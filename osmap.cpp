@@ -5,6 +5,9 @@
 #include <opencv2/core.hpp>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
+#define OPTION(OP) if(options[OP]) headerFile << #OP;
+
+
 using namespace std;
 using namespace cv;
 
@@ -24,18 +27,6 @@ void Osmap::mapSave(string baseFilename){
      return;
   }
 
-  // Options
-  if(options.any()){
-    headerFile << "Options" << "[:";
-    if(options[ONLY_MAPPOINTS_FEATURES]) headerFile << "ONLY_MAPPOINTS_FEATURES";
-    if(options[NO_ID]) headerFile << "NO_ID";
-    if(options[SAVE_TIMESTAMP]) headerFile << "SAVE_TIMESTAMP";
-    if(options[NO_LOOPS]) headerFile << "NO_LOOPS";
-    if(options[NO_FEATURES_DESCRIPTORS]) headerFile << "NO_FEATURES_DESCRIPTORS";
-    if(options[K_IN_KEYFRAME]) headerFile << "K_IN_KEYFRAME";
-    headerFile << ":]";
-  }
-
   // Other files
   ofstream file;
   string filename;
@@ -46,7 +37,6 @@ void Osmap::mapSave(string baseFilename){
 	  vectorMapPoints.clear();
 	  vectorMapPoints.reserve(map.mspMapPoints.size());
 	  vectorMapPoints.assign(map.mspMapPoints.begin(), map.mspMapPoints.end());
-	  //copy(map.mspMapPoints.begin(), map.mspMapPoints.end(), vectorMapPoints.begin());//back_inserter(vectorMapPoints));
 	  sort(vectorMapPoints.begin(), vectorMapPoints.end(), [](const MapPoint* a, const MapPoint* b){return a->mnId < b->mnId;});
 
 	  // New file
@@ -92,34 +82,39 @@ void Osmap::mapSave(string baseFilename){
 	  filename = baseFilename + ".features";
 	  file.open(filename, ofstream::binary);
 	  headerFile << "featuresFile" << filename;
-	  if( options[FEATURES_FILE_DELIMITED] || (!options[FEATURES_FILE_NOT_DELIMITED] && countFeatures() > FEATURES_MESSAGE_LIMIT) ){
+	  if(
+		options[FEATURES_FILE_DELIMITED] ||
+		(!options[FEATURES_FILE_NOT_DELIMITED] && countFeatures() > FEATURES_MESSAGE_LIMIT)
+	  ){
 		  options.set(FEATURES_FILE_DELIMITED);
+
 		  // Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kendon Varda's function
-		  int nFeatures;
+		  int nFeatures = 0;
 		  vector<KeyFrame*> vectorBlock;
 		  vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
 		  auto it = vectorKeyFrames.begin();
 		  auto *googleStream = new ::google::protobuf::io::OstreamOutputStream(&file);
 		  while(it != vectorKeyFrames.end()){
-			  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 			  unsigned int n = (*it)->N;
+			  vectorBlock.clear();
 			  do{
 				  vectorBlock.push_back(*it);
 				  ++it;
-				  if(it != vectorKeyFrames.end()) break;
+				  if(it == vectorKeyFrames.end()) break;
 				  KeyFrame* KF = *it;
 				  n += KF->N;
 				  //n += (*it)->N;
 			  } while(n <= FEATURES_MESSAGE_LIMIT);
+
+			  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 			  nFeatures += serialize(vectorBlock, serializedKeyframeFeaturesArray);
 			  writeDelimitedTo(serializedKeyframeFeaturesArray, googleStream);
-			  headerFile << "nFeatures" << nFeatures;
 		  }
+		  headerFile << "nFeatures" << nFeatures;
 	  }else{
 		  options.set(FEATURES_FILE_NOT_DELIMITED);
 		  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-		  headerFile << "nFeatures"
-			<< serialize(vectorKeyFrames, serializedKeyframeFeaturesArray);
+		  headerFile << "nFeatures" << serialize(vectorKeyFrames, serializedKeyframeFeaturesArray);
 		  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
 	  }
 	  file.close();
@@ -128,6 +123,22 @@ void Osmap::mapSave(string baseFilename){
 
   // Save options, as an int
   headerFile << "Options" << (int) options.to_ulong();
+  // Options
+  if(options.any()){
+    headerFile << "Options descriptions" << "[:";
+    OPTION(NO_ID)
+    OPTION(NO_LOOPS)
+    OPTION(NO_FEATURES_DESCRIPTORS)
+    OPTION(K_IN_KEYFRAME)
+    OPTION(ONLY_MAPPOINTS_FEATURES)
+    OPTION(FEATURES_FILE_DELIMITED)
+    OPTION(FEATURES_FILE_NOT_DELIMITED)
+    OPTION(NO_MAPPOINTS_FILE)
+    OPTION(NO_KEYFRAMES_FILE)
+    OPTION(NO_FEATURES_FILE)
+    headerFile << "]";
+  }
+
 
   // K: camera calibration matrices, save to yaml at the end of file.
   if(!options[K_IN_KEYFRAME]){
@@ -196,19 +207,19 @@ void Osmap::mapLoad(string baseFilename){
   if(!options[NO_FEATURES_FILE]){
 	  headerFile["featuresFile"] >> filename;
 	  file.open(filename, ifstream::binary);
-	  auto *googleStream = new ::google::protobuf::io::OstreamOutputStream(&file);
+	  auto *googleStream = new ::google::protobuf::io::IstreamInputStream(&file);
 	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 	  if(options[FEATURES_FILE_DELIMITED]){
-		  while(readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray)){
-			  cout << "Features deserialized: "
+		  bool dataRemaining;
+		  do{
+			  dataRemaining = readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray);
+			  cout << "Features deserialized in loop: "
 				<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
-		  }
+		  } while(dataRemaining);
 	  } else {
-		  // Not delimited, pure protocol buffer
+		  // Not delimited, pure Protocol Buffers
 		  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
-		  cout << "Features deserialized: "
-			<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
-		  //if (!serializedKeyframeFeaturesArray.ParseFromIstream(&file)) {/*error*/}
+		  cout << "Features deserialized: " << deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
 	  }
 	  file.close();
   }
@@ -479,7 +490,9 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyfram
 			descriptor.copyTo(pKF->mDescriptors.row(i));
 		}
 	  }
-  } else {}	// KeyFrame id not found: skipped.  Inconsistence between keyframes and features serialization files.
+  } else {
+	  cout << "KeyFrame id not found while deserializing features: skipped.  Inconsistence between keyframes and features serialization files." << endl;
+  }
   return pKF;
 }
 
@@ -527,7 +540,9 @@ KeyFrame *Osmap::getKeyFrame(unsigned int id){
 
 bool Osmap::writeDelimitedTo(
     const google::protobuf::MessageLite& message,
-    google::protobuf::io::ZeroCopyOutputStream* rawOutput) {
+    google::protobuf::io::ZeroCopyOutputStream* rawOutput
+){
+  cout << "call to writeDelimitedTo" << endl;
   // We create a new coded stream for each message.  Don't worry, this is fast.
   google::protobuf::io::CodedOutputStream output(rawOutput);
 
@@ -551,7 +566,10 @@ bool Osmap::writeDelimitedTo(
 
 bool Osmap::readDelimitedFrom(
     google::protobuf::io::ZeroCopyInputStream* rawInput,
-    google::protobuf::MessageLite* message) {
+    google::protobuf::MessageLite* message
+){
+  cout << "call to readDelimitedFrom" << endl;
+
   // We create a new coded stream for each message.  Don't worry, this is fast,
   // and it makes sure the 64MB total size limit is imposed per-message rather
   // than on the whole stream.  (See the CodedInputStream interface for more

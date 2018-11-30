@@ -126,7 +126,7 @@ public:
 	  NO_KEYFRAMES_FILE,
 	  NO_FEATURES_FILE,
 
-	  OPTIONS_SIZE
+	  OPTIONS_SIZE	// Not an option
   };
 
   /**
