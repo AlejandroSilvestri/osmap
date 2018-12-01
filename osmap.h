@@ -91,8 +91,6 @@ public:
   To set an option:
   options.set(ONLY_MAPPOINTS_FEATURES);
 
-  - SAVE_TIMESTAMP: Not saved by default, it will increase a little keyframes file.  It is usefull only if you will use timestamps.  ORB-SLAM2 doesn't use them.
-
   - NO_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
   - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
   - NO_FEATURES_DESCRIPTORS: Don't save descriptors in features file. Mappoints descriptors will be saved instead.  Descriptors take a huge amount of bytes, and this will shrink thw whole map a lot.  Not sure about drawbacks.
@@ -108,23 +106,34 @@ public:
   - NO_FEATURES_FILE:   Avoid saving Features file.  Useful when analysing some other file, to save serialization time.
 
   New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
+
+  Time stamp is not optional because it always occupy place in protocol buffers, as all numeric fields.  Defaults to 0.
   */
   enum Options {
-	  SAVE_TIMESTAMP,
+	  // Delimited to overcome a Protocol Buffers limitation.  It is automatic, but can be forced with this options:
+	  FEATURES_FILE_DELIMITED,	// Implemented, load fails
+	  FEATURES_FILE_NOT_DELIMITED,	// Implemented
 
-	  NO_ID,
-	  NO_LOOPS,
-	  NO_FEATURES_DESCRIPTORS,
+	  // Skip files, for analisys propuses
+	  NO_MAPPOINTS_FILE,	// Implemented
+	  NO_KEYFRAMES_FILE,	// Implemented
+	  NO_FEATURES_FILE, 	// Implemented
 
-	  K_IN_KEYFRAME,
-	  ONLY_MAPPOINTS_FEATURES,
+	  // Shrink file
+	  NO_FEATURES_DESCRIPTORS,	// Implemented. Implicit in file, flag ignored on load.
+	  ONLY_MAPPOINTS_FEATURES,	// Implemented. Implicit in file, flag ignored on load.
 
-	  FEATURES_FILE_DELIMITED,
-	  FEATURES_FILE_NOT_DELIMITED,
+	  // Options
+	  NO_LOOPS,	// Pending serializing loops
+	  K_IN_KEYFRAME,	// Implemented. Implicit in file, flag ignored on load.
+	  //RENUM_ID,	// Pending in depuration. Implicit in file, flag ignored on load.  Not clear what is the benefit, since id are saved to file anyway.
 
-	  NO_MAPPOINTS_FILE,
-	  NO_KEYFRAMES_FILE,
-	  NO_FEATURES_FILE,
+	  // Depuration options
+	  NO_DEPURATION,
+	  NO_ERASE_BAD_MAPPOINTS,
+	  NO_APPEND_FOUND_MAPPOINTS,
+	  NO_ERASE_ORPHAN_KEYFRAME_IN_LOOP,
+
 
 	  OPTIONS_SIZE	// Not an option
   };
@@ -178,6 +187,26 @@ public:
   Only constructor, the only way to set the orb-slam2 map.
   */
   Osmap(Map &_map): map(_map){}
+
+
+  /**
+   * Irons keyframes and mappoints sets in map, before save.
+   *
+   * Tests all keyframes in MapPoints.mObservations and mappoints in KeyFrames.mvpMapPoints, checking they are:
+   *
+   * - not bad (!isBad())
+   * - in map (in Map::mspMapPoints and Map::mspKeyFrames)
+   *
+   * Those who not pass this check are eliminated, avoiding serialization of elements not belonging to the map.
+   *
+   * This depuration affects (improves) the actual map in memory.
+   *
+   * Invoked by mapSave.
+   *
+   */
+  void depurate();
+
+  void rebuild();
 
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.

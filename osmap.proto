@@ -62,7 +62,9 @@ message SerializedMappointArray{
 message SerializedKeyframe{
   uint32 id             = 1;  // mnId
   SerializedPose pose   = 2;  // mTcw
-  uint32 k              = 3;  // índice a la lista de matrices K
+  uint32 kindex         = 3;  // index to matrix list K
+  SerializedK kmatrix	= 4;  // K matrix, alternative to index k
+  double timestamp		= 5;  // Time stamp
 }
 
 message SerializedKeyframeArray{

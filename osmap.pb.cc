@@ -25,9 +25,9 @@ extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::inter
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedKeypoint;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedPose;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SerializedPosition;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframe;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframeFeatures;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_SerializedFeature;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_SerializedKeyframe;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_osmap_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_SerializedMappoint;
 }  // namespace protobuf_osmap_2eproto
 class SerializedDescriptorDefaultTypeInternal {
@@ -223,9 +223,10 @@ static void InitDefaultsSerializedKeyframe() {
   ::SerializedKeyframe::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<1> scc_info_SerializedKeyframe =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsSerializedKeyframe}, {
-      &protobuf_osmap_2eproto::scc_info_SerializedPose.base,}};
+::google::protobuf::internal::SCCInfo<2> scc_info_SerializedKeyframe =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsSerializedKeyframe}, {
+      &protobuf_osmap_2eproto::scc_info_SerializedPose.base,
+      &protobuf_osmap_2eproto::scc_info_SerializedK.base,}};
 
 static void InitDefaultsSerializedKeyframeArray() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -374,7 +375,9 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, pose_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, k_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, kindex_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, kmatrix_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframe, timestamp_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::SerializedKeyframeArray, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -413,10 +416,10 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 44, -1, sizeof(::SerializedMappoint)},
   { 54, -1, sizeof(::SerializedMappointArray)},
   { 60, -1, sizeof(::SerializedKeyframe)},
-  { 68, -1, sizeof(::SerializedKeyframeArray)},
-  { 74, -1, sizeof(::SerializedFeature)},
-  { 82, -1, sizeof(::SerializedKeyframeFeatures)},
-  { 89, -1, sizeof(::SerializedKeyframeFeaturesArray)},
+  { 70, -1, sizeof(::SerializedKeyframeArray)},
+  { 76, -1, sizeof(::SerializedFeature)},
+  { 84, -1, sizeof(::SerializedKeyframeFeatures)},
+  { 91, -1, sizeof(::SerializedKeyframeFeaturesArray)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -469,21 +472,23 @@ void AddDescriptorsImpl() {
       "ion\022\017\n\007visible\030\003 \001(\002\022\r\n\005found\030\004 \001(\002\022.\n\017b"
       "riefdescriptor\030\005 \001(\0132\025.SerializedDescrip"
       "tor\"@\n\027SerializedMappointArray\022%\n\010mappoi"
-      "nt\030\001 \003(\0132\023.SerializedMappoint\"J\n\022Seriali"
-      "zedKeyframe\022\n\n\002id\030\001 \001(\r\022\035\n\004pose\030\002 \001(\0132\017."
-      "SerializedPose\022\t\n\001k\030\003 \001(\r\"@\n\027SerializedK"
-      "eyframeArray\022%\n\010keyframe\030\001 \003(\0132\023.Seriali"
-      "zedKeyframe\"\177\n\021SerializedFeature\022\023\n\013mapp"
-      "oint_id\030\002 \001(\r\022%\n\010keypoint\030\003 \001(\0132\023.Serial"
-      "izedKeypoint\022.\n\017briefdescriptor\030\004 \001(\0132\025."
-      "SerializedDescriptor\"V\n\032SerializedKeyfra"
-      "meFeatures\022\023\n\013keyframe_id\030\001 \001(\r\022#\n\007featu"
-      "re\030\002 \003(\0132\022.SerializedFeature\"O\n\037Serializ"
-      "edKeyframeFeaturesArray\022,\n\007feature\030\001 \003(\013"
-      "2\033.SerializedKeyframeFeaturesb\006proto3"
+      "nt\030\001 \003(\0132\023.SerializedMappoint\"\201\001\n\022Serial"
+      "izedKeyframe\022\n\n\002id\030\001 \001(\r\022\035\n\004pose\030\002 \001(\0132\017"
+      ".SerializedPose\022\016\n\006kindex\030\003 \001(\r\022\035\n\007kmatr"
+      "ix\030\004 \001(\0132\014.SerializedK\022\021\n\ttimestamp\030\005 \001("
+      "\001\"@\n\027SerializedKeyframeArray\022%\n\010keyframe"
+      "\030\001 \003(\0132\023.SerializedKeyframe\"\177\n\021Serialize"
+      "dFeature\022\023\n\013mappoint_id\030\002 \001(\r\022%\n\010keypoin"
+      "t\030\003 \001(\0132\023.SerializedKeypoint\022.\n\017briefdes"
+      "criptor\030\004 \001(\0132\025.SerializedDescriptor\"V\n\032"
+      "SerializedKeyframeFeatures\022\023\n\013keyframe_i"
+      "d\030\001 \001(\r\022#\n\007feature\030\002 \003(\0132\022.SerializedFea"
+      "ture\"O\n\037SerializedKeyframeFeaturesArray\022"
+      ",\n\007feature\030\001 \003(\0132\033.SerializedKeyframeFea"
+      "turesb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 997);
+      descriptor, 1053);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "osmap.proto", &protobuf_RegisterTypes);
 }
@@ -2803,11 +2808,15 @@ void SerializedMappointArray::InternalSwap(SerializedMappointArray* other) {
 void SerializedKeyframe::InitAsDefaultInstance() {
   ::_SerializedKeyframe_default_instance_._instance.get_mutable()->pose_ = const_cast< ::SerializedPose*>(
       ::SerializedPose::internal_default_instance());
+  ::_SerializedKeyframe_default_instance_._instance.get_mutable()->kmatrix_ = const_cast< ::SerializedK*>(
+      ::SerializedK::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int SerializedKeyframe::kIdFieldNumber;
 const int SerializedKeyframe::kPoseFieldNumber;
-const int SerializedKeyframe::kKFieldNumber;
+const int SerializedKeyframe::kKindexFieldNumber;
+const int SerializedKeyframe::kKmatrixFieldNumber;
+const int SerializedKeyframe::kTimestampFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SerializedKeyframe::SerializedKeyframe()
@@ -2826,16 +2835,21 @@ SerializedKeyframe::SerializedKeyframe(const SerializedKeyframe& from)
   } else {
     pose_ = NULL;
   }
+  if (from.has_kmatrix()) {
+    kmatrix_ = new ::SerializedK(*from.kmatrix_);
+  } else {
+    kmatrix_ = NULL;
+  }
   ::memcpy(&id_, &from.id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&k_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(k_));
+    static_cast<size_t>(reinterpret_cast<char*>(&timestamp_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(timestamp_));
   // @@protoc_insertion_point(copy_constructor:SerializedKeyframe)
 }
 
 void SerializedKeyframe::SharedCtor() {
   ::memset(&pose_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&k_) -
-      reinterpret_cast<char*>(&pose_)) + sizeof(k_));
+      reinterpret_cast<char*>(&timestamp_) -
+      reinterpret_cast<char*>(&pose_)) + sizeof(timestamp_));
 }
 
 SerializedKeyframe::~SerializedKeyframe() {
@@ -2845,6 +2859,7 @@ SerializedKeyframe::~SerializedKeyframe() {
 
 void SerializedKeyframe::SharedDtor() {
   if (this != internal_default_instance()) delete pose_;
+  if (this != internal_default_instance()) delete kmatrix_;
 }
 
 void SerializedKeyframe::SetCachedSize(int size) const {
@@ -2871,9 +2886,13 @@ void SerializedKeyframe::Clear() {
     delete pose_;
   }
   pose_ = NULL;
+  if (GetArenaNoVirtual() == NULL && kmatrix_ != NULL) {
+    delete kmatrix_;
+  }
+  kmatrix_ = NULL;
   ::memset(&id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&k_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(k_));
+      reinterpret_cast<char*>(&timestamp_) -
+      reinterpret_cast<char*>(&id_)) + sizeof(timestamp_));
   _internal_metadata_.Clear();
 }
 
@@ -2913,14 +2932,40 @@ bool SerializedKeyframe::MergePartialFromCodedStream(
         break;
       }
 
-      // uint32 k = 3;
+      // uint32 kindex = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &k_)));
+                 input, &kindex_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .SerializedK kmatrix = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_kmatrix()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // double timestamp = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(41u /* 41 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &timestamp_)));
         } else {
           goto handle_unusual;
         }
@@ -2964,9 +3009,20 @@ void SerializedKeyframe::SerializeWithCachedSizes(
       2, this->_internal_pose(), output);
   }
 
-  // uint32 k = 3;
-  if (this->k() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->k(), output);
+  // uint32 kindex = 3;
+  if (this->kindex() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->kindex(), output);
+  }
+
+  // .SerializedK kmatrix = 4;
+  if (this->has_kmatrix()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, this->_internal_kmatrix(), output);
+  }
+
+  // double timestamp = 5;
+  if (this->timestamp() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(5, this->timestamp(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2995,9 +3051,21 @@ void SerializedKeyframe::SerializeWithCachedSizes(
         2, this->_internal_pose(), deterministic, target);
   }
 
-  // uint32 k = 3;
-  if (this->k() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->k(), target);
+  // uint32 kindex = 3;
+  if (this->kindex() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->kindex(), target);
+  }
+
+  // .SerializedK kmatrix = 4;
+  if (this->has_kmatrix()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        4, this->_internal_kmatrix(), deterministic, target);
+  }
+
+  // double timestamp = 5;
+  if (this->timestamp() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(5, this->timestamp(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3024,6 +3092,13 @@ size_t SerializedKeyframe::ByteSizeLong() const {
         *pose_);
   }
 
+  // .SerializedK kmatrix = 4;
+  if (this->has_kmatrix()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *kmatrix_);
+  }
+
   // uint32 id = 1;
   if (this->id() != 0) {
     total_size += 1 +
@@ -3031,11 +3106,16 @@ size_t SerializedKeyframe::ByteSizeLong() const {
         this->id());
   }
 
-  // uint32 k = 3;
-  if (this->k() != 0) {
+  // uint32 kindex = 3;
+  if (this->kindex() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::UInt32Size(
-        this->k());
+        this->kindex());
+  }
+
+  // double timestamp = 5;
+  if (this->timestamp() != 0) {
+    total_size += 1 + 8;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -3068,11 +3148,17 @@ void SerializedKeyframe::MergeFrom(const SerializedKeyframe& from) {
   if (from.has_pose()) {
     mutable_pose()->::SerializedPose::MergeFrom(from.pose());
   }
+  if (from.has_kmatrix()) {
+    mutable_kmatrix()->::SerializedK::MergeFrom(from.kmatrix());
+  }
   if (from.id() != 0) {
     set_id(from.id());
   }
-  if (from.k() != 0) {
-    set_k(from.k());
+  if (from.kindex() != 0) {
+    set_kindex(from.kindex());
+  }
+  if (from.timestamp() != 0) {
+    set_timestamp(from.timestamp());
   }
 }
 
@@ -3101,8 +3187,10 @@ void SerializedKeyframe::Swap(SerializedKeyframe* other) {
 void SerializedKeyframe::InternalSwap(SerializedKeyframe* other) {
   using std::swap;
   swap(pose_, other->pose_);
+  swap(kmatrix_, other->kmatrix_);
   swap(id_, other->id_);
-  swap(k_, other->k_);
+  swap(kindex_, other->kindex_);
+  swap(timestamp_, other->timestamp_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 

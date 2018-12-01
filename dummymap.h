@@ -17,6 +17,7 @@ using namespace cv;
 class MapPoint{
 public:
   unsigned int mnId;
+  bool mbBad = false;
   Mat mWorldPos;
   float mnVisible;
   float mnFound;
@@ -27,12 +28,15 @@ class KeyFrame{
 public:
   static unsigned int nNextId;
   unsigned int mnId;
+  bool mbBad = false;
+  double mTimeStamp = 0;
   Mat mTcw;
   Mat mK;
   Mat mDescriptors;
   unsigned int N;
   vector<KeyPoint> mvKeysUn;
   vector<MapPoint*> mvpMapPoints;
+  set<KeyFrame*> mspLoopEdges;
 };
 
 class Map{
