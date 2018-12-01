@@ -15,6 +15,9 @@ unsigned int KeyFrame::nNextId = 0;
 
 void Osmap::mapSave(string baseFilename){
   // Map depuration
+  if(!options[NO_DEPURATION])
+	depurate();
+
 
   // "Savings"
 
@@ -126,7 +129,6 @@ void Osmap::mapSave(string baseFilename){
   // Options
   if(options.any()){
     headerFile << "Options descriptions" << "[:";
-    OPTION(NO_ID)
     OPTION(NO_LOOPS)
     OPTION(NO_FEATURES_DESCRIPTORS)
     OPTION(K_IN_KEYFRAME)
@@ -228,6 +230,42 @@ void Osmap::mapLoad(string baseFilename){
   headerFile.release();
 }
 
+
+void Osmap::depurate(){
+	// First erase MapPoint from KeyFrames, and then erase KeyFrames from MapPoints.
+
+	// NULL out bad MapPoints in KeyFrame::mvpMapPoints
+	for(auto &pKF: map.mspKeyFrames){
+		// NULL out bad MapPoints and warns if not in map.  Usually doesn't find anything.
+		auto &pMPs = pKF->mvpMapPoints;
+		for(int i=pMPs.size(); --i>=0;){
+			auto pMP = pMPs[i];
+
+			if(!pMP) continue;	// Ignore if NULL
+
+			if(pMP->mbBad && !options[NO_ERASE_BAD_MAPPOINTS]){	// If MapPoint is bad, NULL it
+				cout << "ERASE_BAD_MAPPOINTS: Nullifying bad MapPoint " << pMP->mnId << " in KeyFrame " << pKF->mnId << endl;
+				pMPs[i] = NULL;
+			} else if(!map.mspMapPoints.count(pMP) && !options[NO_APPEND_FOUND_MAPPOINTS]){	// If MapPoint is not in map, append it to the map
+				map.mspMapPoints.insert(pMP);
+				cout << "APPEND_FOUND_MAPPOINTS: MapPoint " << pMP->mnId << " added to map. ";
+			}
+		}
+
+		// NULL out bad loop edges.  Loop edges are KeyFrames.
+		if(!options[NO_ERASE_ORPHAN_KEYFRAME_IN_LOOP])
+		  for(auto &pKFLoop: pKF->mspLoopEdges)
+			if(pKFLoop->mbBad || !map.mspKeyFrames.count(pKFLoop)){
+			  cout << "ERASE_ORPHAN_KEYFRAME_IN_LOOP: Nullifying loop edge " << pKFLoop->mnId << " from keyframe " << pKF->mnId << endl;
+			  pKF->mspLoopEdges.erase(pKFLoop);
+			}
+	}
+}
+//if(!options[])
+
+void Osmap::rebuild(){
+
+}
 
 void Osmap::getVectorKFromKeyframes(){
   vectorK.clear();
@@ -359,8 +397,7 @@ void Osmap::deserialize(const SerializedKeypoint &serializedKeypoint, KeyPoint &
 
 // MapPoint ================================================================================================
 void Osmap::serialize(const MapPoint &mappoint, SerializedMappoint *serializedMappoint){
-  if(!options[NO_ID])
-    serializedMappoint->set_id(mappoint.mnId);
+  serializedMappoint->set_id(mappoint.mnId);
   serialize(mappoint.mWorldPos, serializedMappoint->mutable_position());
   serializedMappoint->set_visible(mappoint.mnVisible);
   serializedMappoint->set_found(mappoint.mnFound);
@@ -414,20 +451,30 @@ int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, s
 
 // KeyFrame ================================================================================================
 void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframe *serializedKeyframe){
-  if(!options[NO_ID]) serializedKeyframe->set_id(keyframe.mnId);
+  serializedKeyframe->set_id(keyframe.mnId);
   serialize(keyframe.mTcw, serializedKeyframe->mutable_pose());
+  serializedKeyframe->set_timestamp(keyframe.mTimeStamp);
   if(options[K_IN_KEYFRAME])
-	;	// TODO: serialize K in keyframe, need to add this field in proto file
+	serialize(keyframe.mK, serializedKeyframe->mutable_kmatrix());
   else
-	serializedKeyframe->set_k(keyframeid2vectork[keyframe.mnId]);
+	serializedKeyframe->set_kindex(keyframeid2vectork[keyframe.mnId]);
 }
 
 KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
   KeyFrame *pKeyframe = new KeyFrame();
 
   pKeyframe->mnId = serializedKeyframe.id();
-  if(serializedKeyframe.has_pose()) deserialize(serializedKeyframe.pose(), pKeyframe->mTcw);
-  pKeyframe->mK = *vectorK[serializedKeyframe.k()];
+  pKeyframe->mTimeStamp = serializedKeyframe.timestamp();
+
+  if(serializedKeyframe.has_pose())
+	  deserialize(serializedKeyframe.pose(), pKeyframe->mTcw);
+
+  if(serializedKeyframe.has_kmatrix())
+	  // serialized with K_IN_KEYFRAME option, doesn't use K list in yaml
+	  deserialize(serializedKeyframe.kmatrix(), pKeyframe->mK);
+  else
+	  // serialized with default no K_IN_KEYFRAME option, K list in yaml
+	  pKeyframe->mK = *vectorK[serializedKeyframe.kindex()];
 
   return pKeyframe;
 }
@@ -466,7 +513,10 @@ void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframeFeatures *seri
     serialize(keyframe.mvKeysUn[i], serializedFeature.mutable_keypoint());
     if(keyframe.mvpMapPoints[i])
       serializedFeature.set_mappoint_id(keyframe.mvpMapPoints[i]->mnId);
-    if(!options[NO_FEATURES_DESCRIPTORS])
+    if(
+         !options[NO_FEATURES_DESCRIPTORS]	// Skip if chosen to not save descriptor
+	  && (!options[ONLY_MAPPOINTS_FEATURES] || keyframe.mvpMapPoints[i]) // If chosen to only save mappoints features, check if there is a mappoint.
+	)
       serialize(keyframe.mDescriptors.row(i), serializedFeature.mutable_briefdescriptor());
   }
 }

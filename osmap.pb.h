@@ -1149,25 +1149,45 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
   ::SerializedPose* mutable_pose();
   void set_allocated_pose(::SerializedPose* pose);
 
+  // .SerializedK kmatrix = 4;
+  bool has_kmatrix() const;
+  void clear_kmatrix();
+  static const int kKmatrixFieldNumber = 4;
+  private:
+  const ::SerializedK& _internal_kmatrix() const;
+  public:
+  const ::SerializedK& kmatrix() const;
+  ::SerializedK* release_kmatrix();
+  ::SerializedK* mutable_kmatrix();
+  void set_allocated_kmatrix(::SerializedK* kmatrix);
+
   // uint32 id = 1;
   void clear_id();
   static const int kIdFieldNumber = 1;
   ::google::protobuf::uint32 id() const;
   void set_id(::google::protobuf::uint32 value);
 
-  // uint32 k = 3;
-  void clear_k();
-  static const int kKFieldNumber = 3;
-  ::google::protobuf::uint32 k() const;
-  void set_k(::google::protobuf::uint32 value);
+  // uint32 kindex = 3;
+  void clear_kindex();
+  static const int kKindexFieldNumber = 3;
+  ::google::protobuf::uint32 kindex() const;
+  void set_kindex(::google::protobuf::uint32 value);
+
+  // double timestamp = 5;
+  void clear_timestamp();
+  static const int kTimestampFieldNumber = 5;
+  double timestamp() const;
+  void set_timestamp(double value);
 
   // @@protoc_insertion_point(class_scope:SerializedKeyframe)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::SerializedPose* pose_;
+  ::SerializedK* kmatrix_;
   ::google::protobuf::uint32 id_;
-  ::google::protobuf::uint32 k_;
+  ::google::protobuf::uint32 kindex_;
+  double timestamp_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_osmap_2eproto::TableStruct;
 };
@@ -2169,18 +2189,86 @@ inline void SerializedKeyframe::set_allocated_pose(::SerializedPose* pose) {
   // @@protoc_insertion_point(field_set_allocated:SerializedKeyframe.pose)
 }
 
-// uint32 k = 3;
-inline void SerializedKeyframe::clear_k() {
-  k_ = 0u;
+// uint32 kindex = 3;
+inline void SerializedKeyframe::clear_kindex() {
+  kindex_ = 0u;
 }
-inline ::google::protobuf::uint32 SerializedKeyframe::k() const {
-  // @@protoc_insertion_point(field_get:SerializedKeyframe.k)
-  return k_;
+inline ::google::protobuf::uint32 SerializedKeyframe::kindex() const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframe.kindex)
+  return kindex_;
 }
-inline void SerializedKeyframe::set_k(::google::protobuf::uint32 value) {
+inline void SerializedKeyframe::set_kindex(::google::protobuf::uint32 value) {
   
-  k_ = value;
-  // @@protoc_insertion_point(field_set:SerializedKeyframe.k)
+  kindex_ = value;
+  // @@protoc_insertion_point(field_set:SerializedKeyframe.kindex)
+}
+
+// .SerializedK kmatrix = 4;
+inline bool SerializedKeyframe::has_kmatrix() const {
+  return this != internal_default_instance() && kmatrix_ != NULL;
+}
+inline void SerializedKeyframe::clear_kmatrix() {
+  if (GetArenaNoVirtual() == NULL && kmatrix_ != NULL) {
+    delete kmatrix_;
+  }
+  kmatrix_ = NULL;
+}
+inline const ::SerializedK& SerializedKeyframe::_internal_kmatrix() const {
+  return *kmatrix_;
+}
+inline const ::SerializedK& SerializedKeyframe::kmatrix() const {
+  const ::SerializedK* p = kmatrix_;
+  // @@protoc_insertion_point(field_get:SerializedKeyframe.kmatrix)
+  return p != NULL ? *p : *reinterpret_cast<const ::SerializedK*>(
+      &::_SerializedK_default_instance_);
+}
+inline ::SerializedK* SerializedKeyframe::release_kmatrix() {
+  // @@protoc_insertion_point(field_release:SerializedKeyframe.kmatrix)
+  
+  ::SerializedK* temp = kmatrix_;
+  kmatrix_ = NULL;
+  return temp;
+}
+inline ::SerializedK* SerializedKeyframe::mutable_kmatrix() {
+  
+  if (kmatrix_ == NULL) {
+    auto* p = CreateMaybeMessage<::SerializedK>(GetArenaNoVirtual());
+    kmatrix_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:SerializedKeyframe.kmatrix)
+  return kmatrix_;
+}
+inline void SerializedKeyframe::set_allocated_kmatrix(::SerializedK* kmatrix) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete kmatrix_;
+  }
+  if (kmatrix) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      kmatrix = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, kmatrix, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  kmatrix_ = kmatrix;
+  // @@protoc_insertion_point(field_set_allocated:SerializedKeyframe.kmatrix)
+}
+
+// double timestamp = 5;
+inline void SerializedKeyframe::clear_timestamp() {
+  timestamp_ = 0;
+}
+inline double SerializedKeyframe::timestamp() const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframe.timestamp)
+  return timestamp_;
+}
+inline void SerializedKeyframe::set_timestamp(double value) {
+  
+  timestamp_ = value;
+  // @@protoc_insertion_point(field_set:SerializedKeyframe.timestamp)
 }
 
 // -------------------------------------------------------------------
