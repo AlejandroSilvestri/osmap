@@ -225,6 +225,26 @@ public:
   void rebuild();
 
 
+
+  /**
+   * Irons keyframes and mappoints sets in map, before save.
+   *
+   * Tests all keyframes in MapPoints.mObservations and mappoints in KeyFrames.mvpMapPoints, checking they are:
+   *
+   * - not bad (!isBad())
+   * - in map (in Map::mspMapPoints and Map::mspKeyFrames)
+   *
+   * Those who not pass this check are eliminated, avoiding serialization of elements not belonging to the map.
+   *
+   * This depuration affects (improves) the actual map in memory.
+   *
+   * Invoked by mapSave.
+   *
+   */
+  void depurate();
+
+  void rebuild();
+
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
   If the path leads to a .yaml file name, mapSave takes it as the header file, and saves all other files in its folder.
