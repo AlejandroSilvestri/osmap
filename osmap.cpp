@@ -12,6 +12,7 @@ using namespace std;
 using namespace cv;
 
 unsigned int KeyFrame::nNextId = 0;
+System &Osmap::system;
 
 void Osmap::mapSave(string baseFilename){
   // Map depuration
@@ -184,16 +185,19 @@ void Osmap::mapLoad(string baseFilename){
 
 
   // MapPoints
+  vectorMapPoints.clear();
   if(!options[NO_MAPPOINTS_FILE]){
 	  headerFile["mappointsFile"] >> filename;
 	  file.open(filename, ifstream::binary);
 	  SerializedMappointArray serializedMappointArray;
 	  serializedMappointArray.ParseFromIstream(&file);
 	  cout << "Mappoints deserialized: "
-		<< deserialize(serializedMappointArray, map.mspMapPoints) << endl;
+		<< deserialize(serializedMappointArray, vectorMapPoints) << endl;
 	  file.close();
   }
 
+  // KeyFrames
+  vectorKeyFrames.clear();
   if(!options[NO_KEYFRAMES_FILE]){
 	  // KeyFrames
 	  headerFile["keyframesFile"] >> filename;
@@ -201,7 +205,7 @@ void Osmap::mapLoad(string baseFilename){
 	  SerializedKeyframeArray serializedKeyFrameArray;
 	  serializedKeyFrameArray.ParseFromIstream(&file);
 	  cout << "Keyframes deserialized: "
-		<< deserialize(serializedKeyFrameArray, map.mspKeyFrames) << endl;
+		<< deserialize(serializedKeyFrameArray, vectorKeyFrames) << endl;
 	  file.close();
   }
 
@@ -216,18 +220,23 @@ void Osmap::mapLoad(string baseFilename){
 		  do{
 			  dataRemaining = readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray);
 			  cout << "Features deserialized in loop: "
-				<< deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
+				<< deserialize(serializedKeyframeFeaturesArray, vectorKeyFrames) << endl;
 		  } while(dataRemaining);
 	  } else {
 		  // Not delimited, pure Protocol Buffers
 		  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
-		  cout << "Features deserialized: " << deserialize(serializedKeyframeFeaturesArray, map.mspKeyFrames) << endl;
+		  cout << "Features deserialized: " << deserialize(serializedKeyframeFeaturesArray, vectorKeyFrames) << endl;
 	  }
 	  file.close();
   }
 
   // Close yaml file
   headerFile.release();
+
+  // Rebuild
+
+
+  // Copy to map
 }
 
 
@@ -261,10 +270,134 @@ void Osmap::depurate(){
 			}
 	}
 }
-//if(!options[])
 
 void Osmap::rebuild(){
+	/*
+	 * On every KeyFrame:
+	 * - Builds the map database
+	 * - UpdateConnections to rebuild covisibility graph
+	 * - MapPoint::AddObservation on each point to rebuild MapPoint:mObservations y MapPoint:mObs
+	 */
 
+	keyFrameDatabase.clear();
+	for(KeyFrame *pKF : vectorKeyFrames){
+		pKF->mbNotErase = !pKF->mspLoopEdges.empty();
+
+		// Build BoW vectors
+		pKF->ComputeBoW();
+
+		// Build many pose matrices
+		pKF->SetPose(pKF->mTcw);
+
+		/*
+		 * Rebuilding grid.
+		 * Code from Frame::AssignFeaturesToGrid()
+		 */
+		std::vector<std::size_t> grid[pKF->mnGridCols][pKF->mnGridRows];
+		int nReserve = 0.5f*pKF->N/(pKF->mnGridCols*pKF->mnGridRows);
+		for(unsigned int i=0; i<pKF->mnGridCols;i++)
+			for (unsigned int j=0; j<pKF->mnGridRows;j++)
+				grid[i][j].reserve(nReserve);
+
+		for(int i=0;i<pKF->N;i++){
+			const cv::KeyPoint &kp = pKF->mvKeysUn[i];
+			int posX = round((kp.pt.x-pKF->mnMinX)*pKF->mfGridElementWidthInv);
+			int posY = round((kp.pt.y-pKF->mnMinY)*pKF->mfGridElementHeightInv);
+
+			//Keypoint's coordinates are undistorted, which could cause to go out of the image
+			if(!(posX<0 || posX>=pKF->mnGridCols || posY<0 || posY>=pKF->mnGridRows))
+				grid[posX][posY].push_back(i);
+		}
+
+		pKF->mGrid.resize(pKF->mnGridCols);
+		for(int i=0; i < pKF->mnGridCols;i++){
+			pKF->mGrid[i].resize(pKF->mnGridRows);
+			for(int j=0; j < pKF->mnGridRows; j++)
+				pKF->mGrid[i][j] = grid[i][j];
+		}
+
+
+		// Append keyframe to the database
+		keyFrameDatabase.add(pKF);
+
+		// UpdateConnections to rebuild covisibility graph, in mnId order.
+		pKF->UpdateConnections();
+
+		// If this keyframe is isolated (and isn't keyframe zero), erase it.
+		if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
+			cout << "Erasing isolated keyframe " << pKF->mnId << endl;
+			pKF->SetBadFlag();
+		}
+
+		// Rebuilds MapPoints obvervations
+		size_t n = pKF->mvpMapPoints.size();
+		for(size_t i=0; i<n; i++){
+			MapPoint *pMP = pKF->mvpMapPoints[i];
+			if (pMP)
+				pMP->AddObservation(pKF, i);
+		}
+	}
+
+	// Last KeyFrame's id
+	map.mnMaxKFid = vectorKeyFrames.back()->mnId;
+
+	// Next KeyFrame id
+	KeyFrame::nNextId = map.mnMaxKFid + 1;
+
+
+	/**
+	 * Rebuilds the spanning tree asigning a mpParent to every KeyFrame, except that with id 0.
+ 	 * It ends when every KeyFrame has a parent.
+	 */
+
+	// mvpKeyFrameOrigins should be empty at this point, and will contain only one element, the first keyframe.
+	map.mvpKeyFrameOrigins.clear();
+	map.mvpKeyFrameOrigins.push_back(*vectorKeyFrames.begin());
+
+	// Cantidad de padres asignados en cada iteración, y total.
+	int nParents = -1, nParentsTotal = 0;
+	while(nParents){
+		nParents = 0;
+		for(auto pKF: vectorKeyFrames)
+			if(!pKF->mpParent && pKF->mnId)	// Para todos los KF excepto mnId 0, que no tiene padre
+				for(auto pConnectedKF : pKF->mvpOrderedConnectedKeyFrames)
+					if(pConnectedKF->mpParent || pConnectedKF->mnId == 0){	// Candidato a padre encontrado: no es huérfano o es el original
+						nParents++;
+						pKF->ChangeParent(pConnectedKF);
+						break;
+					}
+		nParentsTotal += nParents;
+		//cout << "Enramados " << nParents << endl;
+	}
+
+	/*
+	 * On every MapPoint:
+	 * - Rebuilds mpRefKF as the first observation, which should be the KeyFrame with the lowest id
+	 * - Rebuilds many properties with UpdateNormalAndDepth()
+	 */
+	for(MapPoint *pMP : vectorMapPoints){
+
+		// Rebuilds mpRefKF.  Requires mObservations.
+		if(pMP->mObservations.empty()){
+			cout << "MP sin observaciones" << pMP->mnId << ".  Se marca como malo." << endl;
+			pMP->SetBadFlag();
+			continue;
+		}
+
+		// Asumes the fist observation has the lowest mnId.
+		pMP->mpRefKF = (*pMP->mObservations.begin()).first;
+
+		if(!pMP->mpRefKF)	// Should never be true
+			cout << "Warning: MapPoint " << pMP->mnId << " without mpRefKF!" << endl;
+
+		/* UpdateNormalAndDepth() requieres prior rebuilding of mpRefKF, and rebuilds:
+		 * - mNormalVector
+		 * - mfMinDistance
+		 * - mfMaxDistance
+		 */
+		pMP->UpdateNormalAndDepth();
+	}
+	MapPoint::nNextId = vectorMapPoints.back()->mnId + 1;
 }
 
 void Osmap::getVectorKFromKeyframes(){
@@ -304,6 +437,25 @@ int Osmap::countFeatures(){
 
 	return n;
 }
+
+
+// Utilities
+MapPoint *Osmap::getMapPoint(unsigned int id){
+  for(auto pMP : map.mspMapPoints)
+    if(pMP->mnId == id) return pMP;
+  // Not found
+  return NULL;
+}
+
+KeyFrame *Osmap::getKeyFrame(unsigned int id){
+  for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it)
+	if((*it)->mnId == id)
+	  return *it;
+
+  // If not found
+  return NULL;
+}
+
 
 
 
@@ -418,18 +570,6 @@ MapPoint *Osmap::deserialize(const SerializedMappoint &serializedMappoint){
   return pMappoint;
 }
 
-/*
-int Osmap::serialize(const set<MapPoint*>& setMapPoints, SerializedMappointArray &serializedMappointArray){
-  //int n = 0;
-  //for(auto it = setMapPoints.begin(); it != setMapPoints.end(); it++, n++;)
-  for(auto pMP : setMapPoints)
-    serialize(*pMP, serializedMappointArray.add_mappoint());
-    //n++;
-
-  return setMapPoints.size();
-}
-*/
-
 int Osmap::serialize(const vector<MapPoint*>& vectorMP, SerializedMappointArray &serializedMappointArray){
   for(auto pMP : vectorMP)
     serialize(*pMP, serializedMappointArray.add_mappoint());
@@ -438,12 +578,10 @@ int Osmap::serialize(const vector<MapPoint*>& vectorMP, SerializedMappointArray 
 }
 
 
-
-
-int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, set<MapPoint*>& setMapPoints){
+int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, vector<MapPoint*>& vectorMapPoints){
   int i, n = serializedMappointArray.mappoint_size();
   for(i=0; i<n; i++)
-	setMapPoints.insert(deserialize(serializedMappointArray.mappoint(i)));
+	vectorMapPoints.push_back(deserialize(serializedMappointArray.mappoint(i)));
 
   return i;
 }
@@ -509,15 +647,20 @@ int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, s
 void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframeFeatures *serializedKeyframeFeatures){
   serializedKeyframeFeatures->set_keyframe_id(keyframe.mnId);
   for(unsigned int i=0; i<keyframe.N; i++){
-    SerializedFeature &serializedFeature = *serializedKeyframeFeatures->add_feature();
-    serialize(keyframe.mvKeysUn[i], serializedFeature.mutable_keypoint());
-    if(keyframe.mvpMapPoints[i])
-      serializedFeature.set_mappoint_id(keyframe.mvpMapPoints[i]->mnId);
-    if(
-         !options[NO_FEATURES_DESCRIPTORS]	// Skip if chosen to not save descriptor
-	  && (!options[ONLY_MAPPOINTS_FEATURES] || keyframe.mvpMapPoints[i]) // If chosen to only save mappoints features, check if there is a mappoint.
-	)
-      serialize(keyframe.mDescriptors.row(i), serializedFeature.mutable_briefdescriptor());
+	if(!options[ONLY_MAPPOINTS_FEATURES] || keyframe.mvpMapPoints[i]){	// If chosen to only save mappoints features, check if there is a mappoint.
+		SerializedFeature &serializedFeature = *serializedKeyframeFeatures->add_feature();
+
+		// KeyPoint
+		serialize(keyframe.mvKeysUn[i], serializedFeature.mutable_keypoint());
+
+		// If there is a MapPoint, serialize it
+		if(keyframe.mvpMapPoints[i])
+		  serializedFeature.set_mappoint_id(keyframe.mvpMapPoints[i]->mnId);
+
+		// Serialize descriptor but skip if chosen to not do so.
+		if(!options[NO_FEATURES_DESCRIPTORS])	//
+		  serialize(keyframe.mDescriptors.row(i), serializedFeature.mutable_briefdescriptor());
+	}
   }
 }
 
@@ -564,24 +707,6 @@ int Osmap::deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframe
 	nFeatures += deserialize(serializedKeyframeFeaturesArray.feature(i))->N;
 
   return nFeatures;
-}
-
-
-// Utilities
-MapPoint *Osmap::getMapPoint(unsigned int id){
-  for(auto pMP : map.mspMapPoints)
-    if(pMP->mnId == id) return pMP;
-  // Not found
-  return NULL;
-}
-
-KeyFrame *Osmap::getKeyFrame(unsigned int id){
-  for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it)
-	if((*it)->mnId == id)
-	  return *it;
-
-  // If not found
-  return NULL;
 }
 
 

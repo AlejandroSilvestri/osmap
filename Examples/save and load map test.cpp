@@ -4,7 +4,6 @@ Serialization example of ficticious MapPoints.
 
 #include <iostream>
 #include <fstream>
-//#include <string>
 #include "../osmap.h"
 #include <cstdlib>
 
@@ -80,9 +79,15 @@ int main(int argc, char **argv){
 	  map.mspKeyFrames.insert(pKF);
   }
   KeyFrame::nNextId = N_KEYFRAMES;
+  map.mnMaxKFid = N_KEYFRAMES - 1;
+
+  System system;
+  system.mpMap = &map;
+  system.mpKeyFrameDatabase = new KeyFrameDatabase;
 
   // Save map
-  Osmap osmap(map);	// Create singleton
+  Osmap::system = system;
+  Osmap osmap();	// Create singleton
   osmap.options = options;	// Set saving options
   osmap.mapSave(filename);	// Save the map to files
 

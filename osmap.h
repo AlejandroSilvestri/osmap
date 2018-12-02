@@ -4,6 +4,7 @@
 //#include <string>
 #include <set>
 #include <vector>
+#include <map>
 #include <bitset>
 #include <iterator>
 #include "osmap.pb.h"
@@ -146,6 +147,12 @@ public:
   /** ORB-SLAM2 map to be serialized. */
   Map &map;
 
+  /** Database of keyframes to be build after loading. */
+  KeyFrameDatabase &keyFrameDatabase;
+
+  /** ORB-SLAM2 System, where to grab map and keyframedatabase. */
+  static System &system;
+
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
   This vector temporarily store different K for serialization and deserialization.  This avoids serializing one K per KeyFrame.
@@ -186,8 +193,12 @@ public:
   /**
   Only constructor, the only way to set the orb-slam2 map.
   */
-  Osmap(Map &_map): map(_map){}
-
+  //Osmap(Map &_map): map(_map){}
+  //Osmap(System &_system): system(_system){
+  Osmap(){
+	  map = *system.mpMap;
+	  keyFrameDatabase = *system.mpKeyFrameDatabase;
+  }
 
   /**
    * Irons keyframes and mappoints sets in map, before save.
@@ -206,7 +217,13 @@ public:
    */
   void depurate();
 
+  /**
+   * Works on vectorMapPoints and vectorKeyFrames.
+   * After rebuild the elements in these vector should be copied to the map sets.
+   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp shows.
+   */
   void rebuild();
+
 
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
@@ -416,7 +433,7 @@ public:
   Map's MapPoints set should be emptied before calling this method.
   */
   //int deserialize(const SerializedMappointArray &serializedMapPointArray, iterator<output_iterator_tag, MapPoint*> output);
-  int deserialize(const SerializedMappointArray &, set<MapPoint*>&);
+  int deserialize(const SerializedMappointArray &, vector<MapPoint*>&);
   /**
   Saves MapPoints to file.
   @param file output stream of the file being written.
@@ -463,7 +480,7 @@ public:
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  int deserialize(const SerializedKeyframeArray&, set<KeyFrame*>&);
+  int deserialize(const SerializedKeyframeArray&, vector<KeyFrame*>&);
 
 
   /**
@@ -512,7 +529,7 @@ public:
   /**
    * Retrieves all keyframe's features to provided keyframes container, from the specified serialization object.
    */
-  int deserialize(const SerializedKeyframeFeaturesArray&, set<KeyFrame*>&);
+  int deserialize(const SerializedKeyframeFeaturesArray&, vector<KeyFrame*>&);
 
 
   /**
