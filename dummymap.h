@@ -49,11 +49,11 @@ public:
   set<KeyFrame*> mspLoopEdges;
 
   bool mbNotErase;
-  const int mnMinX, mnMinY, mnGridCols, mnGridRows;
-  const float mfGridElementWidthInv, mfGridElementHeightInv;
+  const int mnMinX=0, mnMinY=0, mnMaxX=2, mnMaxY=2, mnGridCols=1, mnGridRows=1;
+  const float mfGridElementWidthInv=.5, mfGridElementHeightInv=.5;
   KeyFrame *mpParent = NULL;
   vector<vector<vector<size_t> > > mGrid;
-  map<KeyFrame*, int> mConnectedKeyFrameWeights;
+  std::map<KeyFrame*, int> mConnectedKeyFrameWeights;
   vector<KeyFrame*> mvpOrderedConnectedKeyFrames;
   void ComputeBoW(){}
   void SetPose(Mat);
@@ -61,8 +61,6 @@ public:
   void SetBadFlag(){}
   void ChangeParent(KeyFrame *pKF){}
 };
-#define FRAME_GRID_COLS 10
-#define FRAME_GRID_ROWS 10
 
 
 class Map{

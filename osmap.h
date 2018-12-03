@@ -151,7 +151,7 @@ public:
   KeyFrameDatabase &keyFrameDatabase;
 
   /** ORB-SLAM2 System, where to grab map and keyframedatabase. */
-  static System &system;
+  static System *system;
 
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
@@ -196,8 +196,8 @@ public:
   //Osmap(Map &_map): map(_map){}
   //Osmap(System &_system): system(_system){
   Osmap(){
-	  map = *system.mpMap;
-	  keyFrameDatabase = *system.mpKeyFrameDatabase;
+	  map = *system->mpMap;
+	  keyFrameDatabase = *system->mpKeyFrameDatabase;
   }
 
   /**
