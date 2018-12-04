@@ -12,7 +12,7 @@ using namespace std;
 using namespace cv;
 
 unsigned int KeyFrame::nNextId = 0;
-System &Osmap::system;
+System *Osmap::system;
 
 void Osmap::mapSave(string baseFilename){
   // Map depuration
@@ -220,12 +220,12 @@ void Osmap::mapLoad(string baseFilename){
 		  do{
 			  dataRemaining = readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray);
 			  cout << "Features deserialized in loop: "
-				<< deserialize(serializedKeyframeFeaturesArray, vectorKeyFrames) << endl;
+				<< deserialize(serializedKeyframeFeaturesArray) << endl;
 		  } while(dataRemaining);
 	  } else {
 		  // Not delimited, pure Protocol Buffers
 		  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
-		  cout << "Features deserialized: " << deserialize(serializedKeyframeFeaturesArray, vectorKeyFrames) << endl;
+		  cout << "Features deserialized: " << deserialize(serializedKeyframeFeaturesArray) << endl;
 	  }
 	  file.close();
   }
@@ -234,9 +234,17 @@ void Osmap::mapLoad(string baseFilename){
   headerFile.release();
 
   // Rebuild
-
+  rebuild();
 
   // Copy to map
+  vectorKeyFrames.assign(map.mspKeyFrames.begin(), map.mspKeyFrames.end());
+
+  map.mspMapPoints.clear();
+  copy(vectorMapPoints.begin(), vectorMapPoints.end(), inserter(map.mspMapPoints, map.mspMapPoints.end()));
+
+
+  map.mspKeyFrames.clear();
+  copy(vectorKeyFrames.begin(), vectorKeyFrames.end(), inserter(map.mspKeyFrames, map.mspKeyFrames.end()));
 }
 
 
@@ -295,11 +303,11 @@ void Osmap::rebuild(){
 		 */
 		std::vector<std::size_t> grid[pKF->mnGridCols][pKF->mnGridRows];
 		int nReserve = 0.5f*pKF->N/(pKF->mnGridCols*pKF->mnGridRows);
-		for(unsigned int i=0; i<pKF->mnGridCols;i++)
-			for (unsigned int j=0; j<pKF->mnGridRows;j++)
+		for(int i=0; i<pKF->mnGridCols;i++)
+			for (int j=0; j<pKF->mnGridRows;j++)
 				grid[i][j].reserve(nReserve);
 
-		for(int i=0;i<pKF->N;i++){
+		for(unsigned int i=0;i<pKF->N;i++){
 			const cv::KeyPoint &kp = pKF->mvKeysUn[i];
 			int posX = round((kp.pt.x-pKF->mnMinX)*pKF->mfGridElementWidthInv);
 			int posY = round((kp.pt.y-pKF->mnMinY)*pKF->mfGridElementHeightInv);
@@ -384,8 +392,9 @@ void Osmap::rebuild(){
 			continue;
 		}
 
-		// Asumes the fist observation has the lowest mnId.
-		pMP->mpRefKF = (*pMP->mObservations.begin()).first;
+		// Asumes the first observation has the lowest mnId.
+		auto pair = (*pMP->mObservations.begin());
+		pMP->mpRefKF = pair.first;
 
 		if(!pMP->mpRefKF)	// Should never be true
 			cout << "Warning: MapPoint " << pMP->mnId << " without mpRefKF!" << endl;
@@ -441,16 +450,20 @@ int Osmap::countFeatures(){
 
 // Utilities
 MapPoint *Osmap::getMapPoint(unsigned int id){
-  for(auto pMP : map.mspMapPoints)
-    if(pMP->mnId == id) return pMP;
+  //for(auto pMP : map.mspMapPoints)
+  for(auto pMP : vectorMapPoints)
+    if(pMP->mnId == id)
+    	return pMP;
+
   // Not found
   return NULL;
 }
 
 KeyFrame *Osmap::getKeyFrame(unsigned int id){
-  for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it)
-	if((*it)->mnId == id)
-	  return *it;
+  //for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it)
+  for(auto pKF : vectorKeyFrames)
+	if(pKF->mnId == id)
+	  return pKF;
 
   // If not found
   return NULL;
@@ -625,19 +638,11 @@ int Osmap::serialize(const vector<KeyFrame*>& vectorKF, SerializedKeyframeArray 
 }
 
 
-/*
-int Osmap::serialize(const set<KeyFrame*>& setKeyFrame, SerializedKeyframeArray &serializedKeyframeArray){
-  for(auto pKF: setKeyFrame)
-    serialize(*pKF, serializedKeyframeArray.add_keyframe());
 
-  return setKeyFrame.size();
-}
-*/
-
-int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, set<KeyFrame*>& setKeyFrames){
+int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, vector<KeyFrame*>& vectorKeyFrames){
   int i, n = serializedKeyframeArray.keyframe_size();
   for(i=0; i<n; i++)
-	setKeyFrames.insert(deserialize(serializedKeyframeArray.keyframe(i)));
+	  vectorKeyFrames.push_back(deserialize(serializedKeyframeArray.keyframe(i)));
 
   return i;
 }
@@ -666,7 +671,8 @@ void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframeFeatures *seri
 
 
 KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyframeFeatures){
-  KeyFrame *pKF = getKeyFrame(serializedKeyframeFeatures.keyframe_id());
+  unsigned int KFid = serializedKeyframeFeatures.keyframe_id();
+  KeyFrame *pKF = getKeyFrame(KFid);
   if(pKF){
 	  unsigned int n = serializedKeyframeFeatures.feature_size();
 	  pKF->N = n;
@@ -684,7 +690,7 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyfram
 		}
 	  }
   } else {
-	  cout << "KeyFrame id not found while deserializing features: skipped.  Inconsistence between keyframes and features serialization files." << endl;
+	  cout << "KeyFrame id "<< KFid << "not found while deserializing features: skipped.  Inconsistence between keyframes and features serialization files." << endl;
   }
   return pKF;
 }
@@ -701,10 +707,13 @@ int Osmap::serialize(const vector<KeyFrame*> &vectorKF, SerializedKeyframeFeatur
 }
 
 
-int Osmap::deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray, set<KeyFrame*> &setKeyFrame){
+int Osmap::deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray){
   int nFeatures = 0, i, n = serializedKeyframeFeaturesArray.feature_size();
-  for(i=0; i<n; i++)
-	nFeatures += deserialize(serializedKeyframeFeaturesArray.feature(i))->N;
+  for(i=0; i<n; i++){
+    KeyFrame *pKF=deserialize(serializedKeyframeFeaturesArray.feature(i));
+	if(pKF)
+		nFeatures += pKF->N;
+  }
 
   return nFeatures;
 }

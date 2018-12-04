@@ -28,7 +28,7 @@ public:
   Mat mDescriptor;
 
   KeyFrame *mpRefKF;
-  map<KeyFrame*,size_t> MapPoint::mObservations;
+  std::map<KeyFrame*,size_t> mObservations;
   void AddObservation(KeyFrame*, int){}
   void SetBadFlag(){}
   void UpdateNormalAndDepth(){}
@@ -56,7 +56,7 @@ public:
   std::map<KeyFrame*, int> mConnectedKeyFrameWeights;
   vector<KeyFrame*> mvpOrderedConnectedKeyFrames;
   void ComputeBoW(){}
-  void SetPose(Mat);
+  void SetPose(Mat){}
   void UpdateConnections(){}
   void SetBadFlag(){}
   void ChangeParent(KeyFrame *pKF){}

@@ -8,6 +8,7 @@
 #include <bitset>
 #include <iterator>
 #include "osmap.pb.h"
+#include "dummymap.h"
 
 /* For debuging and examples porpouses, dummymap.h contains minimal definitions of these orb-slam2 classes:
  * - Map
@@ -30,7 +31,6 @@
 #include "MapPoint.h"
 
  */
-#include "dummymap.h"
 
 /**
  * FEATURES_MESSAGE_LIMIT is the maximum number of features allowed in a single protocol buffer's message, to avoid known size problems in protocol buffers.
@@ -195,10 +195,8 @@ public:
   */
   //Osmap(Map &_map): map(_map){}
   //Osmap(System &_system): system(_system){
-  Osmap(){
-	  map = *system->mpMap;
-	  keyFrameDatabase = *system->mpKeyFrameDatabase;
-  }
+  Osmap(): map(*system->mpMap), keyFrameDatabase(*system->mpKeyFrameDatabase)
+  {}
 
   /**
    * Irons keyframes and mappoints sets in map, before save.
@@ -225,25 +223,6 @@ public:
   void rebuild();
 
 
-
-  /**
-   * Irons keyframes and mappoints sets in map, before save.
-   *
-   * Tests all keyframes in MapPoints.mObservations and mappoints in KeyFrames.mvpMapPoints, checking they are:
-   *
-   * - not bad (!isBad())
-   * - in map (in Map::mspMapPoints and Map::mspKeyFrames)
-   *
-   * Those who not pass this check are eliminated, avoiding serialization of elements not belonging to the map.
-   *
-   * This depuration affects (improves) the actual map in memory.
-   *
-   * Invoked by mapSave.
-   *
-   */
-  void depurate();
-
-  void rebuild();
 
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
@@ -547,9 +526,9 @@ public:
   int serialize(const vector<KeyFrame*>& vKF, SerializedKeyframeFeaturesArray& serializedKeyframeFeaturesArray);
 
   /**
-   * Retrieves all keyframe's features to provided keyframes container, from the specified serialization object.
+   * Retrieves all keyframe's features from the specified serialization object to vectorKeyframe.
    */
-  int deserialize(const SerializedKeyframeFeaturesArray&, vector<KeyFrame*>&);
+  int deserialize(const SerializedKeyframeFeaturesArray&);
 
 
   /**
