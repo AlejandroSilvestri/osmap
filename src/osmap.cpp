@@ -331,9 +331,9 @@ void Osmap::rebuild(){
 		// UpdateConnections to rebuild covisibility graph, in mnId order.
 		pKF->UpdateConnections();
 
-		// If this keyframe is isolated (and isn't keyframe zero), erase it.
+		// If this keyframe is isolated (and it isn't keyframe zero), erase it.
 		if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
-			cout << "Erasing isolated keyframe " << pKF->mnId << endl;
+			cout << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
 			pKF->SetBadFlag();
 		}
 
@@ -384,10 +384,9 @@ void Osmap::rebuild(){
 	 * - Rebuilds many properties with UpdateNormalAndDepth()
 	 */
 	for(MapPoint *pMP : vectorMapPoints){
-
 		// Rebuilds mpRefKF.  Requires mObservations.
 		if(pMP->mObservations.empty()){
-			cout << "MP sin observaciones" << pMP->mnId << ".  Se marca como malo." << endl;
+			cout << "MP " << pMP->mnId << " without observations.  Set bad." << endl;
 			pMP->SetBadFlag();
 			continue;
 		}
@@ -395,9 +394,6 @@ void Osmap::rebuild(){
 		// Asumes the first observation has the lowest mnId.
 		auto pair = (*pMP->mObservations.begin());
 		pMP->mpRefKF = pair.first;
-
-		if(!pMP->mpRefKF)	// Should never be true
-			cout << "Warning: MapPoint " << pMP->mnId << " without mpRefKF!" << endl;
 
 		/* UpdateNormalAndDepth() requieres prior rebuilding of mpRefKF, and rebuilds:
 		 * - mNormalVector
