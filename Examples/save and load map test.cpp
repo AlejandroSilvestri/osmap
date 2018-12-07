@@ -78,16 +78,6 @@ void generateDummyMap(System& system){
  */
 int main(int argc, char **argv){
 
-  // Arguments
-  string filename;
-  int options = 0;
-  if(argc == 1)
-	  filename = "exampleDummyMap";
-  else{
-	  filename = argv[1];
-	  if(argc>2)
-		options = stoi(argv[2]);
-  }
 
   // Creates a fake map with system, mappoints, keyframes and everything to serialize and deserialize it
   System system;
@@ -96,14 +86,23 @@ int main(int argc, char **argv){
   // Save map
   Osmap::system = &system;
   Osmap osmap;	// Create singleton
-  osmap.options = options;	// Set saving options
-  osmap.mapSave(filename);	// Save the map to files
 
-  // mapLoad clears the previous map, the following two lines of coed are redundant but shows you the map is cleared before loading without a trace of doubt.
-  system.mpMap->mspMapPoints.clear();
-  system.mpMap->mspKeyFrames.clear();
+  // Arguments
+  string filename;
+  if(argc == 1)
+	  filename = "exampleDummyMap";
+  else
+	  filename = argv[1];
 
-  // Load map
+  if(argc>2)
+	  osmap.options = stoi(argv[2]);
+  else
+	  osmap.options.set(Osmap::NO_SET_BAD);	// This dummy map doesn't build graphs and connections, this options skips this anomally detection after loading.
+
+  // Save the map to files
+  osmap.mapSave(filename);
+
+  // Load map.  mapLoad clears previous map.
   osmap.mapLoad(filename);
 
   // Show loaded MapPoints

@@ -127,14 +127,11 @@ public:
 	  // Options
 	  NO_LOOPS,	// Pending serializing loops
 	  K_IN_KEYFRAME,	// Implemented. Implicit in file, flag ignored on load.
-	  //RENUM_ID,	// Pending in depuration. Implicit in file, flag ignored on load.  Not clear what is the benefit, since id are saved to file anyway.
 
-	  // Depuration options
-	  NO_DEPURATION,
-	  NO_ERASE_BAD_MAPPOINTS,
-	  NO_APPEND_FOUND_MAPPOINTS,
-	  NO_ERASE_ORPHAN_KEYFRAME_IN_LOOP,
-
+	  // Depuration and rebuild options
+	  NO_DEPURATION,	// Implemented, avoids depurate()
+	  NO_SET_BAD,		// Implemented, avoids SetBad(), used with dummy maps to prevent anomally detection.
+	  NO_APPEND_FOUND_MAPPOINTS,	// Implemented
 
 	  OPTIONS_SIZE	// Not an option
   };
@@ -181,20 +178,12 @@ public:
    */
   vector<KeyFrame*> vectorKeyFrames;
 
-  /**
-  Iterator pointing to last found KeyFrame.
-  Variable pseudoestática usada en Osmap::getKeyFrame , que requiere ser inicializada fuera del método.
-  */
-  //set<KeyFrame*>::iterator itLastKF;
 
-
-  /* Methods, documented on code file.*/
 
   /**
   Only constructor, the only way to set the orb-slam2 map.
+  The static property system must be set before constructing any instance.
   */
-  //Osmap(Map &_map): map(_map){}
-  //Osmap(System &_system): system(_system){
   Osmap(): map(*system->mpMap), keyFrameDatabase(*system->mpKeyFrameDatabase)
   {}
 

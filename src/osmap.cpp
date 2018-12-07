@@ -185,7 +185,7 @@ void Osmap::mapLoad(string baseFilename){
 
 
   // MapPoints
-  vectorMapPoints.clear();
+  vectorMapPoints.clear();	// TODO: destroy each MapPoint to prevent memory leak.
   if(!options[NO_MAPPOINTS_FILE]){
 	  headerFile["mappointsFile"] >> filename;
 	  file.open(filename, ifstream::binary);
@@ -197,7 +197,8 @@ void Osmap::mapLoad(string baseFilename){
   }
 
   // KeyFrames
-  vectorKeyFrames.clear();
+  vectorKeyFrames.clear();// TODO: destroy each KeyFrame to prevent memory leak.
+  //loopsEdgesIds.clear();
   if(!options[NO_KEYFRAMES_FILE]){
 	  // KeyFrames
 	  headerFile["keyframesFile"] >> filename;
@@ -219,6 +220,7 @@ void Osmap::mapLoad(string baseFilename){
 		  bool dataRemaining;
 		  do{
 			  dataRemaining = readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray);
+			  cout << "readDelimitedFrom " << dataRemaining << endl;
 			  cout << "Features deserialized in loop: "
 				<< deserialize(serializedKeyframeFeaturesArray) << endl;
 		  } while(dataRemaining);
@@ -260,15 +262,18 @@ void Osmap::depurate(){
 
 			if(!pMP) continue;	// Ignore if NULL
 
-			if(pMP->mbBad && !options[NO_ERASE_BAD_MAPPOINTS]){	// If MapPoint is bad, NULL it
-				cout << "ERASE_BAD_MAPPOINTS: Nullifying bad MapPoint " << pMP->mnId << " in KeyFrame " << pKF->mnId << endl;
+			if(pMP->mbBad){
+				// If MapPoint is bad, NULL it in keyframe's observations.
+				cout << "Nullifying bad MapPoint " << pMP->mnId << " in KeyFrame " << pKF->mnId << endl;
 				pMPs[i] = NULL;
-			} else if(!map.mspMapPoints.count(pMP) && !options[NO_APPEND_FOUND_MAPPOINTS]){	// If MapPoint is not in map, append it to the map
+			} else if(!map.mspMapPoints.count(pMP) && !options[NO_APPEND_FOUND_MAPPOINTS]){
+				// If MapPoint is not in map, append it to the map
 				map.mspMapPoints.insert(pMP);
 				cout << "APPEND_FOUND_MAPPOINTS: MapPoint " << pMP->mnId << " added to map. ";
 			}
 		}
 
+		/*
 		// NULL out bad loop edges.  Loop edges are KeyFrames.
 		if(!options[NO_ERASE_ORPHAN_KEYFRAME_IN_LOOP])
 		  for(auto &pKFLoop: pKF->mspLoopEdges)
@@ -276,6 +281,7 @@ void Osmap::depurate(){
 			  cout << "ERASE_ORPHAN_KEYFRAME_IN_LOOP: Nullifying loop edge " << pKFLoop->mnId << " from keyframe " << pKF->mnId << endl;
 			  pKF->mspLoopEdges.erase(pKFLoop);
 			}
+		*/
 	}
 }
 
@@ -288,6 +294,7 @@ void Osmap::rebuild(){
 	 */
 
 	keyFrameDatabase.clear();
+
 	for(KeyFrame *pKF : vectorKeyFrames){
 		pKF->mbNotErase = !pKF->mspLoopEdges.empty();
 
@@ -333,8 +340,12 @@ void Osmap::rebuild(){
 
 		// If this keyframe is isolated (and it isn't keyframe zero), erase it.
 		if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
-			cout << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
-			pKF->SetBadFlag();
+			cout << "Isolated keyframe " << pKF->mnId;
+			if(!options[NO_SET_BAD]){
+				pKF->SetBadFlag();
+				cout << " set bad.";
+			}
+			cout << endl;
 		}
 
 		// Rebuilds MapPoints obvervations
@@ -386,8 +397,12 @@ void Osmap::rebuild(){
 	for(MapPoint *pMP : vectorMapPoints){
 		// Rebuilds mpRefKF.  Requires mObservations.
 		if(pMP->mObservations.empty()){
-			cout << "MP " << pMP->mnId << " without observations.  Set bad." << endl;
-			pMP->SetBadFlag();
+			cout << "MP " << pMP->mnId << " without observations.";
+			if(!options[NO_SET_BAD]){
+				pMP->SetBadFlag();
+				cout << "  Set bad.";
+			}
+			cout << endl;
 			continue;
 		}
 
@@ -395,7 +410,7 @@ void Osmap::rebuild(){
 		auto pair = (*pMP->mObservations.begin());
 		pMP->mpRefKF = pair.first;
 
-		/* UpdateNormalAndDepth() requieres prior rebuilding of mpRefKF, and rebuilds:
+		/* UpdateNormalAndDepth() requires prior rebuilding of mpRefKF, and rebuilds:
 		 * - mNormalVector
 		 * - mfMinDistance
 		 * - mfMaxDistance
@@ -605,6 +620,11 @@ void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframe *serializedKe
 	serialize(keyframe.mK, serializedKeyframe->mutable_kmatrix());
   else
 	serializedKeyframe->set_kindex(keyframeid2vectork[keyframe.mnId]);
+  if(!keyframe.mspLoopEdges.empty())
+	for(auto loopKF : keyframe.mspLoopEdges)
+		// Only serialize id of keyframes already serialized, to easy deserialization.
+		if(keyframe.mnId > loopKF->mnId)
+			serializedKeyframe->add_loopedgesids(loopKF->mnId);
 }
 
 KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
@@ -622,6 +642,16 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
   else
 	  // serialized with default no K_IN_KEYFRAME option, K list in yaml
 	  pKeyframe->mK = *vectorK[serializedKeyframe.kindex()];
+
+  if(serializedKeyframe.loopedgesids_size()){
+	// Only ids of keyframes already deserialized and present on vectorKeyFrames
+	for(int i=0; i<serializedKeyframe.loopedgesids_size(); i++){
+	  unsigned int loopEdgeId = serializedKeyframe.loopedgesids(i);
+	  KeyFrame *loopEdgeKF = getKeyFrame(loopEdgeId);
+	  loopEdgeKF->mspLoopEdges.insert(pKeyframe);
+	  pKeyframe->mspLoopEdges.insert(loopEdgeKF);
+	}
+  }
 
   return pKeyframe;
 }
@@ -717,7 +747,7 @@ int Osmap::deserialize(const SerializedKeyframeFeaturesArray &serializedKeyframe
 
 
 // Kendon Varda's code to serialize many messages in one file, from https://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
-
+// Returns false if error, true if ok.
 bool Osmap::writeDelimitedTo(
     const google::protobuf::MessageLite& message,
     google::protobuf::io::ZeroCopyOutputStream* rawOutput
@@ -729,8 +759,10 @@ bool Osmap::writeDelimitedTo(
   // Write the size.
   const int size = message.ByteSize();
   output.WriteVarint32(size);
+  cout << "Message size " << size << endl;
 
   uint8_t* buffer = output.GetDirectBufferForNBytesAndAdvance(size);
+  cout << "Buffer " << buffer << endl;
   if (buffer != NULL) {
     // Optimization:  The message fits in one buffer, so use the faster
     // direct-to-array serialization path.

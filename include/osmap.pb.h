@@ -1137,6 +1137,18 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
 
   // accessors -------------------------------------------------------
 
+  // repeated uint32 loopedgesids = 5;
+  int loopedgesids_size() const;
+  void clear_loopedgesids();
+  static const int kLoopedgesidsFieldNumber = 5;
+  ::google::protobuf::uint32 loopedgesids(int index) const;
+  void set_loopedgesids(int index, ::google::protobuf::uint32 value);
+  void add_loopedgesids(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      loopedgesids() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_loopedgesids();
+
   // .SerializedPose pose = 2;
   bool has_pose() const;
   void clear_pose();
@@ -1149,10 +1161,10 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
   ::SerializedPose* mutable_pose();
   void set_allocated_pose(::SerializedPose* pose);
 
-  // .SerializedK kmatrix = 4;
+  // .SerializedK kmatrix = 3;
   bool has_kmatrix() const;
   void clear_kmatrix();
-  static const int kKmatrixFieldNumber = 4;
+  static const int kKmatrixFieldNumber = 3;
   private:
   const ::SerializedK& _internal_kmatrix() const;
   public:
@@ -1167,15 +1179,15 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
   ::google::protobuf::uint32 id() const;
   void set_id(::google::protobuf::uint32 value);
 
-  // uint32 kindex = 3;
+  // uint32 kindex = 4;
   void clear_kindex();
-  static const int kKindexFieldNumber = 3;
+  static const int kKindexFieldNumber = 4;
   ::google::protobuf::uint32 kindex() const;
   void set_kindex(::google::protobuf::uint32 value);
 
-  // double timestamp = 5;
+  // double timestamp = 6;
   void clear_timestamp();
-  static const int kTimestampFieldNumber = 5;
+  static const int kTimestampFieldNumber = 6;
   double timestamp() const;
   void set_timestamp(double value);
 
@@ -1183,6 +1195,8 @@ class SerializedKeyframe : public ::google::protobuf::Message /* @@protoc_insert
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > loopedgesids_;
+  mutable int _loopedgesids_cached_byte_size_;
   ::SerializedPose* pose_;
   ::SerializedK* kmatrix_;
   ::google::protobuf::uint32 id_;
@@ -2189,21 +2203,7 @@ inline void SerializedKeyframe::set_allocated_pose(::SerializedPose* pose) {
   // @@protoc_insertion_point(field_set_allocated:SerializedKeyframe.pose)
 }
 
-// uint32 kindex = 3;
-inline void SerializedKeyframe::clear_kindex() {
-  kindex_ = 0u;
-}
-inline ::google::protobuf::uint32 SerializedKeyframe::kindex() const {
-  // @@protoc_insertion_point(field_get:SerializedKeyframe.kindex)
-  return kindex_;
-}
-inline void SerializedKeyframe::set_kindex(::google::protobuf::uint32 value) {
-  
-  kindex_ = value;
-  // @@protoc_insertion_point(field_set:SerializedKeyframe.kindex)
-}
-
-// .SerializedK kmatrix = 4;
+// .SerializedK kmatrix = 3;
 inline bool SerializedKeyframe::has_kmatrix() const {
   return this != internal_default_instance() && kmatrix_ != NULL;
 }
@@ -2257,7 +2257,51 @@ inline void SerializedKeyframe::set_allocated_kmatrix(::SerializedK* kmatrix) {
   // @@protoc_insertion_point(field_set_allocated:SerializedKeyframe.kmatrix)
 }
 
-// double timestamp = 5;
+// uint32 kindex = 4;
+inline void SerializedKeyframe::clear_kindex() {
+  kindex_ = 0u;
+}
+inline ::google::protobuf::uint32 SerializedKeyframe::kindex() const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframe.kindex)
+  return kindex_;
+}
+inline void SerializedKeyframe::set_kindex(::google::protobuf::uint32 value) {
+  
+  kindex_ = value;
+  // @@protoc_insertion_point(field_set:SerializedKeyframe.kindex)
+}
+
+// repeated uint32 loopedgesids = 5;
+inline int SerializedKeyframe::loopedgesids_size() const {
+  return loopedgesids_.size();
+}
+inline void SerializedKeyframe::clear_loopedgesids() {
+  loopedgesids_.Clear();
+}
+inline ::google::protobuf::uint32 SerializedKeyframe::loopedgesids(int index) const {
+  // @@protoc_insertion_point(field_get:SerializedKeyframe.loopedgesids)
+  return loopedgesids_.Get(index);
+}
+inline void SerializedKeyframe::set_loopedgesids(int index, ::google::protobuf::uint32 value) {
+  loopedgesids_.Set(index, value);
+  // @@protoc_insertion_point(field_set:SerializedKeyframe.loopedgesids)
+}
+inline void SerializedKeyframe::add_loopedgesids(::google::protobuf::uint32 value) {
+  loopedgesids_.Add(value);
+  // @@protoc_insertion_point(field_add:SerializedKeyframe.loopedgesids)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SerializedKeyframe::loopedgesids() const {
+  // @@protoc_insertion_point(field_list:SerializedKeyframe.loopedgesids)
+  return loopedgesids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SerializedKeyframe::mutable_loopedgesids() {
+  // @@protoc_insertion_point(field_mutable_list:SerializedKeyframe.loopedgesids)
+  return &loopedgesids_;
+}
+
+// double timestamp = 6;
 inline void SerializedKeyframe::clear_timestamp() {
   timestamp_ = 0;
 }

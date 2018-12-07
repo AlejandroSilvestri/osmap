@@ -60,11 +60,12 @@ message SerializedMappointArray{
 
 // KeyFrame, all fields optional, should provide pose at least.
 message SerializedKeyframe{
-  uint32 id             = 1;  // mnId
-  SerializedPose pose   = 2;  // mTcw
-  uint32 kindex         = 3;  // index to matrix list K
-  SerializedK kmatrix	= 4;  // K matrix, alternative to index k
-  double timestamp		= 5;  // Time stamp
+  uint32 id             		= 1;  // mnId
+  SerializedPose pose   		= 2;  // mTcw
+  SerializedK kmatrix			= 3;  // K matrix, alternative to index k
+  uint32 kindex         		= 4;  // index to matrix list K, ignored if kmatrix is present
+  repeated uint32 loopedgesids 	= 5;  // indexes to keyframes connected in a loop
+  double timestamp				= 6;  // Time stamp
 }
 
 message SerializedKeyframeArray{
