@@ -94,10 +94,13 @@ void Osmap::mapSave(string baseFilename){
 
 		  // Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kendon Varda's function
 		  int nFeatures = 0;
+
+		  // This Protocol Buffers stream must be deleted before closing file.  It happens automatically at }.
+		  ::google::protobuf::io::OstreamOutputStream protocolbuffersStream(&file);
 		  vector<KeyFrame*> vectorBlock;
 		  vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
+
 		  auto it = vectorKeyFrames.begin();
-		  auto *googleStream = new ::google::protobuf::io::OstreamOutputStream(&file);
 		  while(it != vectorKeyFrames.end()){
 			  unsigned int n = (*it)->N;
 			  vectorBlock.clear();
@@ -105,21 +108,22 @@ void Osmap::mapSave(string baseFilename){
 				  vectorBlock.push_back(*it);
 				  ++it;
 				  if(it == vectorKeyFrames.end()) break;
-				  KeyFrame* KF = *it;
-				  n += KF->N;
 				  //n += (*it)->N;
+				  KeyFrame *KF = *it;
+				  n += KF->N;
 			  } while(n <= FEATURES_MESSAGE_LIMIT);
 
 			  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 			  nFeatures += serialize(vectorBlock, serializedKeyframeFeaturesArray);
-			  writeDelimitedTo(serializedKeyframeFeaturesArray, googleStream);
+			  cout << writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream) << " (1 is ok writeDelimitedTo)" << endl;
 		  }
 		  headerFile << "nFeatures" << nFeatures;
 	  }else{
 		  options.set(FEATURES_FILE_NOT_DELIMITED);
 		  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 		  headerFile << "nFeatures" << serialize(vectorKeyFrames, serializedKeyframeFeaturesArray);
-		  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)) {/*error*/}
+		  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file))
+			  cerr << "Error while serializing features file without delimitation." << endl;
 	  }
 	  file.close();
   }
@@ -220,7 +224,7 @@ void Osmap::mapLoad(string baseFilename){
 		  bool dataRemaining;
 		  do{
 			  dataRemaining = readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray);
-			  cout << "readDelimitedFrom " << dataRemaining << endl;
+			  cout << "readDelimitedFrom data remaining " << dataRemaining << endl;
 			  cout << "Features deserialized in loop: "
 				<< deserialize(serializedKeyframeFeaturesArray) << endl;
 		  } while(dataRemaining);
@@ -752,17 +756,17 @@ bool Osmap::writeDelimitedTo(
     const google::protobuf::MessageLite& message,
     google::protobuf::io::ZeroCopyOutputStream* rawOutput
 ){
-  cout << "call to writeDelimitedTo" << endl;
+  //cout << "call to writeDelimitedTo" << endl;
   // We create a new coded stream for each message.  Don't worry, this is fast.
   google::protobuf::io::CodedOutputStream output(rawOutput);
 
   // Write the size.
   const int size = message.ByteSize();
   output.WriteVarint32(size);
-  cout << "Message size " << size << endl;
+  //cout << "Message size " << size << endl;
 
   uint8_t* buffer = output.GetDirectBufferForNBytesAndAdvance(size);
-  cout << "Buffer " << buffer << endl;
+  //cout << "Fast buffer? " << (buffer!= NULL) << endl;
   if (buffer != NULL) {
     // Optimization:  The message fits in one buffer, so use the faster
     // direct-to-array serialization path.
@@ -770,9 +774,12 @@ bool Osmap::writeDelimitedTo(
   } else {
     // Slightly-slower path when the message is multiple buffers.
     message.SerializeWithCachedSizes(&output);
-    if (output.HadError()) return false;
+    if (output.HadError()){
+      cerr << "Error in writeDelimitedTo." << endl;
+      return false;
+    }
   }
-
+  //cout << "Bytes serializados: " << output.ByteCount() << endl;
   return true;
 }
 
@@ -791,6 +798,7 @@ bool Osmap::readDelimitedFrom(
   // Read the size.
   uint32_t size;
   if (!input.ReadVarint32(&size)) return false;
+  cout << "Tamaño del campo " << size << endl;
 
   // Tell the stream not to read beyond that size.
   google::protobuf::io::CodedInputStream::Limit limit =
