@@ -41,11 +41,12 @@ void generateDummyMap(System& system){
 	  }
 
 	  // Generate KeyFrames
-	  KeyFrame *pKF;
+	  KeyFrame *pKF, *pKF2;
 	  Mat K = Mat::eye(3,3,CV_32F);
 	  auto itMP = pMap->mspMapPoints.begin();
 	  for(int i=0; i<N_KEYFRAMES; i++){
 		  pKF = new KeyFrame();
+		  if(!i) pKF2 = pKF;
 		  pKF->N = N_FEATURES;
 		  pKF->mK = K;
 		  pKF->mTcw = Mat::eye(4,4,CV_32F);
@@ -63,6 +64,12 @@ void generateDummyMap(System& system){
 		  }
 		  pMap->mspKeyFrames.insert(pKF);
 	  }
+
+	  // Add a loop closure between 1º and last keframes
+	  pKF ->mspLoopEdges.insert(pKF2);
+	  pKF2->mspLoopEdges.insert(pKF);
+
+
 	  KeyFrame::nNextId = N_KEYFRAMES;
 	  pMap->mnMaxKFid = N_KEYFRAMES - 1;
 
@@ -112,8 +119,12 @@ int main(int argc, char **argv){
 
   // Show loaded KeyFrames
   cout << "KeyFrames retrieved: " << endl;
-  for(auto pKF : system.mpMap->mspKeyFrames)
-    cout << "mnId: " << pKF->mnId << ", N: " << pKF->N << "\nmTcw:\n" << pKF->mTcw << "\n\nmDescriptors:\n" << pKF->mDescriptors << endl << endl;
+  for(auto pKF : system.mpMap->mspKeyFrames){
+    cout << "mnId: " << pKF->mnId << ", N: " << pKF->N << "\nmTcw:\n" << pKF->mTcw << "\n\nmDescriptors:\n" << pKF->mDescriptors << endl;
+    if(pKF->mspLoopEdges.size())
+    	cout << "Loop edge with keyframe " << (*pKF->mspLoopEdges.begin())->mnId << endl;
+    cout << endl;
+  }
 
   cout << endl << "Closing example.cpp" << endl;
   return 0;

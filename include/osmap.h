@@ -402,15 +402,13 @@ public:
   MapPoint *deserialize(const SerializedMappoint& serializedMappoint);
 
   /**
-   * TODO: doc
-  Serialized array of MapPoints.  This can make a file, or be appended to a multiobject file.
+  Serialized array of MapPoints.
+  The serialized message can be saved to an exclusive file, or be appended to a multiobject file.
   @param start Inclusive begining of the range of MapPoints to be serialized.  Usually map.mspMapPoints.begin().
   @param end Exclusive end of the range of MapPoints to be serialized.  Usually map.mspMapPoints.end().
   @param serializedMapPointArray message to set up.  Data comes from the range iterated.
   @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
   */
-  //int serialize(iterator<input_iterator_tag, MapPoint*> start, iterator<input_iterator_tag, MapPoint*> end, SerializedMappointArray &serializedMapPointArray);
-  //int serialize(const set<MapPoint*>&, SerializedMappointArray &);
   int serialize(const vector<MapPoint*>&, SerializedMappointArray &);
 
   /**
@@ -420,30 +418,15 @@ public:
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  //int deserialize(const SerializedMappointArray &serializedMapPointArray, iterator<output_iterator_tag, MapPoint*> output);
   int deserialize(const SerializedMappointArray &, vector<MapPoint*>&);
-  /**
-  Saves MapPoints to file.
-  @param file output stream of the file being written.
-  @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
-  */
-  //int serializeMapPointFile(fstream*);
-
-  /**
-  Retrieves MapPoints from a file.
-  @param file input stream of the file being read.
-  @returns Number of MapPoints retrieved or -1 if error.
-  Map's MapPoints set should be emptied before calling this method.
-  */
-  //int deserializeMapPointFile(fstream *file);
-
-
 
 
 
   // KeyFrame ====================================================================================================
 
   /**
+  Serialize a KeyFrame.
+  Serialization and deserialization assume KeyFrames are processed in ascending id order.
   */
   void serialize(const KeyFrame&, SerializedKeyframe*);
 
@@ -456,10 +439,10 @@ public:
 
   /**
   Serialized array of KeyFrames.  This can make a file, or be appended to a multiobject file.
+  KeyFrames will be serialized in ascending id order.
   @param serializedKeyFrameArray message to set up.  Data comes from map.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
   */
-  //int serialize(const set<KeyFrame*>&, SerializedKeyframeArray&);
   int serialize(const vector<KeyFrame*>&, SerializedKeyframeArray&);
 
   /**
@@ -470,21 +453,6 @@ public:
   */
   int deserialize(const SerializedKeyframeArray&, vector<KeyFrame*>&);
 
-
-  /**
-  Saves KeyFrames to file.
-  @param file output stream of the file being written.
-  @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of KeyFrames in the map.
-  */
-  //int serializeKeyFrameFile(fstream *file);
-
-  /**
-  Retrieves Keyframes from a file.
-  @param file input stream of the file being read.
-  @returns Number of Keyframes retrieved or -1 if error.
-  Map's Keyframes set should be emptied before calling this method.
-  */
-  //int deserializeKeyframeFile(fstream *file);
 
 
   // Feature ====================================================================================================
@@ -528,6 +496,8 @@ public:
   @returns true if ok, false if error.
 
   Kendon Varda code to serialize many messages in one file, from https://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
+
+  When writing to a file, *rawOutput object must be deleted before closing the file, to ensure flushing.
   */
   bool writeDelimitedTo(
     const google::protobuf::MessageLite& message,
