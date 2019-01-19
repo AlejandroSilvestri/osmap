@@ -206,8 +206,8 @@ public:
 
   /**
    * Works on vectorMapPoints and vectorKeyFrames.
-   * After rebuild the elements in these vector should be copied to the map sets.
-   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp shows.
+   * After rebuilding, the elements in these vector should be copied to the map sets.
+   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp show.
    */
   void rebuild();
 

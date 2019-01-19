@@ -115,7 +115,8 @@ void Osmap::mapSave(string baseFilename){
 
 			  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 			  nFeatures += serialize(vectorBlock, serializedKeyframeFeaturesArray);
-			  cout << writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream) << " (1 is ok writeDelimitedTo)" << endl;
+			  writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream);
+			  //cout << writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream) << " (1 is ok writeDelimitedTo)" << endl;
 		  }
 		  headerFile << "nFeatures" << nFeatures;
 	  }else{
@@ -221,13 +222,22 @@ void Osmap::mapLoad(string baseFilename){
 	  auto *googleStream = new ::google::protobuf::io::IstreamInputStream(&file);
 	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
 	  if(options[FEATURES_FILE_DELIMITED]){
+		  while(true)
+			if(readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray))
+				cout << "Features deserialized in loop: "
+					 << deserialize(serializedKeyframeFeaturesArray) << endl;
+			else
+				break;
+
+/*
 		  bool dataRemaining;
 		  do{
 			  dataRemaining = readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray);
-			  cout << "readDelimitedFrom data remaining " << dataRemaining << endl;
+			  //cout << "readDelimitedFrom data remaining " << dataRemaining << endl;
 			  cout << "Features deserialized in loop: "
 				<< deserialize(serializedKeyframeFeaturesArray) << endl;
 		  } while(dataRemaining);
+*/
 	  } else {
 		  // Not delimited, pure Protocol Buffers
 		  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
@@ -296,7 +306,8 @@ void Osmap::rebuild(){
 	 * - UpdateConnections to rebuild covisibility graph
 	 * - MapPoint::AddObservation on each point to rebuild MapPoint:mObservations y MapPoint:mObs
 	 */
-
+	cout << "Rebuilding..." << endl;
+	cout << "Warning: rebuilding on fake objects will set bad most MapPoints and KeyFrames." << endl;
 	keyFrameDatabase.clear();
 
 	for(KeyFrame *pKF : vectorKeyFrames){
@@ -390,8 +401,9 @@ void Osmap::rebuild(){
 						break;
 					}
 		nParentsTotal += nParents;
-		//cout << "Enramados " << nParents << endl;
+		cout << "Parents assigned in this loop: " << nParents << endl;
 	}
+	cout << "Parents assigned in total: " << nParentsTotal << endl;
 
 	/*
 	 * On every MapPoint:
@@ -787,7 +799,7 @@ bool Osmap::readDelimitedFrom(
     google::protobuf::io::ZeroCopyInputStream* rawInput,
     google::protobuf::MessageLite* message
 ){
-  cout << "call to readDelimitedFrom" << endl;
+  //cout << "call to readDelimitedFrom" << endl;
 
   // We create a new coded stream for each message.  Don't worry, this is fast,
   // and it makes sure the 64MB total size limit is imposed per-message rather
@@ -798,7 +810,6 @@ bool Osmap::readDelimitedFrom(
   // Read the size.
   uint32_t size;
   if (!input.ReadVarint32(&size)) return false;
-  cout << "Tamaño del campo " << size << endl;
 
   // Tell the stream not to read beyond that size.
   google::protobuf::io::CodedInputStream::Limit limit =
