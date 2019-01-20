@@ -15,6 +15,7 @@ using namespace cv;
 #define N_FEATURES 19	// Number of fake features in each KeyFrame
 
 unsigned int MapPoint::nNextId = 0;
+unsigned int KeyFrame::nNextId = 0;
 
 
 void generateDummyMap(System& system){
@@ -91,8 +92,7 @@ int main(int argc, char **argv){
   generateDummyMap(system);
 
   // Save map
-  Osmap::system = &system;
-  Osmap osmap;	// Create singleton
+  Osmap osmap(*system.mpMap, *system.mpKeyFrameDatabase);
 
   // Arguments
   string filename;

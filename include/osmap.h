@@ -10,6 +10,8 @@
 #include "osmap.pb.h"
 #include "dummymap.h"
 
+class Map;
+class KeyFrameDatabase;
 /* For debuging and examples porpouses, dummymap.h contains minimal definitions of these orb-slam2 classes:
  * - Map
  * - MapPoint
@@ -147,9 +149,6 @@ public:
   /** Database of keyframes to be build after loading. */
   KeyFrameDatabase &keyFrameDatabase;
 
-  /** ORB-SLAM2 System, where to grab map and keyframedatabase. */
-  static System *system;
-
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
   This vector temporarily store different K for serialization and deserialization.  This avoids serializing one K per KeyFrame.
@@ -182,9 +181,8 @@ public:
 
   /**
   Only constructor, the only way to set the orb-slam2 map.
-  The static property system must be set before constructing any instance.
   */
-  Osmap(): map(*system->mpMap), keyFrameDatabase(*system->mpKeyFrameDatabase)
+  Osmap(Map &mpMap, KeyFrameDatabase &mpKeyFrameDatabase): map(mpMap), keyFrameDatabase(mpKeyFrameDatabase)
   {}
 
   /**

@@ -7,12 +7,9 @@
 
 #define OPTION(OP) if(options[OP]) headerFile << #OP;
 
-
 using namespace std;
 using namespace cv;
 
-unsigned int KeyFrame::nNextId = 0;
-System *Osmap::system;
 
 void Osmap::mapSave(string baseFilename){
   // Map depuration
