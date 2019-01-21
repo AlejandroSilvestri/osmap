@@ -15,6 +15,8 @@
 using namespace std;
 using namespace cv;
 
+namespace ORB_SLAM2{
+
 class KeyFrame;
 
 class MapPoint{
@@ -83,4 +85,7 @@ public:
 	Map *mpMap;
 	KeyFrameDatabase *mpKeyFrameDatabase;
 };
+
+}	// namespace ORB_SLAM2
+
 #endif /* DUMMYMAP_H_ */

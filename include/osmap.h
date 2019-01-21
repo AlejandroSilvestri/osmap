@@ -1,7 +1,7 @@
 #ifndef OSMAP_H_
 #define OSMAP_H_
 
-//#include <string>
+#include <string>
 #include <set>
 #include <vector>
 #include <map>
@@ -9,6 +9,8 @@
 #include <iterator>
 #include "osmap.pb.h"
 #include "dummymap.h"
+
+namespace ORB_SLAM2{
 
 class Map;
 class KeyFrameDatabase;
@@ -26,10 +28,8 @@ class KeyFrameDatabase;
  *
  * In order to append osmap to orb-slam2, this include must be replaced by the following:
 
-#include <set>
 #include <opencv2/core.hpp>
 #include "KeyFrame.h"
-#include "Map.h"
 #include "MapPoint.h"
 
  */
@@ -515,5 +515,7 @@ public:
     google::protobuf::MessageLite* message
   );
 };
+
+}	// namespace ORB_SLAM2
 
 #endif /* OSMAP_H_ */

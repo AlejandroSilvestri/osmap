@@ -9,6 +9,7 @@ Serialization example of ficticious MapPoints.
 
 using namespace std;
 using namespace cv;
+using namespace ORB_SLAM2;
 
 #define N_MAPPOINTS 100	// Number of fake MapPoints in map
 #define N_KEYFRAMES 11	// Number of fake KeyFrames in map

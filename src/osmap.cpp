@@ -7,9 +7,7 @@
 
 #define OPTION(OP) if(options[OP]) headerFile << #OP;
 
-using namespace std;
-using namespace cv;
-
+namespace ORB_SLAM2{
 
 void Osmap::mapSave(string baseFilename){
   // Map depuration
@@ -821,3 +819,5 @@ bool Osmap::readDelimitedFrom(
 
   return true;
 }
+
+}	// namespace ORB_SLAM2
