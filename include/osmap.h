@@ -1,38 +1,47 @@
+/**
+* This file is part of OSMAP.
+*
+* Copyright (C) 2018-2019 Alejandro Silvestri <alejandrosilvestri at gmail>
+* For more information see <https://github.com/AlejandroSilvestri/osmap>
+*
+* OSMAP is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* OSMAP is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with OSMAP. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef OSMAP_H_
 #define OSMAP_H_
 
-#include <string>
+//#include <string>
 #include <set>
 #include <vector>
 #include <map>
 #include <bitset>
 #include <iterator>
 #include "osmap.pb.h"
-#include "dummymap.h"
+#include <set>
+#include <opencv2/core.hpp>
+#include "System.h"
+#include "Tracking.h"
 
 namespace ORB_SLAM2{
 
+class KeyFrame;
 class Map;
+class MapPoint;
 class KeyFrameDatabase;
-/* For debuging and examples porpouses, dummymap.h contains minimal definitions of these orb-slam2 classes:
- * - Map
- * - MapPoint
- * - KeyFrame
- *
- * dummymap.h allows osmap to run without orb-slam.  This is handy for:
- * - debuging porpouses
- * - running the examples
- * - implementing your own map analyser
- *
- * This way you should be able to serialize maps in your own application without the need of including the whole orb-slam2 code.
- *
- * In order to append osmap to orb-slam2, this include must be replaced by the following:
+class System;
+class Frame;
 
-#include <opencv2/core.hpp>
-#include "KeyFrame.h"
-#include "MapPoint.h"
-
- */
 
 /**
  * FEATURES_MESSAGE_LIMIT is the maximum number of features allowed in a single protocol buffer's message, to avoid known size problems in protocol buffers.
@@ -45,6 +54,7 @@ class KeyFrameDatabase;
 
 using namespace std;
 using namespace cv;
+
 
 /**
 This is a class for a singleton attached to ORB-SLAM2's map.
@@ -149,6 +159,12 @@ public:
   /** Database of keyframes to be build after loading. */
   KeyFrameDatabase &keyFrameDatabase;
 
+  /** System, needed to populate new keyframes after construction on deserialization, with some configuration values.*/
+  System &system;
+
+  /** Any frame, to copy configuration values from.*/
+  Frame &currentFrame;
+
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
   This vector temporarily store different K for serialization and deserialization.  This avoids serializing one K per KeyFrame.
@@ -182,8 +198,13 @@ public:
   /**
   Only constructor, the only way to set the orb-slam2 map.
   */
-  Osmap(Map &mpMap, KeyFrameDatabase &mpKeyFrameDatabase): map(mpMap), keyFrameDatabase(mpKeyFrameDatabase)
-  {}
+  //Osmap(Map &mpMap, KeyFrameDatabase &mpKeyFrameDatabase): map(mpMap), keyFrameDatabase(mpKeyFrameDatabase){};
+  Osmap(System &_system):
+  map(*_system.mpMap),
+  keyFrameDatabase(*_system.mpKeyFrameDatabase),
+  system(_system),
+  currentFrame(_system.mpTracker->mCurrentFrame)
+  {};
 
   /**
    * Irons keyframes and mappoints sets in map, before save.
@@ -213,33 +234,45 @@ public:
 
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
-  If the path leads to a .yaml file name, mapSave takes it as the header file, and saves all other files in its folder.
-  If path doesn't have an extension (it doesn't end with .yaml) the path is adopted as a folder, if it doesn't exists saveMap creates it, and saves the map's files in it.
-  Any existing file is rewritten.
+  If filename has .yaml extension, mapSave will remove it to get the actual basefilename.
+  Any existing file is rewritten without warning.
   This is the entry point to save a map.  This method uses the Osmap object to serialize the map to files.
   Before calling this method:
   - ORB-SLAM2 threads must be stopped to assure map is not being modify while saving.
   - Actual directory must be set to the desired destination.  Often a new directory exclusive for the map is created.
   - options must be set.
 
-  @param basefilename File name without extenion.  Many files will be created with this filename and different extensions.
+  @param basefilename File name without extenion or with .yaml extension.  Many files will be created with this basefilename and different extensions.
 
   MapSave copy map's mappoints and keyframes sets to vectorMapPoints and vectorKeyFrames and sort them, to save objects in ascending id order.
   MapLoad doesn't use those vector.
 
   If features number exceed an arbitrary maximum, in order to avoid size related protocol buffer problems,  mapSave limit the size of protocol buffer's messages saving features file in delimited form, using Kendon Varda writeDelimitedTo function.
   */
-  void mapSave(std::string basefilename);
+  void mapSave(string basefilename);
 
   /**
   Loads the map from a set of files in the folder whose name is provided as an argument.
   This is the entry point to load a map.  This method uses the Osmap object to serialize the map to files.
+
+  @param yamlFilename file name of .yaml file (including .yaml extension) describing a map.
+
   Only these properties are read from yaml:
   - file nKeyframes
   - options
   - camera calibration matrices K
+  - other files' names
+
+  Before calling this method, threads must be paused.
   */
-  void mapLoad(std::string);
+  void mapLoad(string yamlFilename);
+
+
+  /**
+   * Clear temporary vectors.
+   *
+   */
+  void clearVectors();
 
   /**
   Traverse map's keyframes looking for different K matrices, and stores them into vectorK.
@@ -320,14 +353,15 @@ public:
   // Descriptor ====================================================================================================
 
   /**
-  Serializes a descriptor, an 1x8 int Mat (256 bits).
+  Serializes a descriptor, an 1x32 uchar Mat (256 bits).
+  Protocol Buffers doesn't have a Byte type, so it's serialized to 8 int.
   Exactly 8 int required.
   */
   void serialize(const Mat&, SerializedDescriptor*);
 
 
   /**
-  Reconstruct a descriptor, an 1x8 int Mat (256 bits).
+  Reconstruct a descriptor, an 1x32 uchar Mat (256 bits).
   Exactly 8 int required.
   */
   void deserialize(const SerializedDescriptor&, Mat&);
