@@ -1,6 +1,6 @@
-# Work in progress, not ready yet.
-
 # Osmap
+
+[Osmap documentation with Doxygen](https://alejandrosilvestri.github.io/osmap/html/class_o_r_b___s_l_a_m2_1_1_osmap.html)
 
 OSMAP stands for Orb-Slam2 Map.  It's a serialization addendum for ORB-SLAM2.
 
