@@ -270,8 +270,8 @@ Public Attributes</h2></td></tr>
 <li>filename.features</li>
 <li>filename.yaml, the header</li>
 </ul>
-<p>These files execpt .yaml store binary data using an adaptation of protocol buffer.</p>
-<p>Some of these objects has another object like KeyPoint, nested serialized with the appropiate serialize signature.</p>
+<p>The header is the only text file, in yaml format. Other files are in binary format. keyframes, mappoints and features files consist on a single protocol buffers 3 message. features file can also be an ad hoc delimited array of protocol buffers 3 messages.</p>
+<p>Protocol buffers messages format can be found in osmap.proto file. Some of these objects has another object like KeyPoint, nested serialized with the appropiate serialize signature.</p>
 <p>Methods:</p>
 <ul>
 <li>serialize(object, message): this method provides many signatures for many pairs {object, message},const where object, passed by reference, is the instance to be serialized (Mat, MapPoint, KeyFrame, etc.) and message is the protocol buffers destination object.</li>
