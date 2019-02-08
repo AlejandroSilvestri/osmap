@@ -80,10 +80,16 @@ public:
 };
 
 
+class Tracker{
+public:
+	Frame mCurrentFrame;
+};
+
 class System{
 public:
 	Map *mpMap;
 	KeyFrameDatabase *mpKeyFrameDatabase;
+	Tracker *mpTracker;
 };
 
 }	// namespace ORB_SLAM2
