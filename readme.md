@@ -29,7 +29,12 @@ osmap.pb.cc and osmap.pb.h are protocol buffer automatically generated code that
 
 osmap.cpp and osmap.h defines the osmap class responsible for saving and loading maps.
 
-text folder has some test files, which create some dummy map, saves it, loads it and show its values to verify the whole process.
+OsmapOrbslamAdapter.h is provided to integrate Osmap with OrbSlam2.
+
+Alternatively, you can use dummymap.h to load a map without having to compile you application with orbslam2.  You can analize maps without orbslam2.
+
+Example folder has some test files, which create some dummy map, saves it, loads it and show its values to verify the whole process.
+
 
 
 ## How to bundle with ORB-SLAM2
@@ -43,6 +48,6 @@ Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because tha
 
 3- Add commands to save and load maps in the human machine interface.  One way is add buttons on visualizer.cc.  In order to call save and load, this file must include osmap.h and create one osmap instance.
 
-4- Add Osmap files to ORB-SLAM2 project.  Copy the .cpp and .cc files to src folder, and .h files to include folder.
+4- Add Osmap files to ORB-SLAM2 project.  Copy the .cpp and .cc files to src folder, and .h files to include folder.  The only exception: do not copy dummymap.h .
 
 5- Compile, fix errors and run.

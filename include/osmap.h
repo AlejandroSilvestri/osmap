@@ -31,15 +31,15 @@
 #include <set>
 #include <opencv2/core.hpp>
 
-// Don't include when porting osmap to os1 and orb-slam2
-#include "dummymap.h"
+#ifdef OSMAP_DUMMY_MAP
+	// Don't include when porting osmap to os1 and orb-slam2
+	#include "dummymap.h"
 
+#else
+	// Only for use with OrbSlam2
+	#include "OsmapOrbslamAdapter.h"
 
-/* Include with os1 and orb-slam2
-#include "System.h"
-#include "Tracking.h"
-*/
-
+#endif
 namespace ORB_SLAM2{
 
 class KeyFrame;
@@ -280,6 +280,8 @@ public:
 
   /**
    * Clear temporary vectors.
+   *
+   * Only clears the vectors, not the objects its pointer elements pointed to (keyframes, mappoints, K matrices), because they belong to the map.
    *
    */
   void clearVectors();

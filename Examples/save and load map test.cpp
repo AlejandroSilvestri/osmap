@@ -25,9 +25,9 @@ void generateDummyMap(System& system){
 	  // Generate MapPoints
 	  MapPoint *pMP;
 	  int dataInt[] = {0,1,2,3,4,5,6,7};
-	  Mat descriptorModelo = Mat(1, 8, CV_32S, dataInt);
+	  Mat descriptorModelo = Mat(1, 32, CV_8UC1, dataInt);
 	  for(int i=0; i<N_MAPPOINTS; i++){
-	    pMP = new MapPoint();
+	    pMP = new MapPoint(NULL);
 	    pMP->mnId = i;
 	    pMP->mnVisible = 200 + i;
 	    pMP->mnFound = 100 + i;
@@ -44,14 +44,13 @@ void generateDummyMap(System& system){
 
 	  // Generate KeyFrames
 	  KeyFrame *pKF, *pKF2;
-	  Mat K = Mat::eye(3,3,CV_32F);
 	  auto itMP = pMap->mspMapPoints.begin();
 	  for(int i=0; i<N_KEYFRAMES; i++){
-		  pKF = new KeyFrame();
+		  pKF = new KeyFrame(NULL);
 		  if(!i) pKF2 = pKF;
 		  pKF->N = N_FEATURES;
-		  pKF->mK = K;
-		  pKF->mTcw = Mat::eye(4,4,CV_32F);
+		  pKF->mK  = Mat::eye(3,3,CV_32F);
+		  pKF->Tcw = Mat::eye(4,4,CV_32F);
 		  pKF->mnId = i;
 
 		  // Generate Features
@@ -93,7 +92,7 @@ int main(int argc, char **argv){
   generateDummyMap(system);
 
   // Save map
-  Osmap osmap(*system.mpMap, *system.mpKeyFrameDatabase);
+  Osmap osmap(system);
 
   // Arguments
   string filename;
@@ -111,7 +110,7 @@ int main(int argc, char **argv){
   osmap.mapSave(filename);
 
   // Load map.  mapLoad clears previous map.
-  osmap.mapLoad(filename);
+  osmap.mapLoad(filename + ".yaml");
 
   // Show loaded MapPoints
   cout << "MapPoints retrieved: " << endl;
@@ -121,7 +120,7 @@ int main(int argc, char **argv){
   // Show loaded KeyFrames
   cout << "KeyFrames retrieved: " << endl;
   for(auto pKF : system.mpMap->mspKeyFrames){
-    cout << "mnId: " << pKF->mnId << ", N: " << pKF->N << "\nmTcw:\n" << pKF->mTcw << "\n\nmDescriptors:\n" << pKF->mDescriptors << endl;
+    cout << "mnId: " << pKF->mnId << ", N: " << pKF->N << "\nmTcw:\n" << pKF->Tcw << "\n\nmDescriptors:\n" << pKF->mDescriptors << endl;
     if(pKF->mspLoopEdges.size())
     	cout << "Loop edge with keyframe " << (*pKF->mspLoopEdges.begin())->mnId << endl;
     cout << endl;
