@@ -32,22 +32,24 @@
 #include <opencv2/core.hpp>
 
 #ifdef OSMAP_DUMMY_MAP
-	// Don't include when porting osmap to os1 and orb-slam2
-	#include "dummymap.h"
+
+// Don't include when porting osmap to os1 and orb-slam2
+#include "dummymap.h"
 
 #else
-	// Only for use with OrbSlam2
-	#include "OsmapOrbslamAdapter.h"
+
+// Only for use with OrbSlam2
+#include "KeyFrame.h"
+#include "Map.h"
+#include "MapPoint.h"
+#include "System.h"
+#include "Frame.h"
+#include "System.h"
+#include "Tracking.h"
 
 #endif
 namespace ORB_SLAM2{
 
-class KeyFrame;
-class Map;
-class MapPoint;
-class KeyFrameDatabase;
-class System;
-class Frame;
 
 
 /**
@@ -561,6 +563,8 @@ public:
     google::protobuf::MessageLite* message
   );
 };
+
+
 
 }	// namespace ORB_SLAM2
 

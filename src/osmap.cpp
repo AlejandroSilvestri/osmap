@@ -864,4 +864,54 @@ bool Osmap::readDelimitedFrom(
   return true;
 };
 
+#ifndef OSMAP_DUMMY_MAP
+/*
+ * Orbslam adapter.
+ * Constructors for MapPoint and KeyFrame
+ */
+
+/**
+ * Default constructors with const properties initialized
+ * Argument is a pointer, so it would be possible to pass NULL where Osmap is not available.
+ */
+
+MapPoint::MapPoint(Osmap *osmap):
+	mnFirstKFid(0), nObs(0), mnTrackReferenceForFrame(0),
+	mnLastFrameSeen(0), mnBALocalForKF(0), mnFuseCandidateForKF(0), mnLoopPointForKF(0), mnCorrectedByKF(0),
+	mnCorrectedReference(0), mnBAGlobalForKF(0), mpRefKF(NULL), mnVisible(1), mnFound(1), mbBad(false),
+	mpReplaced(static_cast<MapPoint*>(NULL)), mfMinDistance(0), mfMaxDistance(0),
+	mpMap(&osmap->map)
+{};
+
+KeyFrame::KeyFrame(Osmap *osmap):
+	// Públicas
+    mnFrameId(0),  mTimeStamp(0.0), mnGridCols(FRAME_GRID_COLS), mnGridRows(FRAME_GRID_ROWS),
+    mfGridElementWidthInv(Frame::mfGridElementWidthInv),
+    mfGridElementHeightInv(Frame::mfGridElementHeightInv),
+
+    mnTrackReferenceForFrame(0), mnFuseTargetForKF(0), mnBALocalForKF(0), mnBAFixedForKF(0),
+    mnLoopQuery(0), mnLoopWords(0), mnRelocQuery(0), mnRelocWords(0), mnBAGlobalForKF(0),
+
+    fx(Frame::fx), fy(Frame::fy), cx(Frame::cx), cy(Frame::cy), invfx(Frame::invfx), invfy(Frame::invfy),
+    N(0), mnScaleLevels(osmap->currentFrame.mnScaleLevels),
+    mfScaleFactor(osmap->currentFrame.mfScaleFactor),
+    mfLogScaleFactor(osmap->currentFrame.mfLogScaleFactor),
+    mvScaleFactors(osmap->currentFrame.mvScaleFactors),
+    mvLevelSigma2(osmap->currentFrame.mvLevelSigma2),
+    mvInvLevelSigma2(osmap->currentFrame.mvInvLevelSigma2),
+    mnMinX(Frame::mnMinX), mnMinY(Frame::mnMinY), mnMaxX(Frame::mnMaxX), mnMaxY(Frame::mnMaxY),
+
+	// Protegidas:
+    mpKeyFrameDB(&osmap->keyFrameDatabase),
+    mpORBvocabulary(osmap->system.mpVocabulary),
+    mbFirstConnection(false),
+	mpParent(NULL),
+	mbBad(false),
+	mpMap(&osmap->map)
+{};
+
+
+#endif
+
+
 }	// namespace ORB_SLAM2
