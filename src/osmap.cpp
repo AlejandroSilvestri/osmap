@@ -34,6 +34,33 @@ using namespace cv;
 
 namespace ORB_SLAM2{
 
+Osmap::Osmap(System &_system):
+	map(static_cast<OsmapMap&>(*_system.mpMap)),
+	keyFrameDatabase(*_system.mpKeyFrameDatabase),
+	system(_system),
+	currentFrame(_system.mpTracker->mCurrentFrame)
+{
+#ifndef OSMAP_DUMMY_MAP
+
+	/* Every new MapPoint require a dummy pRefKF in its constructor, copying the following parameters:
+	 *
+	 * - mnFirstKFid(pRefKF->mnId)
+	 * - mnFirstFrame(pRefKF->mnFrameId)
+	 * - mpRefKF(pRefKF)
+	 *
+	 * A fake keyframe construction requires a Frame with
+	 *
+	 *  - mTcw (must be provided, error if not)
+	 *  - Grid (already exists)
+	 */
+	Frame dummyFrame;
+	dummyFrame.mTcw = Mat::eye(4, 4, CV_32F);
+	pRefKF = new KeyFrame(dummyFrame, &map, &keyFrameDatabase);
+
+#endif
+};
+
+
 void Osmap::mapSave(const string givenFilename){
 
   // Strip .yaml if present
@@ -69,7 +96,8 @@ void Osmap::mapSave(const string givenFilename){
 	  // Order keyframes by mnId
 	  vectorMapPoints.clear();
 	  vectorMapPoints.reserve(map.mspMapPoints.size());
-	  vectorMapPoints.assign(map.mspMapPoints.begin(), map.mspMapPoints.end());
+	  //vectorMapPoints.assign(map.mspMapPoints.begin(), map.mspMapPoints.end());	// Should static_cast using transform
+	  std::transform(map.mspMapPoints.begin(), map.mspMapPoints.end(), std::back_inserter(vectorMapPoints), [](MapPoint *pMP)->OsmapMapPoint*{return static_cast<OsmapMapPoint*>(pMP);});
 	  sort(vectorMapPoints.begin(), vectorMapPoints.end(), [](const MapPoint* a, const MapPoint* b){return a->mnId < b->mnId;});
 
 	  // New file
@@ -93,8 +121,9 @@ void Osmap::mapSave(const string givenFilename){
 	  // Order keyframes by mnId
 	  vectorKeyFrames.clear();
 	  vectorKeyFrames.reserve(map.mspKeyFrames.size());
-	  vectorKeyFrames.assign(map.mspKeyFrames.begin(), map.mspKeyFrames.end());
-	  //copy(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), vectorKeyFrames.begin());//back_inserter(vectorKeyFrames));
+	  //vectorKeyFrames.assign(map.mspKeyFrames.begin(), map.mspKeyFrames.end());	// Should static_cast with transform
+	  std::transform(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), std::back_inserter(vectorKeyFrames), [](KeyFrame *pKF)->OsmapKeyFrame*{return static_cast<OsmapKeyFrame*>(pKF);});
+
 	  sort(vectorKeyFrames.begin(), vectorKeyFrames.end(), [](const KeyFrame *a, const KeyFrame *b){return a->mnId < b->mnId;});
 
 	  // New file
@@ -126,7 +155,7 @@ void Osmap::mapSave(const string givenFilename){
 
 		  // This Protocol Buffers stream must be deleted before closing file.  It happens automatically at }.
 		  ::google::protobuf::io::OstreamOutputStream protocolbuffersStream(&file);
-		  vector<KeyFrame*> vectorBlock;
+		  vector<OsmapKeyFrame*> vectorBlock;
 		  vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
 
 		  auto it = vectorKeyFrames.begin();
@@ -222,7 +251,7 @@ void Osmap::mapLoad(string yamlFilename){
 
 
   // MapPoints
-  vectorMapPoints.clear();	// TODO: destroy each MapPoint to prevent memory leak.
+  vectorMapPoints.clear();
   if(!options[NO_MAPPOINTS_FILE]){
 	  headerFile["mappointsFile"] >> filename;
 	  file.open(filename, ifstream::binary);
@@ -234,12 +263,15 @@ void Osmap::mapLoad(string yamlFilename){
   }
 
   // KeyFrames
-  vectorKeyFrames.clear();// TODO: destroy each KeyFrame to prevent memory leak.
-  //loopsEdgesIds.clear();
+  vectorKeyFrames.clear();
   if(!options[NO_KEYFRAMES_FILE]){
 	  // KeyFrames
 	  headerFile["keyframesFile"] >> filename;
 	  file.open(filename, ifstream::binary);
+#ifndef OSMAP_DUMMY_MAP
+	  if(!currentFrame.mTcw.dims)	// if map is no initialized, currentFrame has no pose, a pose is needed to create keyframes.
+		  currentFrame.mTcw = Mat::eye(4, 4, CV_32F);
+#endif
 	  SerializedKeyframeArray serializedKeyFrameArray;
 	  serializedKeyFrameArray.ParseFromIstream(&file);
 	  cout << "Keyframes deserialized: "
@@ -275,8 +307,6 @@ void Osmap::mapLoad(string yamlFilename){
   rebuild();
 
   // Copy to map
-  //vectorKeyFrames.assign(map.mspKeyFrames.begin(), map.mspKeyFrames.end());
-
   map.mspMapPoints.clear();
   copy(vectorMapPoints.begin(), vectorMapPoints.end(), inserter(map.mspMapPoints, map.mspMapPoints.end()));
 
@@ -300,22 +330,23 @@ void Osmap::depurate(){
 	// First erase MapPoint from KeyFrames, and then erase KeyFrames from MapPoints.
 
 	// NULL out bad MapPoints in KeyFrame::mvpMapPoints
-	for(auto &pKF: map.mspKeyFrames){
+	for(auto pKF: map.mspKeyFrames){
 		// NULL out bad MapPoints and warns if not in map.  Usually doesn't find anything.
-		auto &pMPs = pKF->mvpMapPoints;
+		auto pOKF = static_cast<OsmapKeyFrame*>(pKF);
+		auto &pMPs = pOKF->mvpMapPoints;
 		for(int i=pMPs.size(); --i>=0;){
-			auto pMP = pMPs[i];
+			auto pOMP = static_cast<OsmapMapPoint *>(pMPs[i]);
 
-			if(!pMP) continue;	// Ignore if NULL
+			if(!pOMP) continue;	// Ignore if NULL
 
-			if(pMP->mbBad){
+			if(pOMP->mbBad){
 				// If MapPoint is bad, NULL it in keyframe's observations.
-				cout << "Nullifying bad MapPoint " << pMP->mnId << " in KeyFrame " << pKF->mnId << endl;
+				cout << "depurate(): Nullifying bad MapPoint " << pOMP->mnId << " in KeyFrame " << pOKF->mnId << endl;
 				pMPs[i] = NULL;
-			} else if(!map.mspMapPoints.count(pMP) && !options[NO_APPEND_FOUND_MAPPOINTS]){
+			} else if(!map.mspMapPoints.count(pOMP) && !options[NO_APPEND_FOUND_MAPPOINTS]){
 				// If MapPoint is not in map, append it to the map
-				map.mspMapPoints.insert(pMP);
-				cout << "APPEND_FOUND_MAPPOINTS: MapPoint " << pMP->mnId << " added to map. ";
+				map.mspMapPoints.insert(pOMP);
+				cout << "depurate(): APPEND_FOUND_MAPPOINTS: MapPoint " << pOMP->mnId << " added to map. ";
 			}
 		}
 
@@ -339,10 +370,10 @@ void Osmap::rebuild(){
 	 * - MapPoint::AddObservation on each point to rebuild MapPoint:mObservations y MapPoint:mObs
 	 */
 	cout << "Rebuilding..." << endl;
-	cout << "Warning: rebuilding on fake objects will set bad most MapPoints and KeyFrames." << endl;
+	//cout << "Warning: rebuilding on fake objects will set bad most MapPoints and KeyFrames." << endl;
 	keyFrameDatabase.clear();
 
-	for(KeyFrame *pKF : vectorKeyFrames){
+	for(auto *pKF : vectorKeyFrames){
 		pKF->mbNotErase = !pKF->mspLoopEdges.empty();
 
 		// Build BoW vectors
@@ -378,22 +409,18 @@ void Osmap::rebuild(){
 				pKF->mGrid[i][j] = grid[i][j];
 		}
 
-
 		// Append keyframe to the database
 		keyFrameDatabase.add(pKF);
 
 		// UpdateConnections to rebuild covisibility graph, in mnId order.
 		pKF->UpdateConnections();
 
-		// If this keyframe is isolated (and it isn't keyframe zero), erase it.
-		if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
-			cout << "Isolated keyframe " << pKF->mnId;
-			if(!options[NO_SET_BAD]){
+		if(!options[NO_SET_BAD])
+			// If this keyframe is isolated (and it isn't keyframe zero), erase it.
+			if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
+				cout << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
 				pKF->SetBadFlag();
-				cout << " set bad.";
 			}
-			cout << endl;
-		}
 
 		// Rebuilds MapPoints obvervations
 		size_t n = pKF->mvpMapPoints.size();
@@ -426,12 +453,14 @@ void Osmap::rebuild(){
 		nParents = 0;
 		for(auto pKF: vectorKeyFrames)
 			if(!pKF->mpParent && pKF->mnId)	// Para todos los KF excepto mnId 0, que no tiene padre
-				for(auto pConnectedKF : pKF->mvpOrderedConnectedKeyFrames)
-					if(pConnectedKF->mpParent || pConnectedKF->mnId == 0){	// Candidato a padre encontrado: no es huérfano o es el original
+				for(auto *pConnectedKF : pKF->mvpOrderedConnectedKeyFrames){
+					auto poConnectedKF = static_cast<OsmapKeyFrame*>(pConnectedKF);
+					if(poConnectedKF->mpParent || poConnectedKF->mnId == 0){	// Candidato a padre encontrado: no es huérfano o es el original
 						nParents++;
 						pKF->ChangeParent(pConnectedKF);
 						break;
 					}
+				}
 		nParentsTotal += nParents;
 		cout << "Parents assigned in this loop: " << nParents << endl;
 	}
@@ -442,17 +471,14 @@ void Osmap::rebuild(){
 	 * - Rebuilds mpRefKF as the first observation, which should be the KeyFrame with the lowest id
 	 * - Rebuilds many properties with UpdateNormalAndDepth()
 	 */
-	for(MapPoint *pMP : vectorMapPoints){
+	for(OsmapMapPoint *pMP : vectorMapPoints){
 		// Rebuilds mpRefKF.  Requires mObservations.
-		if(pMP->mObservations.empty()){
-			cout << "MP " << pMP->mnId << " without observations.";
-			if(!options[NO_SET_BAD]){
+		if(!options[NO_SET_BAD])
+			if(pMP->mObservations.empty()){
+				cout << "MP " << pMP->mnId << " without observations." << "  Set bad." << endl;
 				pMP->SetBadFlag();
-				cout << "  Set bad.";
+				continue;
 			}
-			cout << endl;
-			continue;
-		}
 
 		// Asumes the first observation has the lowest mnId.
 		auto pair = (*pMP->mObservations.begin());
@@ -526,7 +552,7 @@ MapPoint *Osmap::getMapPoint(unsigned int id){
   return NULL;
 }
 
-KeyFrame *Osmap::getKeyFrame(unsigned int id){
+OsmapKeyFrame *Osmap::getKeyFrame(unsigned int id){
   //for(auto it = map.mspKeyFrames.begin(); it != map.mspKeyFrames.end(); ++it)
   for(auto pKF : vectorKeyFrames)
 	if(pKF->mnId == id)
@@ -574,7 +600,7 @@ void Osmap::serialize(const Mat &m, SerializedDescriptor *serializedDescriptor){
 
 void Osmap::deserialize(const SerializedDescriptor &serializedDescriptor, Mat &m){
   assert(serializedDescriptor.block_size() == 8);
-  m = Mat(1,8,CV_32S);
+  m = Mat(1, 32, CV_8UC1);
   for(unsigned int i = 0; i<8; i++)
 	((unsigned int*)m.data)[i] = serializedDescriptor.block(i);
 }
@@ -627,7 +653,7 @@ void Osmap::deserialize(const SerializedKeypoint &serializedKeypoint, KeyPoint &
 
 
 // MapPoint ================================================================================================
-void Osmap::serialize(const MapPoint &mappoint, SerializedMappoint *serializedMappoint){
+void Osmap::serialize(const OsmapMapPoint &mappoint, SerializedMappoint *serializedMappoint){
   serializedMappoint->set_id(mappoint.mnId);
   serialize(mappoint.mWorldPos, serializedMappoint->mutable_position());
   serializedMappoint->set_visible(mappoint.mnVisible);
@@ -636,8 +662,8 @@ void Osmap::serialize(const MapPoint &mappoint, SerializedMappoint *serializedMa
     serialize(mappoint.mDescriptor, serializedMappoint->mutable_briefdescriptor());
 }
 
-MapPoint *Osmap::deserialize(const SerializedMappoint &serializedMappoint){
-  MapPoint *pMappoint = new MapPoint(this);
+OsmapMapPoint *Osmap::deserialize(const SerializedMappoint &serializedMappoint){
+  OsmapMapPoint *pMappoint = new OsmapMapPoint(this);
   //pMappoint->mpMap = &map;
 
   pMappoint->mnId        = serializedMappoint.id();
@@ -649,7 +675,7 @@ MapPoint *Osmap::deserialize(const SerializedMappoint &serializedMappoint){
   return pMappoint;
 }
 
-int Osmap::serialize(const vector<MapPoint*>& vectorMP, SerializedMappointArray &serializedMappointArray){
+int Osmap::serialize(const vector<OsmapMapPoint*>& vectorMP, SerializedMappointArray &serializedMappointArray){
   for(auto pMP : vectorMP)
     serialize(*pMP, serializedMappointArray.add_mappoint());
 
@@ -657,7 +683,7 @@ int Osmap::serialize(const vector<MapPoint*>& vectorMP, SerializedMappointArray 
 }
 
 
-int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, vector<MapPoint*>& vectorMapPoints){
+int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, vector<OsmapMapPoint*>& vectorMapPoints){
   int i, n = serializedMappointArray.mappoint_size();
   for(i=0; i<n; i++)
 	vectorMapPoints.push_back(deserialize(serializedMappointArray.mappoint(i)));
@@ -667,7 +693,7 @@ int Osmap::deserialize(const SerializedMappointArray &serializedMappointArray, v
 
 
 // KeyFrame ================================================================================================
-void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframe *serializedKeyframe){
+void Osmap::serialize(const OsmapKeyFrame &keyframe, SerializedKeyframe *serializedKeyframe){
   serializedKeyframe->set_id(keyframe.mnId);
   serialize(keyframe.Tcw, serializedKeyframe->mutable_pose());
   serializedKeyframe->set_timestamp(keyframe.mTimeStamp);
@@ -682,8 +708,8 @@ void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframe *serializedKe
 			serializedKeyframe->add_loopedgesids(loopKF->mnId);
 }
 
-KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
-  KeyFrame *pKeyframe = new KeyFrame(this);
+OsmapKeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
+	OsmapKeyFrame *pKeyframe = new OsmapKeyFrame(this);
 
   pKeyframe->mnId = serializedKeyframe.id();
   const_cast<double&>(pKeyframe->mTimeStamp) = serializedKeyframe.timestamp();
@@ -702,7 +728,7 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
 	// Only ids of keyframes already deserialized and present on vectorKeyFrames
 	for(int i=0; i<serializedKeyframe.loopedgesids_size(); i++){
 	  unsigned int loopEdgeId = serializedKeyframe.loopedgesids(i);
-	  KeyFrame *loopEdgeKF = getKeyFrame(loopEdgeId);
+	  OsmapKeyFrame *loopEdgeKF = getKeyFrame(loopEdgeId);
 	  loopEdgeKF->mspLoopEdges.insert(pKeyframe);
 	  pKeyframe->mspLoopEdges.insert(loopEdgeKF);
 	}
@@ -711,7 +737,7 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframe &serializedKeyframe){
   return pKeyframe;
 }
 
-int Osmap::serialize(const vector<KeyFrame*>& vectorKF, SerializedKeyframeArray &serializedKeyframeArray){
+int Osmap::serialize(const vector<OsmapKeyFrame*>& vectorKF, SerializedKeyframeArray &serializedKeyframeArray){
   for(auto pKF: vectorKF)
     serialize(*pKF, serializedKeyframeArray.add_keyframe());
 
@@ -720,7 +746,7 @@ int Osmap::serialize(const vector<KeyFrame*>& vectorKF, SerializedKeyframeArray 
 
 
 
-int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, vector<KeyFrame*>& vectorKeyFrames){
+int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, vector<OsmapKeyFrame*>& vectorKeyFrames){
   int i, n = serializedKeyframeArray.keyframe_size();
   for(i=0; i<n; i++)
 	  vectorKeyFrames.push_back(deserialize(serializedKeyframeArray.keyframe(i)));
@@ -730,7 +756,7 @@ int Osmap::deserialize(const SerializedKeyframeArray &serializedKeyframeArray, v
 
 
 // Feature ================================================================================================
-void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframeFeatures *serializedKeyframeFeatures){
+void Osmap::serialize(const OsmapKeyFrame &keyframe, SerializedKeyframeFeatures *serializedKeyframeFeatures){
   serializedKeyframeFeatures->set_keyframe_id(keyframe.mnId);
   for(int i=0; i<keyframe.N; i++){
 	if(!options[ONLY_MAPPOINTS_FEATURES] || keyframe.mvpMapPoints[i]){	// If chosen to only save mappoints features, check if there is a mappoint.
@@ -751,15 +777,15 @@ void Osmap::serialize(const KeyFrame &keyframe, SerializedKeyframeFeatures *seri
 }
 
 
-KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyframeFeatures){
+OsmapKeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyframeFeatures){
   unsigned int KFid = serializedKeyframeFeatures.keyframe_id();
-  KeyFrame *pKF = getKeyFrame(KFid);
+  OsmapKeyFrame *pKF = getKeyFrame(KFid);
   if(pKF){
 	  int n = serializedKeyframeFeatures.feature_size();
 	  const_cast<int&>(pKF->N) = n;
 	  const_cast<std::vector<cv::KeyPoint>&>(pKF->mvKeysUn).resize(n);
 	  pKF->mvpMapPoints.resize(n);
-	  const_cast<cv::Mat&>(pKF->mDescriptors) = Mat(n, 8, CV_32S);	// n descriptors
+	  const_cast<cv::Mat&>(pKF->mDescriptors) = Mat(n, 32, CV_8UC1);	// n descriptors
 	  for(int i=0; i<n; i++){
 		const SerializedFeature &feature = serializedKeyframeFeatures.feature(i);
 		if(feature.mappoint_id())		  pKF->mvpMapPoints[i] = getMapPoint(feature.mappoint_id());
@@ -777,7 +803,7 @@ KeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyfram
 }
 
 
-int Osmap::serialize(const vector<KeyFrame*> &vectorKF, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray){
+int Osmap::serialize(const vector<OsmapKeyFrame*> &vectorKF, SerializedKeyframeFeaturesArray &serializedKeyframeFeaturesArray){
   unsigned int nFeatures = 0;
   for(auto pKF:vectorKF){
     serialize(*pKF, serializedKeyframeFeaturesArray.add_feature());
@@ -864,52 +890,29 @@ bool Osmap::readDelimitedFrom(
   return true;
 };
 
-#ifndef OSMAP_DUMMY_MAP
+
 /*
- * Orbslam adapter.
- * Constructors for MapPoint and KeyFrame
+ * Orbslam adapter.  Class wrappers.
  */
+#ifndef OSMAP_DUMMY_MAP
 
-/**
- * Default constructors with const properties initialized
- * Argument is a pointer, so it would be possible to pass NULL where Osmap is not available.
- */
-
-MapPoint::MapPoint(Osmap *osmap):
-	mnFirstKFid(0), nObs(0), mnTrackReferenceForFrame(0),
-	mnLastFrameSeen(0), mnBALocalForKF(0), mnFuseCandidateForKF(0), mnLoopPointForKF(0), mnCorrectedByKF(0),
-	mnCorrectedReference(0), mnBAGlobalForKF(0), mpRefKF(NULL), mnVisible(1), mnFound(1), mbBad(false),
-	mpReplaced(static_cast<MapPoint*>(NULL)), mfMinDistance(0), mfMaxDistance(0),
-	mpMap(&osmap->map)
+OsmapMapPoint::OsmapMapPoint(Osmap *osmap):
+	MapPoint(Mat(), osmap->pRefKF, &osmap->map)
 {};
 
-KeyFrame::KeyFrame(Osmap *osmap):
-	// Públicas
-    mnFrameId(0),  mTimeStamp(0.0), mnGridCols(FRAME_GRID_COLS), mnGridRows(FRAME_GRID_ROWS),
-    mfGridElementWidthInv(Frame::mfGridElementWidthInv),
-    mfGridElementHeightInv(Frame::mfGridElementHeightInv),
-
-    mnTrackReferenceForFrame(0), mnFuseTargetForKF(0), mnBALocalForKF(0), mnBAFixedForKF(0),
-    mnLoopQuery(0), mnLoopWords(0), mnRelocQuery(0), mnRelocWords(0), mnBAGlobalForKF(0),
-
-    fx(Frame::fx), fy(Frame::fy), cx(Frame::cx), cy(Frame::cy), invfx(Frame::invfx), invfy(Frame::invfy),
-    N(0), mnScaleLevels(osmap->currentFrame.mnScaleLevels),
-    mfScaleFactor(osmap->currentFrame.mfScaleFactor),
-    mfLogScaleFactor(osmap->currentFrame.mfLogScaleFactor),
-    mvScaleFactors(osmap->currentFrame.mvScaleFactors),
-    mvLevelSigma2(osmap->currentFrame.mvLevelSigma2),
-    mvInvLevelSigma2(osmap->currentFrame.mvInvLevelSigma2),
-    mnMinX(Frame::mnMinX), mnMinY(Frame::mnMinY), mnMaxX(Frame::mnMaxX), mnMaxY(Frame::mnMaxY),
-
-	// Protegidas:
-    mpKeyFrameDB(&osmap->keyFrameDatabase),
-    mpORBvocabulary(osmap->system.mpVocabulary),
-    mbFirstConnection(false),
-	mpParent(NULL),
-	mbBad(false),
-	mpMap(&osmap->map)
+OsmapKeyFrame::OsmapKeyFrame(Osmap *osmap):
+	KeyFrame(osmap->currentFrame, &osmap->map, &osmap->keyFrameDatabase)
 {};
 
+#else
+
+OsmapMapPoint::OsmapMapPoint(Osmap *osmap):
+	MapPoint(osmap)
+{};
+
+OsmapKeyFrame::OsmapKeyFrame(Osmap *osmap):
+	KeyFrame(osmap)
+{};
 
 #endif
 

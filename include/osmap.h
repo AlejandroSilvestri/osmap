@@ -50,6 +50,40 @@
 #endif
 namespace ORB_SLAM2{
 
+//#ifndef OSMAP_DUMMY_MAP
+
+/**
+ * Wrapped MapPoint to let Osmap access protected properties without modifying MapPoint code.
+ * It adds a constructor used by Osmap when loading maps.
+ */
+class OsmapMapPoint: public MapPoint{
+public:
+	friend class Osmap;
+	OsmapMapPoint(Osmap*);
+};
+
+/**
+ * Wrapped KeyFrame to let Osmap access protected properties without modifying KeyFrame code.
+ * It adds a constructor used by Osmap when loading maps.
+ */
+class OsmapKeyFrame: public KeyFrame{
+public:
+	friend class Osmap;
+	OsmapKeyFrame(Osmap*);
+};
+
+//#endif
+
+
+/**
+ * Wrapped Map to let Osmap access protected properties without modifying Map code.
+ * This class is only used for casting, not to instantiate new maps.
+ */
+class OsmapMap: public Map{
+public:
+	friend class Osmap;
+};
+
 
 
 /**
@@ -166,7 +200,7 @@ public:
   bitset<32> options = 0;
 
   /** ORB-SLAM2 map to be serialized. */
-  Map &map;
+  OsmapMap &map;
 
   /** Database of keyframes to be build after loading. */
   KeyFrameDatabase &keyFrameDatabase;
@@ -174,8 +208,19 @@ public:
   /** System, needed to populate new keyframes after construction on deserialization, with some configuration values.*/
   System &system;
 
-  /** Any frame, to copy configuration values from.*/
+  /** Any frame, to copy configuration values from.  Constructor takes currentFrame from Tracker. */
   Frame &currentFrame;
+
+  /**
+   * This keyframe is a vehicle to MapPoint construction, which need a pRefKF as argument.
+   * MapPoint construction occurs only while loading.
+   * pRefKF can be any KeyFrame.
+   * mapLoad can be invoked when there is no map in orbslam2, which means there is no keyframe in it.
+   * So Osmap constructs one.  But constructed a KeyFrame requires a populated Frame (Osmap uses tracker.currentFrame),
+   * and it isn't populated with data before first tracking loop.  This means pRefKF can't be constructed in Osmap constructor.
+   * pRefKF keyframe is constructed on the first map load, more specifically right before mappoints are loaded.
+   */
+  KeyFrame *pRefKF = NULL;
 
   /**
   Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.
@@ -197,26 +242,20 @@ public:
    * This vector is set in mapSave, and it's left ontouched for user interest.
    * This vector is consumed in serialize
    */
-  vector<MapPoint*> vectorMapPoints;
+  vector<OsmapMapPoint*> vectorMapPoints;
 
   /**
    * Buffer where map's keyframes are stored in ascending id order, to save them to file in this order.
    * This vector is set in mapSave, and it's left ontouched for user interest.
    */
-  vector<KeyFrame*> vectorKeyFrames;
+  vector<OsmapKeyFrame*> vectorKeyFrames;
 
 
 
   /**
   Only constructor, the only way to set the orb-slam2 map.
   */
-  //Osmap(Map &mpMap, KeyFrameDatabase &mpKeyFrameDatabase): map(mpMap), keyFrameDatabase(mpKeyFrameDatabase){};
-  Osmap(System &_system):
-  map(*_system.mpMap),
-  keyFrameDatabase(*_system.mpKeyFrameDatabase),
-  system(_system),
-  currentFrame(_system.mpTracker->mCurrentFrame)
-  {};
+  Osmap(System &_system);
 
   /**
    * Irons keyframes and mappoints sets in map, before save.
@@ -309,7 +348,7 @@ public:
   @returns a pointer to the KeyFrame with the given id, or NULL if not found.
   Used only in Osmap::deserialize(const SerializedKeyframeFeatures&).
   */
-  KeyFrame *getKeyFrame(unsigned int id);
+  OsmapKeyFrame *getKeyFrame(unsigned int id);
 
 
   /**
@@ -437,7 +476,7 @@ public:
   /**
   Serializes a MapPoint, according to options.
   */
-  void serialize(const MapPoint&, SerializedMappoint*);
+  void serialize(const OsmapMapPoint&, SerializedMappoint*);
 
   /**
   Creates and fills a MapPoint from optional message fields.
@@ -445,7 +484,7 @@ public:
   @param serializedMappoint Protocol buffers source message.
   @returns *MapPoint A pointer to the newly created MapPoint, ready to be added to the map.
   */
-  MapPoint *deserialize(const SerializedMappoint& serializedMappoint);
+  OsmapMapPoint *deserialize(const SerializedMappoint& serializedMappoint);
 
   /**
   Serialized array of MapPoints.
@@ -455,7 +494,7 @@ public:
   @param serializedMapPointArray message to set up.  Data comes from the range iterated.
   @returns Number of MapPoints serialized or -1 if error.  The number of MapPoints serialized should be the same number of MapPoints in the map.
   */
-  int serialize(const vector<MapPoint*>&, SerializedMappointArray &);
+  int serialize(const vector<OsmapMapPoint*>&, SerializedMappointArray &);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -464,7 +503,7 @@ public:
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  int deserialize(const SerializedMappointArray &, vector<MapPoint*>&);
+  int deserialize(const SerializedMappointArray &, vector<OsmapMapPoint*>&);
 
 
 
@@ -474,14 +513,14 @@ public:
   Serialize a KeyFrame.
   Serialization and deserialization assume KeyFrames are processed in ascending id order.
   */
-  void serialize(const KeyFrame&, SerializedKeyframe*);
+  void serialize(const OsmapKeyFrame&, SerializedKeyframe*);
 
 
   /**
   Reconstructs a KeyFrame from optional fields.
   It doesn't perform KeyFrame initialization.  This should be done after deserialization.
   */
-  KeyFrame *deserialize(const SerializedKeyframe&);
+  OsmapKeyFrame *deserialize(const SerializedKeyframe&);
 
   /**
   Serialized array of KeyFrames.  This can make a file, or be appended to a multiobject file.
@@ -489,7 +528,7 @@ public:
   @param serializedKeyFrameArray message to set up.  Data comes from map.
   @returns Number of KeyFrames serialized or -1 if error.  The number of KeyFrames serialized should be the same number of MapPoints in the map.
   */
-  int serialize(const vector<KeyFrame*>&, SerializedKeyframeArray&);
+  int serialize(const vector<OsmapKeyFrame*>&, SerializedKeyframeArray&);
 
   /**
   Retrieves MapPoints from an array, and append them to the map.
@@ -497,7 +536,7 @@ public:
   @returns Number of MapPoints retrieved or -1 if error.
   Map's MapPoints set should be emptied before calling this method.
   */
-  int deserialize(const SerializedKeyframeArray&, vector<KeyFrame*>&);
+  int deserialize(const SerializedKeyframeArray&, vector<OsmapKeyFrame*>&);
 
 
 
@@ -509,7 +548,7 @@ public:
   @param SerializedKeyframeFeatures Message destination of serialization.
   @returns The serialized message object.
   */
-  void serialize(const KeyFrame&, SerializedKeyframeFeatures*);
+  void serialize(const OsmapKeyFrame&, SerializedKeyframeFeatures*);
 
   /**
   Retrieves all features belonging to one keyframe.
@@ -519,14 +558,14 @@ public:
 
   @param SerializedKeyframeFeatures Object to be deserialized.
   */
-  KeyFrame *deserialize(const SerializedKeyframeFeatures&);
+  OsmapKeyFrame *deserialize(const SerializedKeyframeFeatures&);
 
   /**
    * Serialize all keyframe's features from provided keyframes container, to the specified serialization object.
    * @param vKF vector of KeyFrames to save, usually vectorKeyFrames member order by mnId.
    * @param serializedKeyframeFeaturesArray output serialization object.
    */
-  int serialize(const vector<KeyFrame*>& vKF, SerializedKeyframeFeaturesArray& serializedKeyframeFeaturesArray);
+  int serialize(const vector<OsmapKeyFrame*>& vKF, SerializedKeyframeFeaturesArray& serializedKeyframeFeaturesArray);
 
   /**
    * Retrieves all keyframe's features from the specified serialization object to vectorKeyframe.

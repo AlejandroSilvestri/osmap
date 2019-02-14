@@ -103,8 +103,10 @@ int main(int argc, char **argv){
 
   if(argc>2)
 	  osmap.options = stoi(argv[2]);
-  else
+  else{
 	  osmap.options.set(Osmap::NO_SET_BAD);	// This dummy map doesn't build graphs and connections, this options skips this anomally detection after loading.
+	  osmap.options.set(Osmap::NO_DEPURATION);	// Avoids map depuration before save.  This dummy map doesn't need it.
+  }
 
   // Save the map to files
   osmap.mapSave(filename);
