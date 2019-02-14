@@ -84,16 +84,23 @@ public:
 
 class Frame{};
 
-class Tracker{
-public:
-	Frame mCurrentFrame;
-};
-
 class System{
 public:
 	Map *mpMap;
 	KeyFrameDatabase *mpKeyFrameDatabase;
-	Tracker *mpTracker;
+	class Tracker{
+	public:
+		Frame mCurrentFrame;
+		int mState = 0;
+		void Reset(){};
+	} *mpTracker;
+	class DummyClasses{
+	public:
+		void RequestStop(){};
+		bool isStopped(){return true;};
+		void Release(){};
+		void Update(Tracker*){};
+	} *mpLocalMapper, *mpViewer, *mpFrameDrawer;
 };
 
 }	// namespace ORB_SLAM2

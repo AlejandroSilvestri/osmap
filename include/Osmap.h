@@ -129,6 +129,31 @@ General rules:
 - serializeArray and deserializeArray serialize a messageArray, i.e. set of objects
 - unlike serialize, serializeArray uses a messageArray, not a pointer to it.
 
+Usage example:
+
+In Orb-Slam2's main.cc, this code will save and load a map:
+
+    ...
+    // Construct the osmap object, can be right after SLAM construction.  You only need one instance to load and save as many maps you want.
+    Osmap osmap = ORB_SLAM2::Osmap(SLAM);
+	...
+	// Whe you already has a map to save
+	osmap.mapSave("myFirstMap");	// "myFirstMap" or "myFirstMap.yaml", same thing
+	...
+	// Now you want to load the map
+	osmap.mapLoad("myFirstMap.yaml");
+
+In Linux, zenity comes handy as dialog to get file name to load and save map.  You need zenity installed, this runs the command line:
+
+	char cstringfilename[1024];
+
+	// Load dialog
+	FILE *f = popen("zenity --file-selection", "r");
+    fgets(cstringfilename, 1024, f);
+
+    // Save dialog
+    FILE *f = popen("zenity --file-selection --save --confirm-overwrite --filename=mapa", "r");
+    fgets(cstringfilename, 1024, f);
 
 */
 class Osmap{
@@ -136,15 +161,17 @@ public:
   // Properties
 
   /**
-  All the options available.
-  Options are persetted into options property.
-  Default is zero.  Options are activated with 1.
+  All the options available.  Options are persetted into options property.  Default is zero.  Options are activated with 1.
 
   To test an option:
+
   if(options[ONLY_MAPPOINTS_FEATURES])...
 
   To set an option:
+
   options.set(ONLY_MAPPOINTS_FEATURES);
+
+  Options available:
 
   - NO_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
   - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
@@ -264,19 +291,21 @@ public:
   - options must be set.
 
   @param basefilename File name without extenion or with .yaml extension.  Many files will be created with this basefilename and different extensions.
+  @param pauseThreads Serializing needs some orb-slam2 threads to be paused.  true (the default value) signals mapSave to pause the threads before saving, and resume them after saving.  false when threads are paused and resumed by other means.
 
   MapSave copy map's mappoints and keyframes sets to vectorMapPoints and vectorKeyFrames and sort them, to save objects in ascending id order.
   MapLoad doesn't use those vector.
 
   If features number exceed an arbitrary maximum, in order to avoid size related protocol buffer problems,  mapSave limit the size of protocol buffer's messages saving features file in delimited form, using Kendon Varda writeDelimitedTo function.
   */
-  void mapSave(string basefilename);
+  void mapSave(string basefilename, bool pauseThreads = true);
 
   /**
   Loads the map from a set of files in the folder whose name is provided as an argument.
   This is the entry point to load a map.  This method uses the Osmap object to serialize the map to files.
 
   @param yamlFilename file name of .yaml file (including .yaml extension) describing a map.
+  @param stopTrheads Serializing needs some orb-slam2 threads to be paused.  true (the default value) signals mapLoad to pause the threads before saving, and resume them after saving.  false when threads are paused and resumed by other means.
 
   Only these properties are read from yaml:
   - file nKeyframes
@@ -286,7 +315,7 @@ public:
 
   Before calling this method, threads must be paused.
   */
-  void mapLoad(string yamlFilename);
+  void mapLoad(string yamlFilename, bool pauseThreads = true);
 
   /**
    * Save the content of vectorMapPoints to file like "map.mappoints".

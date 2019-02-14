@@ -21,6 +21,7 @@
 #include <fstream>
 #include <iostream>
 #include <assert.h>
+#include <unistd.h>
 #include <opencv2/core.hpp>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
@@ -61,9 +62,14 @@ Osmap::Osmap(System &_system):
 };
 
 
-void Osmap::mapSave(const string givenFilename){
+void Osmap::mapSave(const string givenFilename, bool pauseThreads){
+	// Stop threads
+	if(pauseThreads){
+		system.mpLocalMapper->RequestStop();
+		while(!system.mpLocalMapper->isStopped()) usleep(1000);
+	}
 
-  // Strip .yaml if present
+  // Strip out .yaml if present
   string baseFilename;
   int length = givenFilename.length();
   if(givenFilename.substr(length-5) == ".yaml")
@@ -156,69 +162,101 @@ void Osmap::mapSave(const string givenFilename){
 
   // Clear temporary vectors
   clearVectors();
+
+  if(pauseThreads)
+	  system.mpViewer->Release();
 }
 
-void Osmap::mapLoad(string yamlFilename){
-  string filename;
-  int intOptions;
+void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
+	if(pauseThreads){
+		system.mpLocalMapper->Release();
 
-  // Open YAML
-  cv::FileStorage headerFile(yamlFilename, cv::FileStorage::READ);
+		// Limpia el mapa de todos los singletons
+		system.mpTracker->Reset();
+		// En este punto el sistema está reseteado.
 
-  // Options
-  headerFile["Options"] >> intOptions;
-  options = intOptions;
+		// Espera a que se detenga LocalMapping y  Viewer
+		system.mpLocalMapper->RequestStop();
+		system.mpViewer	    ->RequestStop();
 
-  // K
-  if(!options[K_IN_KEYFRAME]){
-	  vectorK.clear();
-	  FileNode cameraMatrices = headerFile["cameraMatrices"];
-	  FileNodeIterator it = cameraMatrices.begin(), it_end = cameraMatrices.end();
-	  for( ; it != it_end; ++it){
-		  Mat *k = new Mat();
-		  *k = Mat::eye(3,3,CV_32F);
-		  k->at<float>(0,0) = (*it)["fx"];
-		  k->at<float>(1,1) = (*it)["fy"];
-		  k->at<float>(2,0) = (*it)["cx"];
-		  k->at<float>(2,1) = (*it)["cy"];
-		  vectorK.push_back(k);
-	  }
-  }
+		while(!system.mpLocalMapper->isStopped()) usleep(1000);
+		while(!system.mpViewer     ->isStopped()) usleep(1000);
+	}
+
+	string filename;
+	int intOptions;
+
+	// Open YAML
+	cv::FileStorage headerFile(yamlFilename, cv::FileStorage::READ);
+
+	// Options
+	headerFile["Options"] >> intOptions;
+	options = intOptions;
+
+	// K
+	if(!options[K_IN_KEYFRAME]){
+		vectorK.clear();
+		FileNode cameraMatrices = headerFile["cameraMatrices"];
+		FileNodeIterator it = cameraMatrices.begin(), it_end = cameraMatrices.end();
+		for( ; it != it_end; ++it){
+			Mat *k = new Mat();
+			*k = Mat::eye(3,3,CV_32F);
+			k->at<float>(0,0) = (*it)["fx"];
+			k->at<float>(1,1) = (*it)["fy"];
+			k->at<float>(2,0) = (*it)["cx"];
+			k->at<float>(2,1) = (*it)["cy"];
+			vectorK.push_back(k);
+		}
+	}
 
 
-  // MapPoints
-  vectorMapPoints.clear();
-  if(!options[NO_MAPPOINTS_FILE]){
-	  headerFile["mappointsFile"] >> filename;
-	  MapPointsLoad(filename);
-  }
+	// MapPoints
+	vectorMapPoints.clear();
+	if(!options[NO_MAPPOINTS_FILE]){
+		headerFile["mappointsFile"] >> filename;
+		MapPointsLoad(filename);
+	}
 
 
-  // KeyFrames
-  vectorKeyFrames.clear();
-  if(!options[NO_KEYFRAMES_FILE]){
-	  headerFile["keyframesFile"] >> filename;
-	  KeyFramesLoad(filename);
-  }
+	// KeyFrames
+	vectorKeyFrames.clear();
+	if(!options[NO_KEYFRAMES_FILE]){
+		headerFile["keyframesFile"] >> filename;
+		KeyFramesLoad(filename);
+	}
 
-  // Features
-  if(!options[NO_FEATURES_FILE]){
-	  headerFile["featuresFile"] >> filename;
-	  featuresLoad(filename);
-  }
+	// Features
+	if(!options[NO_FEATURES_FILE]){
+		headerFile["featuresFile"] >> filename;
+		featuresLoad(filename);
+	}
 
-  // Close yaml file
-  headerFile.release();
+	// Close yaml file
+	headerFile.release();
 
-  // Rebuild
-  rebuild();
+	// Rebuild
+	rebuild();
 
-  // Copy to map
-  setMapPointsToMap();
-  setKeyFramesToMap();
+	// Copy to map
+	setMapPointsToMap();
+	setKeyFramesToMap();
 
-  // Release temporary vectors
-  clearVectors();
+	// Release temporary vectors
+	clearVectors();
+
+	// Lost state, the system must relocalize itself in the just loaded map.
+	system.mpTracker->mState = 3;	//ORB_SLAM2::Tracking::LOST;
+
+	if(pauseThreads){
+		// Resume threads
+
+		// Reactivate viewer.  Do not reactivate localMapper because the system resumes in "only tracking" mode immediatly after loading.
+		system.mpViewer->Release();
+
+		// Tracking do this when going to LOST state.
+		// Involed after viewer.Release() because of mutex.
+		system.mpFrameDrawer->Update(system.mpTracker);
+	}
 }
 
 int Osmap::MapPointsSave(string filename){
