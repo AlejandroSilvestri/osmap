@@ -258,32 +258,6 @@ public:
   Osmap(System &_system);
 
   /**
-   * Irons keyframes and mappoints sets in map, before save.
-   *
-   * Tests all keyframes in MapPoints.mObservations and mappoints in KeyFrames.mvpMapPoints, checking they are:
-   *
-   * - not bad (!isBad())
-   * - in map (in Map::mspMapPoints and Map::mspKeyFrames)
-   *
-   * Those who not pass this check are eliminated, avoiding serialization of elements not belonging to the map.
-   *
-   * This depuration affects (improves) the actual map in memory.
-   *
-   * Invoked by mapSave.
-   *
-   */
-  void depurate();
-
-  /**
-   * Works on vectorMapPoints and vectorKeyFrames.
-   * After rebuilding, the elements in these vector should be copied to the map sets.
-   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp show.
-   */
-  void rebuild();
-
-
-
-  /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
   If filename has .yaml extension, mapSave will remove it to get the actual basefilename.
   Any existing file is rewritten without warning.
@@ -317,6 +291,102 @@ public:
   Before calling this method, threads must be paused.
   */
   void mapLoad(string yamlFilename);
+
+  /**
+   * Save the content of vectorMapPoints to file like "map.mappoints".
+   * @param filename full name of the file to be created and saved.
+   * @returns number of mappoints serialized.  -1 if error.
+   *
+   * This method ignores option NO_MAPPOINTS_FILE
+   * If not K_IN_KEYFRAME option (the default), vectorK must be populated (see getVectorKFromKeyframes) prior invocation of this method.
+   */
+  int MapPointsSave(string filename);
+
+  /**
+   * Load the content of a "map.mappoints" file to vectorMapPoints.
+   * @param filename full name of the file to open.
+   */
+  int MapPointsLoad(string filename);
+
+  /**
+   * Save the content of vectorKeyFrames to file like "map.keyframes".
+   * Need
+   * @param filename full name of the file to be created and saved.
+   * @returns number of keyframes serialized.  -1 if error.
+   *
+   * This method ignores option NO_KEYFRAMES_FILE
+   */
+  int KeyFramesSave(string filename);
+
+  /**
+   * Load the content of a "map.keyframes" file to vectorKeyFrames.
+   * @param filename full name of the file to open.
+   */
+  int KeyFramesLoad(string filename);
+
+  /**
+   * Save KeyFrane's features of vectorKeyFrames to file, usually "map.features".
+   * @param filename full name of the file to be created and saved.
+   */
+  int featuresSave(string filename);
+
+  /**
+   * Load the content of a "map.features" file and applies it to vectorKeyFrames.
+   * @param filename full name of the file to open.
+   */
+  int featuresLoad(string filename);
+
+  /**
+   * Populate vectorMapPoints with MapPoints from Map.mspMapPoints.
+   * This is done as the first step to save mappoints.
+   */
+  void getMapPointsFromMap();
+
+  /**
+   * Populate Map.mspMapPoints with MapPoints from vectorMapPoints.
+   * This is done after loading mappoints.
+   */
+  void setMapPointsToMap();
+
+  /**
+   * Populate vectorKeyFrames with MapPoints from Map.mspKeyFrames.
+   * This is done as the first step to save keyframes.
+   */
+  void getKeyFramesFromMap();
+
+  /**
+   * Populate Map.mspKeyFrames with MapPoints from vectorKeyFrames.
+   * This is done after loading keyframes.
+   */
+  void setKeyFramesToMap();
+
+
+
+
+  /**
+   * Irons keyframes and mappoints sets in map, before save.
+   *
+   * Tests all keyframes in MapPoints.mObservations and mappoints in KeyFrames.mvpMapPoints, checking they are:
+   *
+   * - not bad (!isBad())
+   * - in map (in Map::mspMapPoints and Map::mspKeyFrames)
+   *
+   * Those who not pass this check are eliminated, avoiding serialization of elements not belonging to the map.
+   *
+   * This depuration affects (improves) the actual map in memory.
+   *
+   * Invoked by mapSave.
+   *
+   */
+  void depurate();
+
+  /**
+   * Works on vectorMapPoints and vectorKeyFrames.
+   * After rebuilding, the elements in these vector should be copied to the map sets.
+   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp show.
+   */
+  void rebuild();
+
 
 
   /**

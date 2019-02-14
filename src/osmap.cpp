@@ -88,29 +88,17 @@ void Osmap::mapSave(const string givenFilename){
      return;
   }
 
-  // Other files
-  ofstream file;
-
   // MapPoints
   if(!options[NO_MAPPOINTS_FILE]){
-	  // Order keyframes by mnId
-	  vectorMapPoints.clear();
-	  vectorMapPoints.reserve(map.mspMapPoints.size());
-	  //vectorMapPoints.assign(map.mspMapPoints.begin(), map.mspMapPoints.end());	// Should static_cast using transform
-	  std::transform(map.mspMapPoints.begin(), map.mspMapPoints.end(), std::back_inserter(vectorMapPoints), [](MapPoint *pMP)->OsmapMapPoint*{return static_cast<OsmapMapPoint*>(pMP);});
-	  sort(vectorMapPoints.begin(), vectorMapPoints.end(), [](const MapPoint* a, const MapPoint* b){return a->mnId < b->mnId;});
+	  // Order mappoints by mnId
+	  getMapPointsFromMap();
 
 	  // New file
 	  filename = baseFilename + ".mappoints";
-	  file.open(filename, std::ofstream::binary);
 
 	  // Serialize
-	  SerializedMappointArray serializedMappointArray;
 	  headerFile << "mappointsFile" << filename;
-	  headerFile << "nMappoints" << serialize(vectorMapPoints, serializedMappointArray);
-	  if (!serializedMappointArray.SerializeToOstream(&file)) {/*error*/}
-
-	  file.close();
+	  headerFile << "nMappoints" << MapPointsSave(filename);
   }
 
   // K: grab camera calibration matrices.  Will be saved to yaml file later.
@@ -118,73 +106,21 @@ void Osmap::mapSave(const string givenFilename){
 
   // KeyFrames
   if(!options[NO_KEYFRAMES_FILE]){
-	  // Order keyframes by mnId
-	  vectorKeyFrames.clear();
-	  vectorKeyFrames.reserve(map.mspKeyFrames.size());
-	  //vectorKeyFrames.assign(map.mspKeyFrames.begin(), map.mspKeyFrames.end());	// Should static_cast with transform
-	  std::transform(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), std::back_inserter(vectorKeyFrames), [](KeyFrame *pKF)->OsmapKeyFrame*{return static_cast<OsmapKeyFrame*>(pKF);});
-
-	  sort(vectorKeyFrames.begin(), vectorKeyFrames.end(), [](const KeyFrame *a, const KeyFrame *b){return a->mnId < b->mnId;});
+	  getKeyFramesFromMap();
 
 	  // New file
 	  filename = baseFilename + ".keyframes";
-	  file.open(filename, ofstream::binary);
 
 	  // Serialize
-	  SerializedKeyframeArray serializedKeyFrameArray;
 	  headerFile << "keyframesFile" << filename;
-	  headerFile << "nKeyframes" << serialize(vectorKeyFrames, serializedKeyFrameArray);
-	  if (!serializedKeyFrameArray.SerializeToOstream(&file)) {/*error*/}
-
-	  file.close();
+	  headerFile << "nKeyframes" << KeyFramesSave(filename);
   }
 
   // Features
   if(!options[NO_FEATURES_FILE]){
 	  filename = baseFilename + ".features";
-	  file.open(filename, ofstream::binary);
 	  headerFile << "featuresFile" << filename;
-	  if(
-		options[FEATURES_FILE_DELIMITED] ||
-		(!options[FEATURES_FILE_NOT_DELIMITED] && countFeatures() > FEATURES_MESSAGE_LIMIT)
-	  ){
-		  options.set(FEATURES_FILE_DELIMITED);
-
-		  // Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kendon Varda's function
-		  int nFeatures = 0;
-
-		  // This Protocol Buffers stream must be deleted before closing file.  It happens automatically at }.
-		  ::google::protobuf::io::OstreamOutputStream protocolbuffersStream(&file);
-		  vector<OsmapKeyFrame*> vectorBlock;
-		  vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
-
-		  auto it = vectorKeyFrames.begin();
-		  while(it != vectorKeyFrames.end()){
-			  unsigned int n = (*it)->N;
-			  vectorBlock.clear();
-			  do{
-				  vectorBlock.push_back(*it);
-				  ++it;
-				  if(it == vectorKeyFrames.end()) break;
-				  //n += (*it)->N;
-				  KeyFrame *KF = *it;
-				  n += KF->N;
-			  } while(n <= FEATURES_MESSAGE_LIMIT);
-
-			  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-			  nFeatures += serialize(vectorBlock, serializedKeyframeFeaturesArray);
-			  writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream);
-			  //cout << writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream) << " (1 is ok writeDelimitedTo)" << endl;
-		  }
-		  headerFile << "nFeatures" << nFeatures;
-	  }else{
-		  options.set(FEATURES_FILE_NOT_DELIMITED);
-		  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-		  headerFile << "nFeatures" << serialize(vectorKeyFrames, serializedKeyframeFeaturesArray);
-		  if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file))
-			  cerr << "Error while serializing features file without delimitation." << endl;
-	  }
-	  file.close();
+	  headerFile << "nFeatures" << featuresSave(filename);
   }
 
 
@@ -223,7 +159,6 @@ void Osmap::mapSave(const string givenFilename){
 }
 
 void Osmap::mapLoad(string yamlFilename){
-  ifstream file;
   string filename;
   int intOptions;
 
@@ -236,6 +171,7 @@ void Osmap::mapLoad(string yamlFilename){
 
   // K
   if(!options[K_IN_KEYFRAME]){
+	  vectorK.clear();
 	  FileNode cameraMatrices = headerFile["cameraMatrices"];
 	  FileNodeIterator it = cameraMatrices.begin(), it_end = cameraMatrices.end();
 	  for( ; it != it_end; ++it){
@@ -254,50 +190,21 @@ void Osmap::mapLoad(string yamlFilename){
   vectorMapPoints.clear();
   if(!options[NO_MAPPOINTS_FILE]){
 	  headerFile["mappointsFile"] >> filename;
-	  file.open(filename, ifstream::binary);
-	  SerializedMappointArray serializedMappointArray;
-	  serializedMappointArray.ParseFromIstream(&file);
-	  cout << "Mappoints deserialized: "
-		<< deserialize(serializedMappointArray, vectorMapPoints) << endl;
-	  file.close();
+	  MapPointsLoad(filename);
   }
+
 
   // KeyFrames
   vectorKeyFrames.clear();
   if(!options[NO_KEYFRAMES_FILE]){
-	  // KeyFrames
 	  headerFile["keyframesFile"] >> filename;
-	  file.open(filename, ifstream::binary);
-#ifndef OSMAP_DUMMY_MAP
-	  if(!currentFrame.mTcw.dims)	// if map is no initialized, currentFrame has no pose, a pose is needed to create keyframes.
-		  currentFrame.mTcw = Mat::eye(4, 4, CV_32F);
-#endif
-	  SerializedKeyframeArray serializedKeyFrameArray;
-	  serializedKeyFrameArray.ParseFromIstream(&file);
-	  cout << "Keyframes deserialized: "
-		<< deserialize(serializedKeyFrameArray, vectorKeyFrames) << endl;
-	  file.close();
+	  KeyFramesLoad(filename);
   }
 
   // Features
   if(!options[NO_FEATURES_FILE]){
 	  headerFile["featuresFile"] >> filename;
-	  file.open(filename, ifstream::binary);
-	  auto *googleStream = new ::google::protobuf::io::IstreamInputStream(&file);
-	  SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
-	  if(options[FEATURES_FILE_DELIMITED]){
-		  while(true)
-			if(readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray))
-				cout << "Features deserialized in loop: "
-					 << deserialize(serializedKeyframeFeaturesArray) << endl;
-			else
-				break;
-	  } else {
-		  // Not delimited, pure Protocol Buffers
-		  serializedKeyframeFeaturesArray.ParseFromIstream(&file);
-		  cout << "Features deserialized: " << deserialize(serializedKeyframeFeaturesArray) << endl;
-	  }
-	  file.close();
+	  featuresLoad(filename);
   }
 
   // Close yaml file
@@ -307,16 +214,175 @@ void Osmap::mapLoad(string yamlFilename){
   rebuild();
 
   // Copy to map
-  map.mspMapPoints.clear();
-  copy(vectorMapPoints.begin(), vectorMapPoints.end(), inserter(map.mspMapPoints, map.mspMapPoints.end()));
+  setMapPointsToMap();
+  setKeyFramesToMap();
 
-
-  map.mspKeyFrames.clear();
-  copy(vectorKeyFrames.begin(), vectorKeyFrames.end(), inserter(map.mspKeyFrames, map.mspKeyFrames.end()));
-
-  // Release temp vectors
+  // Release temporary vectors
   clearVectors();
 }
+
+int Osmap::MapPointsSave(string filename){
+	ofstream file;
+	file.open(filename, std::ofstream::binary);
+
+	// Serialize
+	SerializedMappointArray serializedMappointArray;
+	int nMP = serialize(vectorMapPoints, serializedMappointArray);
+
+	// Closing
+	if (!serializedMappointArray.SerializeToOstream(&file))
+		// Signals the error
+		nMP = -1;
+	file.close();
+
+	return nMP;
+}
+
+int Osmap::MapPointsLoad(string filename){
+	ifstream file;
+	file.open(filename, ifstream::binary);
+
+	SerializedMappointArray serializedMappointArray;
+	serializedMappointArray.ParseFromIstream(&file);
+	int nMP = deserialize(serializedMappointArray, vectorMapPoints);
+	cout << "Mappoints deserialized: " << nMP << endl;
+
+	file.close();
+	return nMP;
+}
+
+int Osmap::KeyFramesSave(string filename){
+	ofstream file;
+	file.open(filename, std::ofstream::binary);
+
+	// Serialize
+	SerializedKeyframeArray serializedKeyFrameArray;
+	int nKF = serialize(vectorKeyFrames, serializedKeyFrameArray);
+
+	// Closing
+	if (!serializedKeyFrameArray.SerializeToOstream(&file))
+		// Signals the error
+		nKF = -1;
+	file.close();
+
+	return nKF;
+}
+
+int Osmap::KeyFramesLoad(string filename){
+	ifstream file;
+	file.open(filename, ifstream::binary);
+#ifndef OSMAP_DUMMY_MAP
+	if(!currentFrame.mTcw.dims)	// if map is no initialized, currentFrame has no pose, a pose is needed to create keyframes.
+		currentFrame.mTcw = Mat::eye(4, 4, CV_32F);
+#endif
+	SerializedKeyframeArray serializedKeyFrameArray;
+	serializedKeyFrameArray.ParseFromIstream(&file);
+	int nKF = deserialize(serializedKeyFrameArray, vectorKeyFrames);
+	cout << "Keyframes deserialized: "
+		<< nKF << endl;
+	file.close();
+	return nKF;
+}
+
+int Osmap::featuresSave(string filename){
+	int nFeatures = 0;
+	ofstream file;
+
+	file.open(filename, ofstream::binary);
+	if(
+		options[FEATURES_FILE_DELIMITED] ||
+		(!options[FEATURES_FILE_NOT_DELIMITED] && countFeatures() > FEATURES_MESSAGE_LIMIT)
+	){
+		// Saving with delimited ad hoc file format
+		// Loop serializing blocks of no more than FEATURES_MESSAGE_LIMIT features, using Kendon Varda's function
+
+		options.set(FEATURES_FILE_DELIMITED);
+
+		// This Protocol Buffers stream must be deleted before closing file.  It happens automatically at }.
+		::google::protobuf::io::OstreamOutputStream protocolbuffersStream(&file);
+		vector<OsmapKeyFrame*> vectorBlock;
+		vectorBlock.reserve(FEATURES_MESSAGE_LIMIT/30);
+
+		auto it = vectorKeyFrames.begin();
+		while(it != vectorKeyFrames.end()){
+			unsigned int n = (*it)->N;
+			vectorBlock.clear();
+			do{
+				vectorBlock.push_back(*it);
+				++it;
+				if(it == vectorKeyFrames.end()) break;
+				KeyFrame *KF = *it;
+				n += KF->N;
+			} while(n <= FEATURES_MESSAGE_LIMIT);
+
+			SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+			nFeatures += serialize(vectorBlock, serializedKeyframeFeaturesArray);
+			writeDelimitedTo(serializedKeyframeFeaturesArray, &protocolbuffersStream);
+		}
+	}else{
+		options.set(FEATURES_FILE_NOT_DELIMITED);
+		SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+		nFeatures = serialize(vectorKeyFrames, serializedKeyframeFeaturesArray);
+		if (!serializedKeyframeFeaturesArray.SerializeToOstream(&file)){
+			cerr << "Error while serializing features file without delimitation." << endl;
+			nFeatures = -1;
+		}
+	}
+	file.close();
+
+	return nFeatures;
+}
+
+int Osmap::featuresLoad(string filename){
+	int nFeatures = 0;
+	ifstream file;
+	file.open(filename, ifstream::binary);
+	auto *googleStream = new ::google::protobuf::io::IstreamInputStream(&file);
+	SerializedKeyframeFeaturesArray serializedKeyframeFeaturesArray;
+	if(options[FEATURES_FILE_DELIMITED]){
+		while(true)
+			if(readDelimitedFrom(googleStream, &serializedKeyframeFeaturesArray)){
+				nFeatures += deserialize(serializedKeyframeFeaturesArray);
+				cout << "Features deserialized in loop: "
+					 << nFeatures << endl;
+			}
+			else
+				break;
+	} else {
+		// Not delimited, pure Protocol Buffers
+		serializedKeyframeFeaturesArray.ParseFromIstream(&file);
+		nFeatures = deserialize(serializedKeyframeFeaturesArray);
+	  }
+	cout << "Features deserialized: " << nFeatures << endl;
+	file.close();
+	return nFeatures;
+}
+
+void Osmap::getMapPointsFromMap(){
+	  vectorMapPoints.clear();
+	  vectorMapPoints.reserve(map.mspMapPoints.size());
+	  std::transform(map.mspMapPoints.begin(), map.mspMapPoints.end(), std::back_inserter(vectorMapPoints), [](MapPoint *pMP)->OsmapMapPoint*{return static_cast<OsmapMapPoint*>(pMP);});
+	  sort(vectorMapPoints.begin(), vectorMapPoints.end(), [](const MapPoint* a, const MapPoint* b){return a->mnId < b->mnId;});
+}
+
+void Osmap::setMapPointsToMap(){
+	map.mspMapPoints.clear();
+	copy(vectorMapPoints.begin(), vectorMapPoints.end(), inserter(map.mspMapPoints, map.mspMapPoints.end()));
+}
+
+void Osmap::getKeyFramesFromMap(){
+	// Order keyframes by mnId
+	vectorKeyFrames.clear();
+	vectorKeyFrames.reserve(map.mspKeyFrames.size());
+	std::transform(map.mspKeyFrames.begin(), map.mspKeyFrames.end(), std::back_inserter(vectorKeyFrames), [](KeyFrame *pKF)->OsmapKeyFrame*{return static_cast<OsmapKeyFrame*>(pKF);});
+	sort(vectorKeyFrames.begin(), vectorKeyFrames.end(), [](const KeyFrame *a, const KeyFrame *b){return a->mnId < b->mnId;});
+}
+
+void Osmap::setKeyFramesToMap(){
+	map.mspKeyFrames.clear();
+	copy(vectorKeyFrames.begin(), vectorKeyFrames.end(), inserter(map.mspKeyFrames, map.mspKeyFrames.end()));
+}
+
 
 
 void Osmap::clearVectors(){
