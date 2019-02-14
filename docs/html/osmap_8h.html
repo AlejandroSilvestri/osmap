@@ -96,11 +96,17 @@ $(document).ready(function(){initNavTree('osmap_8h.html','');});
 <code>#include &lt;iterator&gt;</code><br />
 <code>#include &quot;osmap.pb.h&quot;</code><br />
 <code>#include &lt;opencv2/core.hpp&gt;</code><br />
-<code>#include &quot;dummymap.h&quot;</code><br />
+<code>#include &quot;KeyFrame.h&quot;</code><br />
+<code>#include &quot;Map.h&quot;</code><br />
+<code>#include &quot;MapPoint.h&quot;</code><br />
+<code>#include &quot;System.h&quot;</code><br />
+<code>#include &quot;Frame.h&quot;</code><br />
+<code>#include &quot;Tracking.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for osmap.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="osmap_8h__incl.svg" width="3111" height="142"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="osmap_8h__incl.svg" width="3603" height="142"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div>
 <p><a href="osmap_8h_source.html">Go to the source code of this file.</a></p>
@@ -109,6 +115,15 @@ Include dependency graph for osmap.h:</div>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html">ORB_SLAM2::Osmap</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a class for a singleton attached to ORB-SLAM2's map.  <a href="class_o_r_b___s_l_a_m2_1_1_osmap.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">ORB_SLAM2::OsmapKeyFrame</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapped KeyFrame to let <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html" title="This is a class for a singleton attached to ORB-SLAM2&#39;s map. ">Osmap</a> access protected properties without modifying KeyFrame code.  <a href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map.html">ORB_SLAM2::OsmapMap</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapped Map to let <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html" title="This is a class for a singleton attached to ORB-SLAM2&#39;s map. ">Osmap</a> access protected properties without modifying Map code.  <a href="class_o_r_b___s_l_a_m2_1_1_osmap_map.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">ORB_SLAM2::OsmapMapPoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapped MapPoint to let <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html" title="This is a class for a singleton attached to ORB-SLAM2&#39;s map. ">Osmap</a> access protected properties without modifying MapPoint code.  <a href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>

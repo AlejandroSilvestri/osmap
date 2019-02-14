@@ -95,6 +95,12 @@ $(document).ready(function(){initNavTree('class_o_r_b___s_l_a_m2_1_1_osmap.html'
  <a href="class_o_r_b___s_l_a_m2_1_1_osmap.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="osmap_8h_source.html">osmap.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for ORB_SLAM2::Osmap:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_o_r_b___s_l_a_m2_1_1_osmap__coll__graph.svg" width="187" height="203"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -149,36 +155,60 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3974e152e19aa6d0067072ef8f92c6c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a3974e152e19aa6d0067072ef8f92c6c1">deserialize</a> (const SerializedKeypoint &amp;, KeyPoint &amp;)</td></tr>
 <tr class="memdesc:a3974e152e19aa6d0067072ef8f92c6c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reconstructs a KeyPoint.  <a href="#a3974e152e19aa6d0067072ef8f92c6c1">More...</a><br /></td></tr>
 <tr class="separator:a3974e152e19aa6d0067072ef8f92c6c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2e8ad9a2bf8639185097f8d0a6cc9c6"><td class="memItemLeft" align="right" valign="top">MapPoint *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ab2e8ad9a2bf8639185097f8d0a6cc9c6">deserialize</a> (const SerializedMappoint &amp;serializedMappoint)</td></tr>
-<tr class="memdesc:ab2e8ad9a2bf8639185097f8d0a6cc9c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and fills a MapPoint from optional message fields.  <a href="#ab2e8ad9a2bf8639185097f8d0a6cc9c6">More...</a><br /></td></tr>
-<tr class="separator:ab2e8ad9a2bf8639185097f8d0a6cc9c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af29522639b4de9d0128c585505473df6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#af29522639b4de9d0128c585505473df6">deserialize</a> (const SerializedMappointArray &amp;, vector&lt; MapPoint *&gt; &amp;)</td></tr>
-<tr class="memdesc:af29522639b4de9d0128c585505473df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves MapPoints from an array, and append them to the map.  <a href="#af29522639b4de9d0128c585505473df6">More...</a><br /></td></tr>
-<tr class="separator:af29522639b4de9d0128c585505473df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43f0599f3ad494066012abfd2342b3d4"><td class="memItemLeft" align="right" valign="top">KeyFrame *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a43f0599f3ad494066012abfd2342b3d4">deserialize</a> (const SerializedKeyframe &amp;)</td></tr>
-<tr class="memdesc:a43f0599f3ad494066012abfd2342b3d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reconstructs a KeyFrame from optional fields.  <a href="#a43f0599f3ad494066012abfd2342b3d4">More...</a><br /></td></tr>
-<tr class="separator:a43f0599f3ad494066012abfd2342b3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc3428b0c7dbf31ac34908ed11a0a9a7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#afc3428b0c7dbf31ac34908ed11a0a9a7">deserialize</a> (const SerializedKeyframeArray &amp;, vector&lt; KeyFrame *&gt; &amp;)</td></tr>
-<tr class="memdesc:afc3428b0c7dbf31ac34908ed11a0a9a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves MapPoints from an array, and append them to the map.  <a href="#afc3428b0c7dbf31ac34908ed11a0a9a7">More...</a><br /></td></tr>
-<tr class="separator:afc3428b0c7dbf31ac34908ed11a0a9a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a883e6a68d6c64780a9095acdc2d7c757"><td class="memItemLeft" align="right" valign="top">KeyFrame *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a883e6a68d6c64780a9095acdc2d7c757">deserialize</a> (const SerializedKeyframeFeatures &amp;)</td></tr>
-<tr class="memdesc:a883e6a68d6c64780a9095acdc2d7c757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves all features belonging to one keyframe.  <a href="#a883e6a68d6c64780a9095acdc2d7c757">More...</a><br /></td></tr>
-<tr class="separator:a883e6a68d6c64780a9095acdc2d7c757"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36c922cc75024a993e1eafbf0e30542f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a36c922cc75024a993e1eafbf0e30542f">deserialize</a> (const SerializedMappoint &amp;serializedMappoint)</td></tr>
+<tr class="memdesc:a36c922cc75024a993e1eafbf0e30542f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and fills a MapPoint from optional message fields.  <a href="#a36c922cc75024a993e1eafbf0e30542f">More...</a><br /></td></tr>
+<tr class="separator:a36c922cc75024a993e1eafbf0e30542f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15638867e629a2a7bea605636b71627d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a15638867e629a2a7bea605636b71627d">deserialize</a> (const SerializedMappointArray &amp;, vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> *&gt; &amp;)</td></tr>
+<tr class="memdesc:a15638867e629a2a7bea605636b71627d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves MapPoints from an array, and append them to the map.  <a href="#a15638867e629a2a7bea605636b71627d">More...</a><br /></td></tr>
+<tr class="separator:a15638867e629a2a7bea605636b71627d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab6125bf56f3f57eb99060daf403fce0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aab6125bf56f3f57eb99060daf403fce0">deserialize</a> (const SerializedKeyframe &amp;)</td></tr>
+<tr class="memdesc:aab6125bf56f3f57eb99060daf403fce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reconstructs a KeyFrame from optional fields.  <a href="#aab6125bf56f3f57eb99060daf403fce0">More...</a><br /></td></tr>
+<tr class="separator:aab6125bf56f3f57eb99060daf403fce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31340e33fee5114d2784cef34ea7bf7c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a31340e33fee5114d2784cef34ea7bf7c">deserialize</a> (const SerializedKeyframeArray &amp;, vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&gt; &amp;)</td></tr>
+<tr class="memdesc:a31340e33fee5114d2784cef34ea7bf7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves MapPoints from an array, and append them to the map.  <a href="#a31340e33fee5114d2784cef34ea7bf7c">More...</a><br /></td></tr>
+<tr class="separator:a31340e33fee5114d2784cef34ea7bf7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b56308f638b71c0fb339b667eb70741"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a3b56308f638b71c0fb339b667eb70741">deserialize</a> (const SerializedKeyframeFeatures &amp;)</td></tr>
+<tr class="memdesc:a3b56308f638b71c0fb339b667eb70741"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves all features belonging to one keyframe.  <a href="#a3b56308f638b71c0fb339b667eb70741">More...</a><br /></td></tr>
+<tr class="separator:a3b56308f638b71c0fb339b667eb70741"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a315b84f707f206ef5dc40d8a872598c7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a315b84f707f206ef5dc40d8a872598c7">deserialize</a> (const SerializedKeyframeFeaturesArray &amp;)</td></tr>
 <tr class="memdesc:a315b84f707f206ef5dc40d8a872598c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves all keyframe's features from the specified serialization object to vectorKeyframe.  <a href="#a315b84f707f206ef5dc40d8a872598c7">More...</a><br /></td></tr>
 <tr class="separator:a315b84f707f206ef5dc40d8a872598c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d57e5dfb3facdabcc3abdc319b5fbfb"><td class="memItemLeft" align="right" valign="top">KeyFrame *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a3d57e5dfb3facdabcc3abdc319b5fbfb">getKeyFrame</a> (unsigned int id)</td></tr>
-<tr class="memdesc:a3d57e5dfb3facdabcc3abdc319b5fbfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for a KeyFrame id in the map.  <a href="#a3d57e5dfb3facdabcc3abdc319b5fbfb">More...</a><br /></td></tr>
-<tr class="separator:a3d57e5dfb3facdabcc3abdc319b5fbfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a2320912c25b4866a50d76f99bd6cb8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a2a2320912c25b4866a50d76f99bd6cb8">featuresLoad</a> (string filename)</td></tr>
+<tr class="memdesc:a2a2320912c25b4866a50d76f99bd6cb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the content of a "map.features" file and applies it to vectorKeyFrames.  <a href="#a2a2320912c25b4866a50d76f99bd6cb8">More...</a><br /></td></tr>
+<tr class="separator:a2a2320912c25b4866a50d76f99bd6cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a441308a8c45fe52261b83e4ef067a3b0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a441308a8c45fe52261b83e4ef067a3b0">featuresSave</a> (string filename)</td></tr>
+<tr class="memdesc:a441308a8c45fe52261b83e4ef067a3b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save KeyFrane's features of vectorKeyFrames to file, usually "map.features".  <a href="#a441308a8c45fe52261b83e4ef067a3b0">More...</a><br /></td></tr>
+<tr class="separator:a441308a8c45fe52261b83e4ef067a3b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad98ee55ee5858b41fcf5b46f7130ca60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ad98ee55ee5858b41fcf5b46f7130ca60">getKeyFrame</a> (unsigned int id)</td></tr>
+<tr class="memdesc:ad98ee55ee5858b41fcf5b46f7130ca60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for a KeyFrame id in the map.  <a href="#ad98ee55ee5858b41fcf5b46f7130ca60">More...</a><br /></td></tr>
+<tr class="separator:ad98ee55ee5858b41fcf5b46f7130ca60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a681220bad96871c89fdcca0d4af4bab3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a681220bad96871c89fdcca0d4af4bab3">getKeyFramesFromMap</a> ()</td></tr>
+<tr class="memdesc:a681220bad96871c89fdcca0d4af4bab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populate vectorKeyFrames with MapPoints from Map.mspKeyFrames.  <a href="#a681220bad96871c89fdcca0d4af4bab3">More...</a><br /></td></tr>
+<tr class="separator:a681220bad96871c89fdcca0d4af4bab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08e5538c8fc5d15dcea1ccf1a18ec239"><td class="memItemLeft" align="right" valign="top">MapPoint *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a08e5538c8fc5d15dcea1ccf1a18ec239">getMapPoint</a> (unsigned int id)</td></tr>
 <tr class="memdesc:a08e5538c8fc5d15dcea1ccf1a18ec239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for a mappoint by its id in the map.  <a href="#a08e5538c8fc5d15dcea1ccf1a18ec239">More...</a><br /></td></tr>
 <tr class="separator:a08e5538c8fc5d15dcea1ccf1a18ec239"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa64b740f944510c89e3e4fce0b40cb7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aa64b740f944510c89e3e4fce0b40cb7a">getMapPointsFromMap</a> ()</td></tr>
+<tr class="memdesc:aa64b740f944510c89e3e4fce0b40cb7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populate vectorMapPoints with MapPoints from Map.mspMapPoints.  <a href="#aa64b740f944510c89e3e4fce0b40cb7a">More...</a><br /></td></tr>
+<tr class="separator:aa64b740f944510c89e3e4fce0b40cb7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6e421ce4d9725573268c5a42dd37cfe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ac6e421ce4d9725573268c5a42dd37cfe">getVectorKFromKeyframes</a> ()</td></tr>
 <tr class="memdesc:ac6e421ce4d9725573268c5a42dd37cfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverse map's keyframes looking for different K matrices, and stores them into vectorK.  <a href="#ac6e421ce4d9725573268c5a42dd37cfe">More...</a><br /></td></tr>
 <tr class="separator:ac6e421ce4d9725573268c5a42dd37cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a775d14c122b56f057f28ac99eeb7c801"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a775d14c122b56f057f28ac99eeb7c801">KeyFramesLoad</a> (string filename)</td></tr>
+<tr class="memdesc:a775d14c122b56f057f28ac99eeb7c801"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the content of a "map.keyframes" file to vectorKeyFrames.  <a href="#a775d14c122b56f057f28ac99eeb7c801">More...</a><br /></td></tr>
+<tr class="separator:a775d14c122b56f057f28ac99eeb7c801"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac013a034151956fc5bf3f012b1776b59"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ac013a034151956fc5bf3f012b1776b59">KeyFramesSave</a> (string filename)</td></tr>
+<tr class="memdesc:ac013a034151956fc5bf3f012b1776b59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the content of vectorKeyFrames to file like "map.keyframes".  <a href="#ac013a034151956fc5bf3f012b1776b59">More...</a><br /></td></tr>
+<tr class="separator:ac013a034151956fc5bf3f012b1776b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae70c0f92800d1d146b5cd1089d061b5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ae70c0f92800d1d146b5cd1089d061b5a">mapLoad</a> (string yamlFilename)</td></tr>
 <tr class="memdesc:ae70c0f92800d1d146b5cd1089d061b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the map from a set of files in the folder whose name is provided as an argument.  <a href="#ae70c0f92800d1d146b5cd1089d061b5a">More...</a><br /></td></tr>
 <tr class="separator:ae70c0f92800d1d146b5cd1089d061b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fa48572bb8bcc90094c6cdb54344e22"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a8fa48572bb8bcc90094c6cdb54344e22">MapPointsLoad</a> (string filename)</td></tr>
+<tr class="memdesc:a8fa48572bb8bcc90094c6cdb54344e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the content of a "map.mappoints" file to vectorMapPoints.  <a href="#a8fa48572bb8bcc90094c6cdb54344e22">More...</a><br /></td></tr>
+<tr class="separator:a8fa48572bb8bcc90094c6cdb54344e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac42c6046026a08ebe9ff60b266acc26f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ac42c6046026a08ebe9ff60b266acc26f">MapPointsSave</a> (string filename)</td></tr>
+<tr class="memdesc:ac42c6046026a08ebe9ff60b266acc26f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the content of vectorMapPoints to file like "map.mappoints".  <a href="#ac42c6046026a08ebe9ff60b266acc26f">More...</a><br /></td></tr>
+<tr class="separator:ac42c6046026a08ebe9ff60b266acc26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3154a9de4ad58d2531b09705b59b0b25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a3154a9de4ad58d2531b09705b59b0b25">mapSave</a> (string basefilename)</td></tr>
 <tr class="memdesc:a3154a9de4ad58d2531b09705b59b0b25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.  <a href="#a3154a9de4ad58d2531b09705b59b0b25">More...</a><br /></td></tr>
 <tr class="separator:a3154a9de4ad58d2531b09705b59b0b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,24 +239,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab5eadc02965f8183caf0b1c4f9ef64d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ab5eadc02965f8183caf0b1c4f9ef64d7">serialize</a> (const KeyPoint &amp;, SerializedKeypoint *)</td></tr>
 <tr class="memdesc:ab5eadc02965f8183caf0b1c4f9ef64d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize 4 properties of a KeyPoint.  <a href="#ab5eadc02965f8183caf0b1c4f9ef64d7">More...</a><br /></td></tr>
 <tr class="separator:ab5eadc02965f8183caf0b1c4f9ef64d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae48091aa3174778b18ef030f074c9a02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ae48091aa3174778b18ef030f074c9a02">serialize</a> (const MapPoint &amp;, SerializedMappoint *)</td></tr>
-<tr class="memdesc:ae48091aa3174778b18ef030f074c9a02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a MapPoint, according to options.  <a href="#ae48091aa3174778b18ef030f074c9a02">More...</a><br /></td></tr>
-<tr class="separator:ae48091aa3174778b18ef030f074c9a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af98c80f7b9f3e1646e803e3df6371446"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#af98c80f7b9f3e1646e803e3df6371446">serialize</a> (const vector&lt; MapPoint *&gt; &amp;, SerializedMappointArray &amp;)</td></tr>
-<tr class="memdesc:af98c80f7b9f3e1646e803e3df6371446"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialized array of MapPoints.  <a href="#af98c80f7b9f3e1646e803e3df6371446">More...</a><br /></td></tr>
-<tr class="separator:af98c80f7b9f3e1646e803e3df6371446"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6df3e54b852f67cacd3be89bf6932fbe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a6df3e54b852f67cacd3be89bf6932fbe">serialize</a> (const KeyFrame &amp;, SerializedKeyframe *)</td></tr>
-<tr class="memdesc:a6df3e54b852f67cacd3be89bf6932fbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a KeyFrame.  <a href="#a6df3e54b852f67cacd3be89bf6932fbe">More...</a><br /></td></tr>
-<tr class="separator:a6df3e54b852f67cacd3be89bf6932fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3fbebf872a778e6f281bdd834b5ceed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#af3fbebf872a778e6f281bdd834b5ceed">serialize</a> (const vector&lt; KeyFrame *&gt; &amp;, SerializedKeyframeArray &amp;)</td></tr>
-<tr class="memdesc:af3fbebf872a778e6f281bdd834b5ceed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialized array of KeyFrames.  <a href="#af3fbebf872a778e6f281bdd834b5ceed">More...</a><br /></td></tr>
-<tr class="separator:af3fbebf872a778e6f281bdd834b5ceed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa16ee8d979cf1d10d411a24ed9c7f40f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aa16ee8d979cf1d10d411a24ed9c7f40f">serialize</a> (const KeyFrame &amp;, SerializedKeyframeFeatures *)</td></tr>
-<tr class="memdesc:aa16ee8d979cf1d10d411a24ed9c7f40f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize all features observed by a KeyFrame.  <a href="#aa16ee8d979cf1d10d411a24ed9c7f40f">More...</a><br /></td></tr>
-<tr class="separator:aa16ee8d979cf1d10d411a24ed9c7f40f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa859f101367603a3ff36b8abfe4d832c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aa859f101367603a3ff36b8abfe4d832c">serialize</a> (const vector&lt; KeyFrame *&gt; &amp;vKF, SerializedKeyframeFeaturesArray &amp;serializedKeyframeFeaturesArray)</td></tr>
-<tr class="memdesc:aa859f101367603a3ff36b8abfe4d832c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize all keyframe's features from provided keyframes container, to the specified serialization object.  <a href="#aa859f101367603a3ff36b8abfe4d832c">More...</a><br /></td></tr>
-<tr class="separator:aa859f101367603a3ff36b8abfe4d832c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac77e91b7b88eb7569ee362d9e4505ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aac77e91b7b88eb7569ee362d9e4505ae">serialize</a> (const <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> &amp;, SerializedMappoint *)</td></tr>
+<tr class="memdesc:aac77e91b7b88eb7569ee362d9e4505ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a MapPoint, according to options.  <a href="#aac77e91b7b88eb7569ee362d9e4505ae">More...</a><br /></td></tr>
+<tr class="separator:aac77e91b7b88eb7569ee362d9e4505ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a260d0dff5bfb7911f66e3a3c7ffe5154"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a260d0dff5bfb7911f66e3a3c7ffe5154">serialize</a> (const vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> *&gt; &amp;, SerializedMappointArray &amp;)</td></tr>
+<tr class="memdesc:a260d0dff5bfb7911f66e3a3c7ffe5154"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialized array of MapPoints.  <a href="#a260d0dff5bfb7911f66e3a3c7ffe5154">More...</a><br /></td></tr>
+<tr class="separator:a260d0dff5bfb7911f66e3a3c7ffe5154"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73c3280cc3a7f37a87d452a6874ad557"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a73c3280cc3a7f37a87d452a6874ad557">serialize</a> (const <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> &amp;, SerializedKeyframe *)</td></tr>
+<tr class="memdesc:a73c3280cc3a7f37a87d452a6874ad557"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a KeyFrame.  <a href="#a73c3280cc3a7f37a87d452a6874ad557">More...</a><br /></td></tr>
+<tr class="separator:a73c3280cc3a7f37a87d452a6874ad557"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a564b7a08ea182f730693382417e26ea5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a564b7a08ea182f730693382417e26ea5">serialize</a> (const vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&gt; &amp;, SerializedKeyframeArray &amp;)</td></tr>
+<tr class="memdesc:a564b7a08ea182f730693382417e26ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialized array of KeyFrames.  <a href="#a564b7a08ea182f730693382417e26ea5">More...</a><br /></td></tr>
+<tr class="separator:a564b7a08ea182f730693382417e26ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa0d1554657bc14d1de0970ee032d73b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#afa0d1554657bc14d1de0970ee032d73b">serialize</a> (const <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> &amp;, SerializedKeyframeFeatures *)</td></tr>
+<tr class="memdesc:afa0d1554657bc14d1de0970ee032d73b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize all features observed by a KeyFrame.  <a href="#afa0d1554657bc14d1de0970ee032d73b">More...</a><br /></td></tr>
+<tr class="separator:afa0d1554657bc14d1de0970ee032d73b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b44ea8810b712d6a9eff432aae7b39e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a5b44ea8810b712d6a9eff432aae7b39e">serialize</a> (const vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&gt; &amp;vKF, SerializedKeyframeFeaturesArray &amp;serializedKeyframeFeaturesArray)</td></tr>
+<tr class="memdesc:a5b44ea8810b712d6a9eff432aae7b39e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize all keyframe's features from provided keyframes container, to the specified serialization object.  <a href="#a5b44ea8810b712d6a9eff432aae7b39e">More...</a><br /></td></tr>
+<tr class="separator:a5b44ea8810b712d6a9eff432aae7b39e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca4ae478929b8117bace36dd2c697bf2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aca4ae478929b8117bace36dd2c697bf2">setKeyFramesToMap</a> ()</td></tr>
+<tr class="memdesc:aca4ae478929b8117bace36dd2c697bf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populate Map.mspKeyFrames with MapPoints from vectorKeyFrames.  <a href="#aca4ae478929b8117bace36dd2c697bf2">More...</a><br /></td></tr>
+<tr class="separator:aca4ae478929b8117bace36dd2c697bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13076431afb6af63ba33524b115ff734"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a13076431afb6af63ba33524b115ff734">setMapPointsToMap</a> ()</td></tr>
+<tr class="memdesc:a13076431afb6af63ba33524b115ff734"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populate Map.mspMapPoints with MapPoints from vectorMapPoints.  <a href="#a13076431afb6af63ba33524b115ff734">More...</a><br /></td></tr>
+<tr class="separator:a13076431afb6af63ba33524b115ff734"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89a68d613aeb23234b81c506156ae229"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a89a68d613aeb23234b81c506156ae229">writeDelimitedTo</a> (const google::protobuf::MessageLite &amp;message, google::protobuf::io::ZeroCopyOutputStream *rawOutput)</td></tr>
 <tr class="memdesc:a89a68d613aeb23234b81c506156ae229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a message to a vector file.  <a href="#a89a68d613aeb23234b81c506156ae229">More...</a><br /></td></tr>
 <tr class="separator:a89a68d613aeb23234b81c506156ae229"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -242,24 +278,27 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ae98cf2d63ca3885a38867307e9ca2bc2"><td class="memItemLeft" align="right" valign="top">vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ae98cf2d63ca3885a38867307e9ca2bc2">keyframeid2vectork</a></td></tr>
 <tr class="memdesc:ae98cf2d63ca3885a38867307e9ca2bc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each index KeyFrame.mnId the value returned is an index to vectorK.  <a href="#ae98cf2d63ca3885a38867307e9ca2bc2">More...</a><br /></td></tr>
 <tr class="separator:ae98cf2d63ca3885a38867307e9ca2bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06a1eb717181826da5a64b3cbe37e45e"><td class="memItemLeft" align="right" valign="top">Map &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a06a1eb717181826da5a64b3cbe37e45e">map</a></td></tr>
-<tr class="memdesc:a06a1eb717181826da5a64b3cbe37e45e"><td class="mdescLeft">&#160;</td><td class="mdescRight">ORB-SLAM2 map to be serialized.  <a href="#a06a1eb717181826da5a64b3cbe37e45e">More...</a><br /></td></tr>
-<tr class="separator:a06a1eb717181826da5a64b3cbe37e45e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af20d340d42dbbf52a27f402eaea94159"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map.html">OsmapMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#af20d340d42dbbf52a27f402eaea94159">map</a></td></tr>
+<tr class="memdesc:af20d340d42dbbf52a27f402eaea94159"><td class="mdescLeft">&#160;</td><td class="mdescRight">ORB-SLAM2 map to be serialized.  <a href="#af20d340d42dbbf52a27f402eaea94159">More...</a><br /></td></tr>
+<tr class="separator:af20d340d42dbbf52a27f402eaea94159"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a928cfe547ef3b6412c2187b0fe6158fd"><td class="memItemLeft" align="right" valign="top">bitset&lt; 32 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a928cfe547ef3b6412c2187b0fe6158fd">options</a> = 0</td></tr>
 <tr class="memdesc:a928cfe547ef3b6412c2187b0fe6158fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of chosen options for serializing.  <a href="#a928cfe547ef3b6412c2187b0fe6158fd">More...</a><br /></td></tr>
 <tr class="separator:a928cfe547ef3b6412c2187b0fe6158fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addf599a8a94d9ab35dd91d7f99506e5a"><td class="memItemLeft" align="right" valign="top">KeyFrame *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#addf599a8a94d9ab35dd91d7f99506e5a">pRefKF</a> = NULL</td></tr>
+<tr class="memdesc:addf599a8a94d9ab35dd91d7f99506e5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">This keyframe is a vehicle to MapPoint construction, which need a pRefKF as argument.  <a href="#addf599a8a94d9ab35dd91d7f99506e5a">More...</a><br /></td></tr>
+<tr class="separator:addf599a8a94d9ab35dd91d7f99506e5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade81b1dd7b95ce892811cd6e51d0a4ca"><td class="memItemLeft" align="right" valign="top">System &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#ade81b1dd7b95ce892811cd6e51d0a4ca">system</a></td></tr>
 <tr class="memdesc:ade81b1dd7b95ce892811cd6e51d0a4ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">System, needed to populate new keyframes after construction on deserialization, with some configuration values.  <a href="#ade81b1dd7b95ce892811cd6e51d0a4ca">More...</a><br /></td></tr>
 <tr class="separator:ade81b1dd7b95ce892811cd6e51d0a4ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaad25be4fda815329eacf02c11050293"><td class="memItemLeft" align="right" valign="top">vector&lt; Mat * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#aaad25be4fda815329eacf02c11050293">vectorK</a></td></tr>
 <tr class="memdesc:aaad25be4fda815329eacf02c11050293"><td class="mdescLeft">&#160;</td><td class="mdescRight">Usually there is only one common matrix K for all KeyFrames in the entire map, there can be more, but there won't be as many K as KeyFrames.  <a href="#aaad25be4fda815329eacf02c11050293">More...</a><br /></td></tr>
 <tr class="separator:aaad25be4fda815329eacf02c11050293"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0911ce1aab3049e028dd8f127dfcfa3a"><td class="memItemLeft" align="right" valign="top">vector&lt; KeyFrame * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a0911ce1aab3049e028dd8f127dfcfa3a">vectorKeyFrames</a></td></tr>
-<tr class="memdesc:a0911ce1aab3049e028dd8f127dfcfa3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer where map's keyframes are stored in ascending id order, to save them to file in this order.  <a href="#a0911ce1aab3049e028dd8f127dfcfa3a">More...</a><br /></td></tr>
-<tr class="separator:a0911ce1aab3049e028dd8f127dfcfa3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25847a8f879193210454db2ac90ff0de"><td class="memItemLeft" align="right" valign="top">vector&lt; MapPoint * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a25847a8f879193210454db2ac90ff0de">vectorMapPoints</a></td></tr>
-<tr class="memdesc:a25847a8f879193210454db2ac90ff0de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer where map's mappoints are stored in ascending id order, to save them to file in this order.  <a href="#a25847a8f879193210454db2ac90ff0de">More...</a><br /></td></tr>
-<tr class="separator:a25847a8f879193210454db2ac90ff0de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63f25a3baf53d9a37db367363f0781f5"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a63f25a3baf53d9a37db367363f0781f5">vectorKeyFrames</a></td></tr>
+<tr class="memdesc:a63f25a3baf53d9a37db367363f0781f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer where map's keyframes are stored in ascending id order, to save them to file in this order.  <a href="#a63f25a3baf53d9a37db367363f0781f5">More...</a><br /></td></tr>
+<tr class="separator:a63f25a3baf53d9a37db367363f0781f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39c934d185750067f4eeb87bbe494bbb"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a39c934d185750067f4eeb87bbe494bbb">vectorMapPoints</a></td></tr>
+<tr class="memdesc:a39c934d185750067f4eeb87bbe494bbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer where map's mappoints are stored in ascending id order, to save them to file in this order.  <a href="#a39c934d185750067f4eeb87bbe494bbb">More...</a><br /></td></tr>
+<tr class="separator:a39c934d185750067f4eeb87bbe494bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is a class for a singleton attached to ORB-SLAM2's map. </p>
@@ -361,9 +400,6 @@ Public Attributes</h2></td></tr>
 <a id="a9e8450a0dc32b38942b470dc7ca1cbdb"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">ORB_SLAM2::Osmap::Osmap </td>
@@ -373,11 +409,6 @@ Public Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Only constructor, the only way to set the orb-slam2 map. </p>
@@ -399,6 +430,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Clear temporary vectors. </p>
+<p>Only clears the vectors, not the objects its pointer elements pointed to (keyframes, mappoints, K matrices), because they belong to the map. </p>
 
 </div>
 </div>
@@ -631,12 +663,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab2e8ad9a2bf8639185097f8d0a6cc9c6"></a>
+<a id="a36c922cc75024a993e1eafbf0e30542f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">MapPoint* ORB_SLAM2::Osmap::deserialize </td>
+          <td class="memname"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a>* ORB_SLAM2::Osmap::deserialize </td>
           <td>(</td>
           <td class="paramtype">const SerializedMappoint &amp;&#160;</td>
           <td class="paramname"><em>serializedMappoint</em></td><td>)</td>
@@ -656,7 +688,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af29522639b4de9d0128c585505473df6"></a>
+<a id="a15638867e629a2a7bea605636b71627d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -669,7 +701,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vector&lt; MapPoint *&gt; &amp;&#160;</td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> *&gt; &amp;&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -692,12 +724,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a43f0599f3ad494066012abfd2342b3d4"></a>
+<a id="aab6125bf56f3f57eb99060daf403fce0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">KeyFrame* ORB_SLAM2::Osmap::deserialize </td>
+          <td class="memname"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a>* ORB_SLAM2::Osmap::deserialize </td>
           <td>(</td>
           <td class="paramtype">const SerializedKeyframe &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -711,7 +743,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afc3428b0c7dbf31ac34908ed11a0a9a7"></a>
+<a id="a31340e33fee5114d2784cef34ea7bf7c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -724,7 +756,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vector&lt; KeyFrame *&gt; &amp;&#160;</td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&gt; &amp;&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -746,12 +778,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a883e6a68d6c64780a9095acdc2d7c757"></a>
+<a id="a3b56308f638b71c0fb339b667eb70741"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">KeyFrame* ORB_SLAM2::Osmap::deserialize </td>
+          <td class="memname"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a>* ORB_SLAM2::Osmap::deserialize </td>
           <td>(</td>
           <td class="paramtype">const SerializedKeyframeFeatures &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -790,12 +822,60 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3d57e5dfb3facdabcc3abdc319b5fbfb"></a>
+<a id="a2a2320912c25b4866a50d76f99bd6cb8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">KeyFrame* ORB_SLAM2::Osmap::getKeyFrame </td>
+          <td class="memname">int ORB_SLAM2::Osmap::featuresLoad </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load the content of a "map.features" file and applies it to vectorKeyFrames. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>full name of the file to open. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a441308a8c45fe52261b83e4ef067a3b0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ORB_SLAM2::Osmap::featuresSave </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Save KeyFrane's features of vectorKeyFrames to file, usually "map.features". </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>full name of the file to be created and saved. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad98ee55ee5858b41fcf5b46f7130ca60"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a>* ORB_SLAM2::Osmap::getKeyFrame </td>
           <td>(</td>
           <td class="paramtype">unsigned int&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
@@ -811,7 +891,25 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a pointer to the KeyFrame with the given id, or NULL if not found. Used only in <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a883e6a68d6c64780a9095acdc2d7c757" title="Retrieves all features belonging to one keyframe. ">Osmap::deserialize(const SerializedKeyframeFeatures&amp;)</a>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a pointer to the KeyFrame with the given id, or NULL if not found. Used only in <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html#a3b56308f638b71c0fb339b667eb70741" title="Retrieves all features belonging to one keyframe. ">Osmap::deserialize(const SerializedKeyframeFeatures&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a681220bad96871c89fdcca0d4af4bab3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ORB_SLAM2::Osmap::getKeyFramesFromMap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Populate vectorKeyFrames with MapPoints from Map.mspKeyFrames. </p>
+<p>This is done as the first step to save keyframes. </p>
 
 </div>
 </div>
@@ -840,6 +938,24 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aa64b740f944510c89e3e4fce0b40cb7a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ORB_SLAM2::Osmap::getMapPointsFromMap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Populate vectorMapPoints with MapPoints from Map.mspMapPoints. </p>
+<p>This is done as the first step to save mappoints. </p>
+
+</div>
+</div>
 <a id="ac6e421ce4d9725573268c5a42dd37cfe"></a>
 <div class="memitem">
 <div class="memproto">
@@ -855,6 +971,56 @@ Public Attributes</h2></td></tr>
 
 <p>Traverse map's keyframes looking for different K matrices, and stores them into vectorK. </p>
 <p>It also populates keyframeid2vectork. </p>
+
+</div>
+</div>
+<a id="a775d14c122b56f057f28ac99eeb7c801"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ORB_SLAM2::Osmap::KeyFramesLoad </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load the content of a "map.keyframes" file to vectorKeyFrames. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>full name of the file to open. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac013a034151956fc5bf3f012b1776b59"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ORB_SLAM2::Osmap::KeyFramesSave </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Save the content of vectorKeyFrames to file like "map.keyframes". </p>
+<p>Need </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>full name of the file to be created and saved. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>number of keyframes serialized. -1 if error.</dd></dl>
+<p>This method ignores option NO_KEYFRAMES_FILE </p>
 
 </div>
 </div>
@@ -887,6 +1053,56 @@ Public Attributes</h2></td></tr>
 <li>other files' names</li>
 </ul>
 <p>Before calling this method, threads must be paused. </p>
+
+</div>
+</div>
+<a id="a8fa48572bb8bcc90094c6cdb54344e22"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ORB_SLAM2::Osmap::MapPointsLoad </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load the content of a "map.mappoints" file to vectorMapPoints. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>full name of the file to open. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac42c6046026a08ebe9ff60b266acc26f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ORB_SLAM2::Osmap::MapPointsSave </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Save the content of vectorMapPoints to file like "map.mappoints". </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>full name of the file to be created and saved. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>number of mappoints serialized. -1 if error.</dd></dl>
+<p>This method ignores option NO_MAPPOINTS_FILE If not K_IN_KEYFRAME option (the default), vectorK must be populated (see getVectorKFromKeyframes) prior invocation of this method. </p>
 
 </div>
 </div>
@@ -1162,14 +1378,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae48091aa3174778b18ef030f074c9a02"></a>
+<a id="aac77e91b7b88eb7569ee362d9e4505ae"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void ORB_SLAM2::Osmap::serialize </td>
           <td>(</td>
-          <td class="paramtype">const MapPoint &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> &amp;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -1190,14 +1406,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af98c80f7b9f3e1646e803e3df6371446"></a>
+<a id="a260d0dff5bfb7911f66e3a3c7ffe5154"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">int ORB_SLAM2::Osmap::serialize </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; MapPoint *&gt; &amp;&#160;</td>
+          <td class="paramtype">const vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a> *&gt; &amp;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -1227,14 +1443,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6df3e54b852f67cacd3be89bf6932fbe"></a>
+<a id="a73c3280cc3a7f37a87d452a6874ad557"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void ORB_SLAM2::Osmap::serialize </td>
           <td>(</td>
-          <td class="paramtype">const KeyFrame &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> &amp;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -1256,14 +1472,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af3fbebf872a778e6f281bdd834b5ceed"></a>
+<a id="a564b7a08ea182f730693382417e26ea5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">int ORB_SLAM2::Osmap::serialize </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; KeyFrame *&gt; &amp;&#160;</td>
+          <td class="paramtype">const vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&gt; &amp;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -1291,14 +1507,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa16ee8d979cf1d10d411a24ed9c7f40f"></a>
+<a id="afa0d1554657bc14d1de0970ee032d73b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void ORB_SLAM2::Osmap::serialize </td>
           <td>(</td>
-          <td class="paramtype">const KeyFrame &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> &amp;&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -1327,14 +1543,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa859f101367603a3ff36b8abfe4d832c"></a>
+<a id="a5b44ea8810b712d6a9eff432aae7b39e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">int ORB_SLAM2::Osmap::serialize </td>
           <td>(</td>
-          <td class="paramtype">const vector&lt; KeyFrame *&gt; &amp;&#160;</td>
+          <td class="paramtype">const vector&lt; <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a> *&gt; &amp;&#160;</td>
           <td class="paramname"><em>vKF</em>, </td>
         </tr>
         <tr>
@@ -1359,6 +1575,42 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="aca4ae478929b8117bace36dd2c697bf2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ORB_SLAM2::Osmap::setKeyFramesToMap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Populate Map.mspKeyFrames with MapPoints from vectorKeyFrames. </p>
+<p>This is done after loading keyframes. </p>
+
+</div>
+</div>
+<a id="a13076431afb6af63ba33524b115ff734"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ORB_SLAM2::Osmap::setMapPointsToMap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Populate Map.mspMapPoints with MapPoints from vectorMapPoints. </p>
+<p>This is done after loading mappoints. </p>
 
 </div>
 </div>
@@ -1412,6 +1664,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Any frame, to copy configuration values from. </p>
+<p>Constructor takes currentFrame from Tracker. </p>
 
 </div>
 </div>
@@ -1444,12 +1697,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a06a1eb717181826da5a64b3cbe37e45e"></a>
+<a id="af20d340d42dbbf52a27f402eaea94159"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Map&amp; ORB_SLAM2::Osmap::map</td>
+          <td class="memname"><a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map.html">OsmapMap</a>&amp; ORB_SLAM2::Osmap::map</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1470,6 +1723,21 @@ Public Attributes</h2></td></tr>
 
 <p>Set of chosen options for serializing. </p>
 <p>User must set options prior to saving a map. Loading a map should reflect in this property the saved map options. </p>
+
+</div>
+</div>
+<a id="addf599a8a94d9ab35dd91d7f99506e5a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">KeyFrame* ORB_SLAM2::Osmap::pRefKF = NULL</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This keyframe is a vehicle to MapPoint construction, which need a pRefKF as argument. </p>
+<p>MapPoint construction occurs only while loading. pRefKF can be any KeyFrame. mapLoad can be invoked when there is no map in orbslam2, which means there is no keyframe in it. So <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html" title="This is a class for a singleton attached to ORB-SLAM2&#39;s map. ">Osmap</a> constructs one. But constructed a KeyFrame requires a populated Frame (<a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html" title="This is a class for a singleton attached to ORB-SLAM2&#39;s map. ">Osmap</a> uses tracker.currentFrame), and it isn't populated with data before first tracking loop. This means pRefKF can't be constructed in <a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap.html" title="This is a class for a singleton attached to ORB-SLAM2&#39;s map. ">Osmap</a> constructor. pRefKF keyframe is constructed on the first map load, more specifically right before mappoints are loaded. </p>
 
 </div>
 </div>
@@ -1502,12 +1770,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0911ce1aab3049e028dd8f127dfcfa3a"></a>
+<a id="a63f25a3baf53d9a37db367363f0781f5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;KeyFrame*&gt; ORB_SLAM2::Osmap::vectorKeyFrames</td>
+          <td class="memname">vector&lt;<a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html">OsmapKeyFrame</a>*&gt; ORB_SLAM2::Osmap::vectorKeyFrames</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1517,12 +1785,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a25847a8f879193210454db2ac90ff0de"></a>
+<a id="a39c934d185750067f4eeb87bbe494bbb"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;MapPoint*&gt; ORB_SLAM2::Osmap::vectorMapPoints</td>
+          <td class="memname">vector&lt;<a class="el" href="class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html">OsmapMapPoint</a>*&gt; ORB_SLAM2::Osmap::vectorMapPoints</td>
         </tr>
       </table>
 </div><div class="memdoc">

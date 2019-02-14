@@ -24,7 +24,7 @@
 #include <opencv2/core.hpp>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
-#include "osmap.h"
+#include <Osmap.h>
 
 // Option check macro
 #define OPTION(OP) if(options[OP]) headerFile << #OP;
@@ -84,7 +84,7 @@ void Osmap::mapSave(const string givenFilename){
   FileStorage headerFile(filename, FileStorage::WRITE);
   if(!headerFile.isOpened()){
     // Is this necessary?
-     cerr << "Couldn't create file " << baseFilename << ".yaml" << endl;
+     cerr << "Couldn't create file " << baseFilename << ".yaml, map not saved." << endl;
      return;
   }
 
@@ -415,16 +415,6 @@ void Osmap::depurate(){
 				cout << "depurate(): APPEND_FOUND_MAPPOINTS: MapPoint " << pOMP->mnId << " added to map. ";
 			}
 		}
-
-		/*
-		// NULL out bad loop edges.  Loop edges are KeyFrames.
-		if(!options[NO_ERASE_ORPHAN_KEYFRAME_IN_LOOP])
-		  for(auto &pKFLoop: pKF->mspLoopEdges)
-			if(pKFLoop->mbBad || !map.mspKeyFrames.count(pKFLoop)){
-			  cout << "ERASE_ORPHAN_KEYFRAME_IN_LOOP: Nullifying loop edge " << pKFLoop->mnId << " from keyframe " << pKF->mnId << endl;
-			  pKF->mspLoopEdges.erase(pKFLoop);
-			}
-		*/
 	}
 }
 
@@ -436,7 +426,6 @@ void Osmap::rebuild(){
 	 * - MapPoint::AddObservation on each point to rebuild MapPoint:mObservations y MapPoint:mObs
 	 */
 	cout << "Rebuilding..." << endl;
-	//cout << "Warning: rebuilding on fake objects will set bad most MapPoints and KeyFrames." << endl;
 	keyFrameDatabase.clear();
 
 	for(auto *pKF : vectorKeyFrames){
@@ -478,7 +467,7 @@ void Osmap::rebuild(){
 		// Append keyframe to the database
 		keyFrameDatabase.add(pKF);
 
-		// UpdateConnections to rebuild covisibility graph, in mnId order.
+		// Calling UpdateConnections in mnId order rebuilds the covisibility graph and the spanning tree.
 		pKF->UpdateConnections();
 
 		if(!options[NO_SET_BAD])
@@ -504,24 +493,26 @@ void Osmap::rebuild(){
 	KeyFrame::nNextId = map.mnMaxKFid + 1;
 
 
-	/**
-	 * Rebuilds the spanning tree asigning a mpParent to every KeyFrame, except that with id 0.
+
+	/*
+	 * Check and fix the spanning tree created with UpdateConnections.
+	 * Rebuilds the spanning tree asigning a mpParent to every orphan KeyFrame without, except that with id 0.
  	 * It ends when every KeyFrame has a parent.
 	 */
 
-	// mvpKeyFrameOrigins should be empty at this point, and will contain only one element, the first keyframe.
+	// mvpKeyFrameOrigins should be empty at this point, and must contain only one element, the first keyframe.
 	map.mvpKeyFrameOrigins.clear();
 	map.mvpKeyFrameOrigins.push_back(*vectorKeyFrames.begin());
 
-	// Cantidad de padres asignados en cada iteración, y total.
+	// Number of parents assigned in each iteration and in total.  Usually 0.
 	int nParents = -1, nParentsTotal = 0;
 	while(nParents){
 		nParents = 0;
 		for(auto pKF: vectorKeyFrames)
-			if(!pKF->mpParent && pKF->mnId)	// Para todos los KF excepto mnId 0, que no tiene padre
+			if(!pKF->mpParent && pKF->mnId)	// Process all keyframes without parent, exccept id 0
 				for(auto *pConnectedKF : pKF->mvpOrderedConnectedKeyFrames){
 					auto poConnectedKF = static_cast<OsmapKeyFrame*>(pConnectedKF);
-					if(poConnectedKF->mpParent || poConnectedKF->mnId == 0){	// Candidato a padre encontrado: no es huérfano o es el original
+					if(poConnectedKF->mpParent || poConnectedKF->mnId == 0){	// Parent found: not orphan or id 0
 						nParents++;
 						pKF->ChangeParent(pConnectedKF);
 						break;
@@ -899,17 +890,13 @@ bool Osmap::writeDelimitedTo(
     const google::protobuf::MessageLite& message,
     google::protobuf::io::ZeroCopyOutputStream* rawOutput
 ){
-  //cout << "call to writeDelimitedTo" << endl;
   // We create a new coded stream for each message.  Don't worry, this is fast.
   google::protobuf::io::CodedOutputStream output(rawOutput);
 
   // Write the size.
   const int size = message.ByteSize();
   output.WriteVarint32(size);
-  //cout << "Message size " << size << endl;
-
   uint8_t* buffer = output.GetDirectBufferForNBytesAndAdvance(size);
-  //cout << "Fast buffer? " << (buffer!= NULL) << endl;
   if (buffer != NULL) {
     // Optimization:  The message fits in one buffer, so use the faster
     // direct-to-array serialization path.
@@ -922,7 +909,6 @@ bool Osmap::writeDelimitedTo(
       return false;
     }
   }
-  //cout << "Bytes serializados: " << output.ByteCount() << endl;
   return true;
 }
 
@@ -930,8 +916,6 @@ bool Osmap::readDelimitedFrom(
     google::protobuf::io::ZeroCopyInputStream* rawInput,
     google::protobuf::MessageLite* message
 ){
-  //cout << "call to readDelimitedFrom" << endl;
-
   // We create a new coded stream for each message.  Don't worry, this is fast,
   // and it makes sure the 64MB total size limit is imposed per-message rather
   // than on the whole stream.  (See the CodedInputStream interface for more

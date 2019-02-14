@@ -34,7 +34,7 @@
 #ifdef OSMAP_DUMMY_MAP
 
 // Don't include when porting osmap to os1 and orb-slam2
-#include "dummymap.h"
+#include <Dummymap.h>
 
 #else
 
@@ -49,8 +49,6 @@
 
 #endif
 namespace ORB_SLAM2{
-
-//#ifndef OSMAP_DUMMY_MAP
 
 /**
  * Wrapped MapPoint to let Osmap access protected properties without modifying MapPoint code.
@@ -71,8 +69,6 @@ public:
 	friend class Osmap;
 	OsmapKeyFrame(Osmap*);
 };
-
-//#endif
 
 
 /**

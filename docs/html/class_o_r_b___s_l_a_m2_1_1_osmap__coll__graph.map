@@ -1,6 +1,3 @@
 <map id="ORB_SLAM2::Osmap" name="ORB_SLAM2::Osmap">
-<area shape="rect" id="node2" href="$class_o_r_b___s_l_a_m2_1_1_key_frame_database.html" title="ORB_SLAM2::KeyFrameDatabase" alt="" coords="5,5,231,32"/>
-<area shape="rect" id="node4" href="$class_o_r_b___s_l_a_m2_1_1_system.html" title="ORB_SLAM2::System" alt="" coords="261,95,415,121"/>
-<area shape="rect" id="node3" href="$class_o_r_b___s_l_a_m2_1_1_map.html" title="ORB_SLAM2::Map" alt="" coords="432,5,567,32"/>
-<area shape="rect" id="node5" href="$class_o_r_b___s_l_a_m2_1_1_tracker.html" title="ORB_SLAM2::Tracker" alt="" coords="255,5,408,32"/>
+<area shape="rect" id="node2" href="$class_o_r_b___s_l_a_m2_1_1_osmap_map.html" title="Wrapped Map to let Osmap access protected properties without modifying Map code. " alt="" coords="5,81,181,108"/>
 </map>

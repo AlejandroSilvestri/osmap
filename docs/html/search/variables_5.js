@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['vectork',['vectorK',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#aaad25be4fda815329eacf02c11050293',1,'ORB_SLAM2::Osmap']]],
-  ['vectorkeyframes',['vectorKeyFrames',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a0911ce1aab3049e028dd8f127dfcfa3a',1,'ORB_SLAM2::Osmap']]],
-  ['vectormappoints',['vectorMapPoints',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a25847a8f879193210454db2ac90ff0de',1,'ORB_SLAM2::Osmap']]]
+  ['system',['system',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#ade81b1dd7b95ce892811cd6e51d0a4ca',1,'ORB_SLAM2::Osmap']]]
 ];

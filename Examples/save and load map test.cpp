@@ -2,9 +2,9 @@
 Serialization example of ficticious MapPoints.
 */
 
+#include <Osmap.h>
 #include <iostream>
 #include <fstream>
-#include "osmap.h"
 #include <cstdlib>
 
 using namespace std;

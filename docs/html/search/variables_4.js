@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['system',['system',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#ade81b1dd7b95ce892811cd6e51d0a4ca',1,'ORB_SLAM2::Osmap']]]
+  ['prefkf',['pRefKF',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#addf599a8a94d9ab35dd91d7f99506e5a',1,'ORB_SLAM2::Osmap']]]
 ];
