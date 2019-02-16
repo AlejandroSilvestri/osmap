@@ -423,6 +423,13 @@ public:
   void clearVectors();
 
   /**
+   * Utility for separating path and filename from a full path.
+   * @param filename Output string, filename found in path, '' if no file in the path.  Can be NULL.
+   * @param pathDirectory Output string with the directory's path, '' if none.  Can be NULL.
+   */
+  void parsePath(const string &path, string *filename = NULL, string *pathDirectory = NULL);
+
+  /**
   Traverse map's keyframes looking for different K matrices, and stores them into vectorK.
   It also populates keyframeid2vectork.
   */

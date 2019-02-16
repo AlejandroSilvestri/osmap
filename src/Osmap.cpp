@@ -69,33 +69,37 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 		while(!system.mpLocalMapper->isStopped()) usleep(1000);
 	}
 
-  // Strip out .yaml if present
-  string baseFilename;
-  int length = givenFilename.length();
-  if(givenFilename.substr(length-5) == ".yaml")
-	  baseFilename = givenFilename.substr(length-5);
-  else
-	  baseFilename = givenFilename;
+	// Strip out .yaml if present
+	string baseFilename, filename, pathDirectory;
+	parsePath(givenFilename, &filename, &pathDirectory);
+	if(pathDirectory != "")
+		chdir(pathDirectory.c_str());
 
-  // Map depuration
-  if(!options[NO_DEPURATION])
+	int length = filename.length();
+	if(filename.substr(length-5) == ".yaml")
+	  baseFilename = filename.substr(length-5);
+	else
+	  baseFilename = filename;
+
+	// Map depuration
+	if(!options[NO_DEPURATION])
 	depurate();
 
 
-  // Actual saving
-  string filename = baseFilename + ".yaml";
+	// Actual saving
+	filename = baseFilename + ".yaml";
 
-  // Open YAML file for write, it will be the last file to close.
-  // FileStorage https://docs.opencv.org/3.1.0/da/d56/classcv_1_1FileStorage.html
-  FileStorage headerFile(filename, FileStorage::WRITE);
-  if(!headerFile.isOpened()){
-    // Is this necessary?
-     cerr << "Couldn't create file " << baseFilename << ".yaml, map not saved." << endl;
-     return;
-  }
+	// Open YAML file for write, it will be the last file to close.
+	// FileStorage https://docs.opencv.org/3.1.0/da/d56/classcv_1_1FileStorage.html
+	FileStorage headerFile(filename, FileStorage::WRITE);
+	if(!headerFile.isOpened()){
+	// Is this necessary?
+	 cerr << "Couldn't create file " << baseFilename << ".yaml, map not saved." << endl;
+	 return;
+	}
 
-  // MapPoints
-  if(!options[NO_MAPPOINTS_FILE]){
+	// MapPoints
+	if(!options[NO_MAPPOINTS_FILE]){
 	  // Order mappoints by mnId
 	  getMapPointsFromMap();
 
@@ -105,13 +109,13 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	  // Serialize
 	  headerFile << "mappointsFile" << filename;
 	  headerFile << "nMappoints" << MapPointsSave(filename);
-  }
+	}
 
-  // K: grab camera calibration matrices.  Will be saved to yaml file later.
-  if(!options[K_IN_KEYFRAME]) getVectorKFromKeyframes();
+	// K: grab camera calibration matrices.  Will be saved to yaml file later.
+	if(!options[K_IN_KEYFRAME]) getVectorKFromKeyframes();
 
-  // KeyFrames
-  if(!options[NO_KEYFRAMES_FILE]){
+	// KeyFrames
+	if(!options[NO_KEYFRAMES_FILE]){
 	  getKeyFramesFromMap();
 
 	  // New file
@@ -120,50 +124,50 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	  // Serialize
 	  headerFile << "keyframesFile" << filename;
 	  headerFile << "nKeyframes" << KeyFramesSave(filename);
-  }
+	}
 
-  // Features
-  if(!options[NO_FEATURES_FILE]){
+	// Features
+	if(!options[NO_FEATURES_FILE]){
 	  filename = baseFilename + ".features";
 	  headerFile << "featuresFile" << filename;
 	  headerFile << "nFeatures" << featuresSave(filename);
-  }
+	}
 
 
-  // Save options, as an int
-  headerFile << "Options" << (int) options.to_ulong();
-  // Options
-  if(options.any()){
-    headerFile << "Options descriptions" << "[:";
-    OPTION(NO_LOOPS)
-    OPTION(NO_FEATURES_DESCRIPTORS)
-    OPTION(K_IN_KEYFRAME)
-    OPTION(ONLY_MAPPOINTS_FEATURES)
-    OPTION(FEATURES_FILE_DELIMITED)
-    OPTION(FEATURES_FILE_NOT_DELIMITED)
-    OPTION(NO_MAPPOINTS_FILE)
-    OPTION(NO_KEYFRAMES_FILE)
-    OPTION(NO_FEATURES_FILE)
-    headerFile << "]";
-  }
+	// Save options, as an int
+	headerFile << "Options" << (int) options.to_ulong();
+	// Options
+	if(options.any()){
+	headerFile << "Options descriptions" << "[:";
+	OPTION(NO_LOOPS)
+	OPTION(NO_FEATURES_DESCRIPTORS)
+	OPTION(K_IN_KEYFRAME)
+	OPTION(ONLY_MAPPOINTS_FEATURES)
+	OPTION(FEATURES_FILE_DELIMITED)
+	OPTION(FEATURES_FILE_NOT_DELIMITED)
+	OPTION(NO_MAPPOINTS_FILE)
+	OPTION(NO_KEYFRAMES_FILE)
+	OPTION(NO_FEATURES_FILE)
+	headerFile << "]";
+	}
 
 
-  // K: camera calibration matrices, save to yaml at the end of file.
-  if(!options[K_IN_KEYFRAME]){
-    // Save K matrices in header file yaml
-    headerFile << "cameraMatrices" << "[";
-    for(auto pK:vectorK)
-       headerFile << "{:"  << "fx" << pK->at<float>(0,0) << "fy" << pK->at<float>(1,1) << "cx" << pK->at<float>(0,2) << "cy" << pK->at<float>(1,2) << "}";
-    headerFile << "]";
-  }
+	// K: camera calibration matrices, save to yaml at the end of file.
+	if(!options[K_IN_KEYFRAME]){
+	// Save K matrices in header file yaml
+	headerFile << "cameraMatrices" << "[";
+	for(auto pK:vectorK)
+	   headerFile << "{:"  << "fx" << pK->at<float>(0,0) << "fy" << pK->at<float>(1,1) << "cx" << pK->at<float>(0,2) << "cy" << pK->at<float>(1,2) << "}";
+	headerFile << "]";
+	}
 
-  // Save yaml file
-  headerFile.release();
+	// Save yaml file
+	headerFile.release();
 
-  // Clear temporary vectors
-  clearVectors();
+	// Clear temporary vectors
+	clearVectors();
 
-  if(pauseThreads)
+	if(pauseThreads)
 	  system.mpViewer->Release();
 }
 
@@ -210,6 +214,13 @@ void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
 	}
 
 
+	// Change directory
+	string pathDirectory;
+	parsePath(yamlFilename, NULL, &pathDirectory);
+	if(pathDirectory != "")
+		chdir(pathDirectory.c_str());
+
+
 	// MapPoints
 	vectorMapPoints.clear();
 	if(!options[NO_MAPPOINTS_FILE]){
@@ -244,8 +255,10 @@ void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
 	// Release temporary vectors
 	clearVectors();
 
-	// Lost state, the system must relocalize itself in the just loaded map.
-	system.mpTracker->mState = 3;	//ORB_SLAM2::Tracking::LOST;
+#ifndef OSMAP_DUMMY_MAP
+// Lost state, the system must relocalize itself in the just loaded map.
+	system.mpTracker->mState = ORB_SLAM2::Tracking::LOST;
+#endif
 
 	if(pauseThreads){
 		// Resume threads
@@ -429,6 +442,23 @@ void Osmap::clearVectors(){
 	vectorMapPoints.clear();
 	vectorK.clear();
 }
+
+void Osmap::parsePath(const string &path, string *filename, string *pathDirectory){
+	size_t pos = path.find_last_of("\\/");
+	if(std::string::npos == pos)
+		// No directory separator, file is assumed.
+		pos = 0;
+	else
+		// Last directory separator (/) will be in pathDirectory, not in filename.
+		pos++;
+
+	if(pathDirectory)
+		*pathDirectory = path.substr(0, pos);
+	if(filename)
+		*filename = path.substr(pos);
+	return;
+}
+
 
 void Osmap::depurate(){
 	// First erase MapPoint from KeyFrames, and then erase KeyFrames from MapPoints.
