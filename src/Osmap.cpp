@@ -107,6 +107,7 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	  filename = baseFilename + ".mappoints";
 
 	  // Serialize
+	  cout << "Saving " << filename << endl;
 	  headerFile << "mappointsFile" << filename;
 	  headerFile << "nMappoints" << MapPointsSave(filename);
 	}
@@ -122,6 +123,7 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	  filename = baseFilename + ".keyframes";
 
 	  // Serialize
+	  cout << "Saving " << filename << endl;
 	  headerFile << "keyframesFile" << filename;
 	  headerFile << "nKeyframes" << KeyFramesSave(filename);
 	}
@@ -129,6 +131,7 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	// Features
 	if(!options[NO_FEATURES_FILE]){
 	  filename = baseFilename + ".features";
+	  cout << "Saving " << filename << endl;
 	  headerFile << "featuresFile" << filename;
 	  headerFile << "nFeatures" << featuresSave(filename);
 	}
@@ -239,6 +242,7 @@ void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
 	// Features
 	if(!options[NO_FEATURES_FILE]){
 		headerFile["featuresFile"] >> filename;
+		cout << "Loading features from " << filename << " ..." << endl;
 		featuresLoad(filename);
 	}
 
@@ -296,7 +300,7 @@ int Osmap::MapPointsLoad(string filename){
 	SerializedMappointArray serializedMappointArray;
 	serializedMappointArray.ParseFromIstream(&file);
 	int nMP = deserialize(serializedMappointArray, vectorMapPoints);
-	cout << "Mappoints deserialized: " << nMP << endl;
+	cout << "Mappoints loaded: " << nMP << endl;
 
 	file.close();
 	return nMP;
@@ -329,7 +333,7 @@ int Osmap::KeyFramesLoad(string filename){
 	SerializedKeyframeArray serializedKeyFrameArray;
 	serializedKeyFrameArray.ParseFromIstream(&file);
 	int nKF = deserialize(serializedKeyFrameArray, vectorKeyFrames);
-	cout << "Keyframes deserialized: "
+	cout << "Keyframes loaded: "
 		<< nKF << endl;
 	file.close();
 	return nKF;
@@ -404,7 +408,7 @@ int Osmap::featuresLoad(string filename){
 		serializedKeyframeFeaturesArray.ParseFromIstream(&file);
 		nFeatures = deserialize(serializedKeyframeFeaturesArray);
 	  }
-	cout << "Features deserialized: " << nFeatures << endl;
+	cout << "Features loaded: " << nFeatures << endl;
 	file.close();
 	return nFeatures;
 }
@@ -475,7 +479,7 @@ void Osmap::depurate(){
 
 			if(pOMP->mbBad){
 				// If MapPoint is bad, NULL it in keyframe's observations.
-				cout << "depurate(): Nullifying bad MapPoint " << pOMP->mnId << " in KeyFrame " << pOKF->mnId << endl;
+				cerr << "depurate(): Nullifying bad MapPoint " << pOMP->mnId << " in KeyFrame " << pOKF->mnId << endl;
 				pMPs[i] = NULL;
 			} else if(!map.mspMapPoints.count(pOMP) && !options[NO_APPEND_FOUND_MAPPOINTS]){
 				// If MapPoint is not in map, append it to the map
@@ -493,7 +497,7 @@ void Osmap::rebuild(){
 	 * - UpdateConnections to rebuild covisibility graph
 	 * - MapPoint::AddObservation on each point to rebuild MapPoint:mObservations y MapPoint:mObs
 	 */
-	cout << "Rebuilding..." << endl;
+	cout << "Rebuilding map:" << endl;
 	keyFrameDatabase.clear();
 
 	for(auto *pKF : vectorKeyFrames){
@@ -541,7 +545,7 @@ void Osmap::rebuild(){
 		if(!options[NO_SET_BAD])
 			// If this keyframe is isolated (and it isn't keyframe zero), erase it.
 			if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
-				cout << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
+				cerr << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
 				pKF->SetBadFlag();
 			}
 
@@ -559,8 +563,6 @@ void Osmap::rebuild(){
 
 	// Next KeyFrame id
 	KeyFrame::nNextId = map.mnMaxKFid + 1;
-
-
 
 	/*
 	 * Check and fix the spanning tree created with UpdateConnections.
@@ -598,14 +600,13 @@ void Osmap::rebuild(){
 	 */
 	for(OsmapMapPoint *pMP : vectorMapPoints){
 		// Rebuilds mpRefKF.  Requires mObservations.
-		if(!options[NO_SET_BAD])
-			if(pMP->mObservations.empty()){
-				cout << "MP " << pMP->mnId << " without observations." << "  Set bad." << endl;
-				pMP->SetBadFlag();
-				continue;
-			}
+		if(!options[NO_SET_BAD] && pMP->mnId && pMP->mObservations.empty()){
+			cerr << "MP " << pMP->mnId << " without observations." << "  Set bad." << endl;
+			pMP->SetBadFlag();
+			continue;
+		}
 
-		// Asumes the first observation has the lowest mnId.
+		// Asumes the first observation in mappoint has the lowest mnId.  Processed keyframes in mnId order ensures this.
 		auto pair = (*pMP->mObservations.begin());
 		pMP->mpRefKF = pair.first;
 
@@ -637,13 +638,21 @@ void Osmap::getVectorKFromKeyframes(){
       if(K.data == vK.data) break;
 
       // Slow test, compare each element
+/*
       if(
         K.at<float>(0,0) == vK.at<float>(0,0) &&
         K.at<float>(1,1) == vK.at<float>(1,1) &&
         K.at<float>(0,2) == vK.at<float>(0,2) &&
         K.at<float>(1,2) == vK.at<float>(1,2)
       ) break;
-
+*/
+#define DELTA 0.1
+      if(
+        abs(K.at<float>(0,0) - vK.at<float>(0,0)) < DELTA &&
+        abs(K.at<float>(1,1) - vK.at<float>(1,1)) < DELTA &&
+        abs(K.at<float>(0,2) - vK.at<float>(0,2)) < DELTA &&
+        abs(K.at<float>(1,2) - vK.at<float>(1,2)) < DELTA
+      ) break;
     }
 
     // if not found, push
@@ -922,7 +931,7 @@ OsmapKeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKe
 		}
 	  }
   } else {
-	  cout << "KeyFrame id "<< KFid << "not found while deserializing features: skipped.  Inconsistence between keyframes and features serialization files." << endl;
+	  cerr << "KeyFrame id "<< KFid << "not found while deserializing features: skipped.  Inconsistence between keyframes and features serialization files." << endl;
   }
   return pKF;
 }
