@@ -792,7 +792,7 @@ void Osmap::serialize(const OsmapMapPoint &mappoint, SerializedMappoint *seriali
   serialize(mappoint.mWorldPos, serializedMappoint->mutable_position());
   serializedMappoint->set_visible(mappoint.mnVisible);
   serializedMappoint->set_found(mappoint.mnFound);
-  if(!options[NO_FEATURES_DESCRIPTORS])
+  if(options[NO_FEATURES_DESCRIPTORS])	// Then this is the only descriptor to serialize
     serialize(mappoint.mDescriptor, serializedMappoint->mutable_briefdescriptor());
 }
 
