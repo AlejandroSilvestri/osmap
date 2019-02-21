@@ -1,4 +1,4 @@
-# Osmap
+# Osmap: ORB-SLAM2 Map serialization
 
 [Osmap documentation with Doxygen](https://alejandrosilvestri.github.io/osmap/html/class_o_r_b___s_l_a_m2_1_1_osmap.html)
 
@@ -23,13 +23,13 @@ This is why this serialization format has the following features:
 
 
 ## The files in the project
-osmap.proto is the only protocol buffer definition, that serves as format documentation.
+- osmap.proto is the only protocol buffer definition, that serves as format documentation.
 
-osmap.pb.cc and osmap.pb.h are protocol buffer automatically generated code that defines messages classes.
+- osmap.pb.cc and osmap.pb.h are protocol buffer automatically generated code that defines messages classes.
 
-osmap.cpp and osmap.h defines the osmap class responsible for saving and loading maps.
+- osmap.cpp and osmap.h defines the osmap class responsible for saving and loading maps.
 
-dummymap.h is provided to load and save a map without having to compile you application with orbslam2.  You can make map analisys applications without the burden of compiling with orbslam2.  To use dummymap.h instead of orbslam2's map you must define the preprocessor symbol OSMAP_DUMMY_MAP in you environment.  It is only used in osmap.h, so alternatively you can edit it and wire you map source.
+- dummymap.h is provided to load and save a map without having to compile you application with orbslam2.  You can make map analisys applications without the burden of compiling with orbslam2.  To use dummymap.h instead of orbslam2's map you must define the preprocessor symbol OSMAP_DUMMY_MAP in you environment.  It is only used in osmap.h.
 
 Example folder has some test files, which create some dummy map, saves it, loads it and show its values to verify the whole process.
 
@@ -40,12 +40,20 @@ Right now osmap aims monocular SLAM only, so it won't serialize some variables n
 
 Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because that project could still receive minor changes, this is the recipe to merge osmap with up to date orb-slam2.  It need some editing and compiling.
 
-1- Add default constructors to MapPoint and KeyFrame.
+1- Add Osmap files to ORB-SLAM2 project.  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
 
-2- Add osmap as friend class to MapPoint, KeyFrame and Map, so osmap can access private and protected attributes that need to be serialized.
+2- Write the code to call save and load, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
 
-3- Add commands to save and load maps in the human machine interface.  One way is add buttons on visualizer.cc.  In order to call save and load, this file must include osmap.h and create one osmap instance.
+    ...
+    #include "Osmap.h"
+    ...
+    // Construct the osmap object, can be right after SLAM construction.  You only need one instance to load and save as many maps you want.
+    Osmap osmap = ORB_SLAM2::Osmap(SLAM);
+    ...
+    // When you already has a map to save
+    osmap.mapSave("myFirstMap");	// "myFirstMap" or "myFirstMap.yaml", same thing
+    ...
+    // Now you want to load the map
+    osmap.mapLoad("myFirstMap.yaml");
 
-4- Add Osmap files to ORB-SLAM2 project.  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
-
-5- Compile, fix errors and run.
+3- Compile, run.
