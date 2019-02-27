@@ -155,6 +155,14 @@ In Linux, zenity comes handy as dialog to get file name to load and save map.  Y
     FILE *f = popen("zenity --file-selection --save --confirm-overwrite --filename=mapa", "r");
     fgets(cstringfilename, 1024, f);
 
+
+You probably want to go to localization only mode (tracking only, no mapping) right before saving or loading.  To do that:
+
+    SLAM->ActivateLocalizationMode();
+
+User also can control this with the button "Localization mode" in viewer.
+
+
 */
 class Osmap{
 public:
@@ -250,14 +258,14 @@ public:
   This vector temporarily store different K for serialization and deserialization.  This avoids serializing one K per KeyFrame.
   This vector is consumed in keyframe deserialization.
   */
-  vector<Mat*> vectorK;
+  vector<Mat const *> vectorK;
 
   /**
   For each index KeyFrame.mnId the value returned is an index to vectorK.
   The later is the index saved in each keyframe as k.
   It is populated only by getVectorKFromKeyframes, and consumed only while saving the map, during keyframe serialization.
   */
-  vector<unsigned int> keyframeid2vectork;
+  vector<unsigned int> keyframeid2vectorkIdx;
 
 
   /**

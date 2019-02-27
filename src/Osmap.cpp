@@ -76,14 +76,14 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 		chdir(pathDirectory.c_str());
 
 	int length = filename.length();
-	if(filename.substr(length-5) == ".yaml")
+	if(length>5 && filename.substr(length-5) == ".yaml")
 	  baseFilename = filename.substr(length-5);
 	else
 	  baseFilename = filename;
 
 	// Map depuration
 	if(!options[NO_DEPURATION])
-	depurate();
+		depurate();
 
 
 	// Actual saving
@@ -210,8 +210,8 @@ void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
 			*k = Mat::eye(3,3,CV_32F);
 			k->at<float>(0,0) = (*it)["fx"];
 			k->at<float>(1,1) = (*it)["fy"];
-			k->at<float>(2,0) = (*it)["cx"];
-			k->at<float>(2,1) = (*it)["cy"];
+			k->at<float>(0,2) = (*it)["cx"];
+			k->at<float>(1,2) = (*it)["cy"];
 			vectorK.push_back(k);
 		}
 	}
@@ -441,7 +441,7 @@ void Osmap::setKeyFramesToMap(){
 
 
 void Osmap::clearVectors(){
-	keyframeid2vectork.clear();
+	keyframeid2vectorkIdx.clear();
 	vectorKeyFrames.clear();
 	vectorMapPoints.clear();
 	vectorK.clear();
@@ -622,15 +622,22 @@ void Osmap::rebuild(){
 
 void Osmap::getVectorKFromKeyframes(){
   vectorK.clear();
-  keyframeid2vectork.resize(KeyFrame::nNextId);
-  for(auto &pKF:map.mspKeyFrames){
+  keyframeid2vectorkIdx.resize(KeyFrame::nNextId);	// Assume map is not ill formed so nNextId is ok, thus no keyframe's id is bigger than this.
+  fill(keyframeid2vectorkIdx.begin(), keyframeid2vectorkIdx.end(), 0);	// Fill with index 0 to prevent segfault from unknown bugs.
+
+  if(vectorKeyFrames.empty())
+	  getKeyFramesFromMap();
+
+  //for(auto &pKF:map.mspKeyFrames){
+  for(auto pKF: vectorKeyFrames){
     // Test if K can be found in vectorK.  If new, add it to the end of vectorK.
-    Mat &K = const_cast<cv::Mat &> (pKF->mK);
+    //Mat &K = const_cast<cv::Mat &> (pKF->mK);
+    const Mat &K = pKF->mK;
 
     // Will be the index of K in vectorK
     unsigned int i;
     for(i=0; i<vectorK.size(); i++){
-      Mat &vK = *vectorK[i];
+      const Mat &vK = *vectorK[i];
 
       // Tests: break if found
 
@@ -662,7 +669,7 @@ void Osmap::getVectorKFromKeyframes(){
     }
 
     // i is the vectorK index for this keyframe
-    keyframeid2vectork[ pKF->mnId ] = i;
+    keyframeid2vectorkIdx[ pKF->mnId ] = i;
   }
 }
 
@@ -792,7 +799,7 @@ void Osmap::serialize(const OsmapMapPoint &mappoint, SerializedMappoint *seriali
   serialize(mappoint.mWorldPos, serializedMappoint->mutable_position());
   serializedMappoint->set_visible(mappoint.mnVisible);
   serializedMappoint->set_found(mappoint.mnFound);
-  if(options[NO_FEATURES_DESCRIPTORS])	// Then this is the only descriptor to serialize
+  //if(options[NO_FEATURES_DESCRIPTORS])	// This is the only descriptor to serialize	** This line is disable to force mappoint descriptor serialization, while it's not being reconstructed in rebuild. **
     serialize(mappoint.mDescriptor, serializedMappoint->mutable_briefdescriptor());
 }
 
@@ -834,7 +841,7 @@ void Osmap::serialize(const OsmapKeyFrame &keyframe, SerializedKeyframe *seriali
   if(options[K_IN_KEYFRAME])
 	serialize(keyframe.mK, serializedKeyframe->mutable_kmatrix());
   else
-	serializedKeyframe->set_kindex(keyframeid2vectork[keyframe.mnId]);
+	serializedKeyframe->set_kindex(keyframeid2vectorkIdx[keyframe.mnId]);
   if(!keyframe.mspLoopEdges.empty())
 	for(auto loopKF : keyframe.mspLoopEdges)
 		// Only serialize id of keyframes already serialized, to easy deserialization.
