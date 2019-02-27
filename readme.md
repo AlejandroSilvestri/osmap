@@ -29,7 +29,7 @@ This is why this serialization format has the following features:
 
 - osmap.cpp and osmap.h defines the osmap class responsible for saving and loading maps.
 
-- dummymap.h is provided to load and save a map without having to compile you application with orbslam2.  You can make map analisys applications without the burden of compiling with orbslam2.  To use dummymap.h instead of orbslam2's map you must define the preprocessor symbol OSMAP_DUMMY_MAP in you environment.  It is only used in osmap.h.
+- dummymap.h is provided to load and save a map without having to compile you application with orbslam2.  You can make map analisys applications without the burden of compiling with orbslam2.  To use dummymap.h instead of orbslam2's map you must define the preprocessor symbol OSMAP\_DUMMY\_MAP in you environment.  It is only used in osmap.h.
 
 Example folder has some test files, which create some dummy map, saves it, loads it and show its values to verify the whole process.
 

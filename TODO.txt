@@ -1,6 +1,0 @@
-TODO
-
-7/2/19) osmap.cpp and osmap.h have to be the same as in orb-slam2 and os1.
-So, dummymap.h has to be replaced by fake frame.h, mappoint.h, etc.
-
-7/2/19) Loops serialization test (with os1).
