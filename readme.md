@@ -40,9 +40,15 @@ Right now osmap aims monocular SLAM only, so it won't serialize some variables n
 
 Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because that project could still receive minor changes, this is the recipe to merge osmap with up to date orb-slam2.  It need some editing and compiling.
 
-1- Add Osmap files to ORB-SLAM2 project.  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
+1- Install Google's Protocol Buffers and generate __osmap.pb.cc__ and __osmap.pb.h__ with the following command line:
 
-2- Write the code to call save and load, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
+    $ $ protoc --cpp_out=. osmap.proto
+
+From now on, you must use these locally generated files instead of the provided in this repository.
+
+2- Add Osmap files to ORB-SLAM2 project.  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
+
+3- Write the code to call save and load, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
 
     ...
     #include "Osmap.h"
@@ -56,4 +62,22 @@ Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because tha
     // Now you want to load the map
     osmap.mapLoad("myFirstMap.yaml");
 
-3- Compile, run.
+4- Compile, run.
+
+
+## About save options
+There are many options that let you optimize map file size.  Options must be set before calling mapSave.  Most relevant are:
+
+### ONLY\_MAPPOINTS\_FEATURES
+
+    yourOsmapInstance.options.set(ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);   
+    
+ORB-SLAM2 detects a lot of features, but uses only those belonging to a mappoint.  The other are useful to find new mappoints, but the chance to do it are pretty small.  ONLY\_MAPPOINTS\_FEATURES skips saving those unwanted features, shrinking your map files A LOT, like 5 times smaller.
+
+
+### NO\_FEATURES\_DESCRIPTORS
+
+    yourOsmapInstance.options.set(ORB_SLAM2::Osmap::NO_FEATURES_DESCRIPTORS | ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);   
+
+This option saves the descriptor on each mappoints, avoiding saving it on each mappoint observation.  Using NO\_FEATURES\_DESCRIPTORS with ONLY\_MAPPOINTS\_FEATURES (it usually doesn't make sense using it alone) your map file will shrink A _LOTTER_, like 20 times smaller.
+ 

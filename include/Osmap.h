@@ -173,29 +173,13 @@ public:
 
   To test an option:
 
-  if(options[ONLY_MAPPOINTS_FEATURES])...
+      if(options[ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES])...
 
   To set an option:
 
-  options.set(ONLY_MAPPOINTS_FEATURES);
+      options.set(ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);
 
-  Options available:
-
-  - NO_ID: Do not save mappoints id and keyframes id.  It shrinks mappoints and keyframes a little.  When loading, ids will be assigned automatically in increasing order.  Map will work perfectly.  The only drawback is the lack of traceability between two map instances.
-  - NO_LOOPS: Don't save loop closure data, for debugging porpuses.
-  - NO_FEATURES_DESCRIPTORS: Don't save descriptors in features file. Mappoints descriptors will be saved instead.  Descriptors take a huge amount of bytes, and this will shrink thw whole map a lot.  Not sure about drawbacks.
-
-  - K_IN_KEYFRAME: Save K camera matrix in each keyframe, and not in YAML file.  By default K is saved in yaml file.  Usually maps has only one K or few different K.  This option is usefull when each keyframe has a different K.
-  - ONLY_MAPPOINTS_FEATURES: Do not save features not associated to mappoints.  It shrinks the map a lot.  Keyframes will not be suitable to add new mappoints.  Usefull for tracking only.
-
-  - FEATURES_FILE_DELIMITED: Features file is delimited, Kenda Varda's function is needed to retrieve.  On save, force delimited.
-  - FEATURES_FILE_NOT_DELIMITED: Features file is not delimited, file can be read with protocol buffers in the usual way.  On save, force not delimited.  If any of these is set on save, the decision is automatic.
-
-  - NO_MAPPOINTS_FILE: Avoid saving MapPoints file.  Useful when analysing some other file, to save serialization time.
-  - NO_KEYFRAMES_FILE: Avoid saving KeyFrames file.  Useful when analysing some other file, to save serialization time.
-  - NO_FEATURES_FILE:   Avoid saving Features file.  Useful when analysing some other file, to save serialization time.
-
-  New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
+  Available options are documented in enum Options.  New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
 
   Time stamp is not optional because it always occupy place in protocol buffers, as all numeric fields.  Defaults to 0.
   */
@@ -210,8 +194,8 @@ public:
 	  NO_FEATURES_FILE, 	/*!< Skip saving fesatures file.  Map will be incomplete, only for analysis porpouses. */
 
 	  // Shrink file
-	  NO_FEATURES_DESCRIPTORS,	/*!< Skip saving descriptors in features file.  Descriptors are the heaviest part of features.  Map will be incomplete, only for analysis porpouses. */
-	  ONLY_MAPPOINTS_FEATURES,	/*!< Skip saving features that not belong to mappoints.  This notable reduce feature file size.  Map will be fine for tracking, may get a little hard (not impossible) to continue mapping. */
+	  NO_FEATURES_DESCRIPTORS,	/*!< Skip saving descriptors in features file.  Descriptors are saved only in mappoints.  It is usually used with ONLY_MAPPOINTS_FEATURES to notable reduce features file size. */
+	  ONLY_MAPPOINTS_FEATURES,	/*!< Skip saving features that not belong to mappoints.  This notable reduce features file size.  Map will be fine for tracking, may get a little hard (not impossible) to continue mapping. */
 
 	  // Options
 	  NO_LOOPS,			/*!< Skip saving and retrieving (loading) loops edges.  Not expected size reduction.  Map will work. For debug and analysis porpouses. */
