@@ -54,7 +54,7 @@ From now on, you must use these locally generated files instead of the provided 
     #include "Osmap.h"
     ...
     // Construct the osmap object, can be right after SLAM construction.  You only need one instance to load and save as many maps you want.
-    Osmap osmap = ORB_SLAM2::Osmap(SLAM);
+    ORB_SLAM2::Osmap osmap = ORB_SLAM2::Osmap(SLAM);
     ...
     // When you already has a map to save
     osmap.mapSave("myFirstMap");	// "myFirstMap" or "myFirstMap.yaml", same thing
