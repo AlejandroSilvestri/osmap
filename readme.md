@@ -42,7 +42,7 @@ Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because tha
 
 1- Install Google's Protocol Buffers and generate __osmap.pb.cc__ and __osmap.pb.h__ with the following command line:
 
-    $ $ protoc --cpp_out=. osmap.proto
+    $ protoc --cpp_out=. osmap.proto
 
 From now on, you must use these locally generated files instead of the provided in this repository.
 
