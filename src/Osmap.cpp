@@ -25,7 +25,7 @@
 #include <opencv2/core.hpp>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
-#include <Osmap.h>
+#include "Osmap.h"
 
 // Option check macro
 #define OPTION(OP) if(options[OP]) headerFile << #OP;
