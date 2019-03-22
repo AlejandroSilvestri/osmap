@@ -29,7 +29,7 @@
 #include <iterator>
 #include "osmap.pb.h"
 #include <set>
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 
 #ifdef OSMAP_DUMMY_MAP
 
