@@ -917,7 +917,6 @@ void Osmap::serialize(const OsmapKeyFrame &keyframe, SerializedKeyframeFeatures 
   }
 }
 
-
 OsmapKeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKeyframeFeatures){
   unsigned int KFid = serializedKeyframeFeatures.keyframe_id();
   OsmapKeyFrame *pKF = getKeyFrame(KFid);
@@ -927,6 +926,12 @@ OsmapKeyFrame *Osmap::deserialize(const SerializedKeyframeFeatures &serializedKe
 	  const_cast<std::vector<cv::KeyPoint>&>(pKF->mvKeysUn).resize(n);
 	  pKF->mvpMapPoints.resize(n);
 	  const_cast<cv::Mat&>(pKF->mDescriptors) = Mat(n, 32, CV_8UC1);	// n descriptors
+
+// ORB-SLAM2 needs to have set mvuRight and mvDepth even though they are not used in monocular.  DUMMY_MAP and OS1 don't have these properties.
+#if !defined OSMAP_DUMMY_MAP && !defined OS1
+	  const_cast<std::vector<float>&>(pKF->mvuRight) = vector<float>(n,-1.0f);
+	  const_cast<std::vector<float>&>(pKF->mvDepth) = vector<float>(n,-1.0f);
+#endif
 	  for(int i=0; i<n; i++){
 		const SerializedFeature &feature = serializedKeyframeFeatures.feature(i);
 		if(feature.mappoint_id())		  pKF->mvpMapPoints[i] = getMapPoint(feature.mappoint_id());
