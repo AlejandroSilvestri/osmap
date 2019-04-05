@@ -1,7 +1,27 @@
+/**
+* This file is part of OSMAP.
+*
+* Copyright (C) 2018-2019 Alejandro Silvestri <alejandrosilvestri at gmail>
+* For more information see <https://github.com/AlejandroSilvestri/osmap>
+*
+* OSMAP is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* OSMAP is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with OSMAP. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 /*
-OSMAP: Definición de la estructura de serialización de mapas para OS1
-Los mensajes representan la serialización mínima de objetos de ORB-SLAM2.  Se omiten valores que no se utilizan, que son efímeros o que se pueden regenerar.
-Se indican como "opcionales" aquéllos datos que pueden omitirse.  El resto son obligatorios y no pueden faltar para el correcto funcionamiento del mapa.  El protocolo permite omitirlos, pero el mapa así serializado será inutilizable por OS1.
+OSMAP: Map serialization structure definition, for ORB-SLAM2.
+Messages are ORB-SLAM2 objects minimal serialization.  They ommit not used properties: those effimeral and those that can be regenerated.
+Repeated fields can be ommited.  Their ommission can compromise the map integrity.
 */
 
 syntax = "proto3";
