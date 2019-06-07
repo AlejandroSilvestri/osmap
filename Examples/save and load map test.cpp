@@ -111,8 +111,8 @@ int main(int argc, char **argv){
   // Save the map to files
   osmap.mapSave(filename);
 
-  // Load map.  mapLoad clears previous map.
-  osmap.mapLoad(filename + ".yaml");
+  // Load map.  mapLoad clears previous map.  Sets NO_SET_BAD flag, needed on this dummy map.
+  osmap.mapLoad(filename + ".yaml", true);
 
   // Show loaded MapPoints
   cout << "MapPoints retrieved: " << endl;

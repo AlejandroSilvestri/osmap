@@ -177,11 +177,13 @@ public:
 
   To set an option:
 
-      options.set(ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);
+      options.set(ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES);
 
   Available options are documented in enum Options.  New options can be added in the future, but the order of existing options must be keeped.  So, new options must be added to the end of enum.
 
   Time stamp is not optional because it always occupy place in protocol buffers, as all numeric fields.  Defaults to 0.
+
+  Options are saved in the map file.  NO_SET_BAD is the only option one can have insterest to set before loading, while not set in the file.
   */
   enum Options {
 	  // Delimited to overcome a Protocol Buffers limitation.  It is automatic, but can be forced with this options:
@@ -191,7 +193,7 @@ public:
 	  // Skip files, for analisys propuses
 	  NO_MAPPOINTS_FILE,	/*!< Skip saving mappoints file.  Map will be incomplete, only for analysis porpouses. */
 	  NO_KEYFRAMES_FILE,	/*!< Skip saving keyframes file.  Map will be incomplete, only for analysis porpouses. */
-	  NO_FEATURES_FILE, 	/*!< Skip saving fesatures file.  Map will be incomplete, only for analysis porpouses. */
+	  NO_FEATURES_FILE, 	/*!< Skip saving features file.  Map will be incomplete, only for analysis porpouses. */
 
 	  // Shrink file
 	  NO_FEATURES_DESCRIPTORS,	/*!< Skip saving descriptors in features file.  Descriptors are saved only in mappoints.  It is usually used with ONLY_MAPPOINTS_FEATURES to notable reduce features file size. */
@@ -297,6 +299,7 @@ public:
   This is the entry point to load a map.  This method uses the Osmap object to serialize the map to files.
 
   @param yamlFilename file name of .yaml file (including .yaml extension) describing a map.
+  @param noSetBad true to avoid bad mappoints and keyframes deletion on rebuilding after loading.
   @param stopTrheads Serializing needs some orb-slam2 threads to be paused.  true (the default value) signals mapLoad to pause the threads before saving, and resume them after saving.  false when threads are paused and resumed by other means.
 
   Only these properties are read from yaml:
@@ -307,7 +310,7 @@ public:
 
   Before calling this method, threads must be paused.
   */
-  void mapLoad(string yamlFilename, bool pauseThreads = true);
+  void mapLoad(string yamlFilename, bool noSetBad = false, bool pauseThreads = true);
 
   /**
    * Save the content of vectorMapPoints to file like "map.mappoints".
@@ -401,8 +404,10 @@ public:
    * Works on vectorMapPoints and vectorKeyFrames.
    * After rebuilding, the elements in these vector should be copied to the map sets.
    * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp show.
+   *
+   * @param noSetBad true to avoid bad mappoints and keyframes deletion on rebuilding.
    */
-  void rebuild();
+  void rebuild(bool noSetBad = false);
 
 
 

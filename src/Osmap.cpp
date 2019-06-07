@@ -174,7 +174,7 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	  system.mpViewer->Release();
 }
 
-void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
+void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 	if(pauseThreads){
 		system.mpLocalMapper->Release();
 
@@ -250,7 +250,7 @@ void Osmap::mapLoad(string yamlFilename, bool pauseThreads){
 	headerFile.release();
 
 	// Rebuild
-	rebuild();
+	rebuild(noSetBad);
 
 	// Copy to map
 	setMapPointsToMap();
@@ -490,7 +490,7 @@ void Osmap::depurate(){
 	}
 }
 
-void Osmap::rebuild(){
+void Osmap::rebuild(bool noSetBad){
 	/*
 	 * On every KeyFrame:
 	 * - Builds the map database
@@ -499,6 +499,9 @@ void Osmap::rebuild(){
 	 */
 	cout << "Rebuilding map:" << endl;
 	keyFrameDatabase.clear();
+
+	if(noSetBad)
+		options.set(NO_SET_BAD);
 
 	for(auto *pKF : vectorKeyFrames){
 		pKF->mbNotErase = !pKF->mspLoopEdges.empty();

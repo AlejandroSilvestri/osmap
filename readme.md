@@ -35,6 +35,14 @@ Example folder has some test files, which create some dummy map, saves it, loads
 
 
 
+## Standalone example
+Osmap is an addon for ORB-SLAM2.  Next section is about appending Osmap to ORB-SLAM2.  However, Osmap includes an example code that let you test the implementation on a dummy map: it serializes the map thus creating the files, and then reads those files and show data on console.
+
+To properly compile this test, you must define *OSMAP_DUMMY_MAP* symbol.
+
+This example's main purpouse is to show how to use Osmap without ORB-SLAM2.  An application that do this is [Osmap viewer](https://github.com/AlejandroSilvestri/Osmap-viewer), that let you see the 3D mappoint cloud you saved in a file. 
+
+
 ## How to bundle with ORB-SLAM2
 Right now osmap aims monocular SLAM only, so it won't serialize some variables needed for stereo SLAM and RGB-D SLAM.  But osmap could be extended to do that.
 
@@ -64,7 +72,7 @@ From now on, you must use these locally generated files instead of the provided 
     // Now you want to load the map
     osmap.mapLoad("myFirstMap.yaml");
 
-4- Compile, run.
+5- Compile, run.
 
 
 ## About save options
