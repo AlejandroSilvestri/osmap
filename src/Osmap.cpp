@@ -542,23 +542,16 @@ void Osmap::rebuild(bool noSetBad){
 		// Append keyframe to the database
 		keyFrameDatabase.add(pKF);
 
-		// Calling UpdateConnections in mnId order rebuilds the covisibility graph and the spanning tree.
-		pKF->UpdateConnections();
-
-		if(!options[NO_SET_BAD])
-			// If this keyframe is isolated (and it isn't keyframe zero), erase it.
-			if(pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
-				cerr << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
-				pKF->SetBadFlag();
-			}
-
-		// Rebuilds MapPoints obvervations
+		// Rebuild MapPoints obvervations
 		size_t n = pKF->mvpMapPoints.size();
 		for(size_t i=0; i<n; i++){
 			MapPoint *pMP = pKF->mvpMapPoints[i];
-			if (pMP)
+			if(pMP)
 				pMP->AddObservation(pKF, i);
 		}
+
+		// Calling UpdateConnections in mnId order rebuilds the covisibility graph and the spanning tree.
+		pKF->UpdateConnections();
 	}
 
 	// Last KeyFrame's id
@@ -566,6 +559,19 @@ void Osmap::rebuild(bool noSetBad){
 
 	// Next KeyFrame id
 	KeyFrame::nNextId = map.mnMaxKFid + 1;
+
+	// Retry on isolated keyframes
+	for(auto *pKF : vectorKeyFrames)
+		if(pKF->mConnectedKeyFrameWeights.empty()){
+			pKF->UpdateConnections();
+			if(!options[NO_SET_BAD] && pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
+				// If this keyframe is isolated (and it isn't keyframe zero), erase it.
+				cerr << "Isolated keyframe " << pKF->mnId << " set bad." << endl;
+				pKF->SetBadFlag();
+			}
+		}
+
+
 
 	/*
 	 * Check and fix the spanning tree created with UpdateConnections.
