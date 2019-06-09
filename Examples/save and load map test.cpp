@@ -111,6 +111,9 @@ int main(int argc, char **argv){
   // Save the map to files
   osmap.mapSave(filename);
 
+  // Turn verbose on before loading to see a lot of debugging data in your console
+  //osmap.verbose = true;
+
   // Load map.  mapLoad clears previous map.  Sets NO_SET_BAD flag, needed on this dummy map.
   osmap.mapLoad(filename + ".yaml", true);
 

@@ -80,14 +80,21 @@ There are many options that let you optimize map file size.  Options must be set
 
 ### ONLY\_MAPPOINTS\_FEATURES
 
-    yourOsmapInstance.options.set(ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);   
+    osmap.options.set(ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);   
     
 ORB-SLAM2 detects a lot of features, but uses only those belonging to a mappoint.  The other are useful to find new mappoints, but the chance to do it are pretty small.  ONLY\_MAPPOINTS\_FEATURES skips saving those unwanted features, shrinking your map files A LOT, like 5 times smaller.
 
 
 ### NO\_FEATURES\_DESCRIPTORS
 
-    yourOsmapInstance.options.set(ORB_SLAM2::Osmap::NO_FEATURES_DESCRIPTORS | ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);   
+    osmap.options.set(ORB_SLAM2::Osmap::NO_FEATURES_DESCRIPTORS | ORB_SLAM2::Osmap::ONLY_MAPPOINTS_FEATURES, 1);   
 
 This option saves the descriptor on each mappoints, avoiding saving it on each mappoint observation.  Using NO\_FEATURES\_DESCRIPTORS with ONLY\_MAPPOINTS\_FEATURES (it usually doesn't make sense using it alone) your map file will shrink A _LOTTER_, like 20 times smaller.
  
+ 
+# Debugging
+You can turn on verbose mode to fill your console with a ton of boring data that turns out to be useful if your application crash, usually with segmentation fault.
+
+    osmap.verbose = true;
+    
+When commenting an Osmap issue, please paste this data.  Usually the important part is the last one, some lines right before crashing.

@@ -268,6 +268,10 @@ public:
   vector<OsmapKeyFrame*> vectorKeyFrames;
 
 
+  /**
+   * Whether or not print on console info for debuging.
+   */
+  bool verbose = false;
 
   /**
   Only constructor, the only way to set the orb-slam2 map.
@@ -700,6 +704,17 @@ public:
     google::protobuf::io::ZeroCopyInputStream* rawInput,
     google::protobuf::MessageLite* message
   );
+
+
+  // Modified LOG function from https://stackoverflow.com/questions/29326460/how-to-make-a-variadic-macro-for-stdcout
+  void log() {cout << endl;}
+  template<typename Head, typename... Args> void log(const Head& head, const Args&... args ){
+  	if(verbose){
+  		std::cout << head << " ";
+  		log(args...);
+  	}
+  }
+
 };
 
 

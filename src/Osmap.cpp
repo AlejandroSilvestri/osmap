@@ -30,6 +30,9 @@
 // Option check macro
 #define OPTION(OP) if(options[OP]) headerFile << #OP;
 
+// Log variable
+#define LOGV(VAR) if(verbose) cout << #VAR << ": " << VAR << endl;
+
 using namespace std;
 using namespace cv;
 
@@ -503,7 +506,10 @@ void Osmap::rebuild(bool noSetBad){
 	if(noSetBad)
 		options.set(NO_SET_BAD);
 
+	log("Processing", vectorKeyFrames.size(), "keyframes");
 	for(auto *pKF : vectorKeyFrames){
+		LOGV(pKF);
+
 		pKF->mbNotErase = !pKF->mspLoopEdges.empty();
 
 		// Build BoW vectors
@@ -563,6 +569,7 @@ void Osmap::rebuild(bool noSetBad){
 	// Retry on isolated keyframes
 	for(auto *pKF : vectorKeyFrames)
 		if(pKF->mConnectedKeyFrameWeights.empty()){
+			log("Isolated keyframe pKF:", pKF);
 			pKF->UpdateConnections();
 			if(!options[NO_SET_BAD] && pKF->mConnectedKeyFrameWeights.empty() && pKF->mnId){
 				// If this keyframe is isolated (and it isn't keyframe zero), erase it.
@@ -585,6 +592,7 @@ void Osmap::rebuild(bool noSetBad){
 
 	// Number of parents assigned in each iteration and in total.  Usually 0.
 	int nParents = -1, nParentsTotal = 0;
+	log("Rebuilding spanning tree.");
 	while(nParents){
 		nParents = 0;
 		for(auto pKF: vectorKeyFrames)
@@ -598,16 +606,19 @@ void Osmap::rebuild(bool noSetBad){
 					}
 				}
 		nParentsTotal += nParents;
-		cout << "Parents assigned in this loop: " << nParents << endl;
+		log("Parents assigned in this loop:", nParents);
 	}
-	cout << "Parents assigned in total: " << nParentsTotal << endl;
+	log("Parents assigned in total:", nParentsTotal);
 
 	/*
 	 * On every MapPoint:
 	 * - Rebuilds mpRefKF as the first observation, which should be the KeyFrame with the lowest id
 	 * - Rebuilds many properties with UpdateNormalAndDepth()
 	 */
+	log("Processing", vectorMapPoints.size(), "mappoints.");
 	for(OsmapMapPoint *pMP : vectorMapPoints){
+		LOGV(pMP)
+		LOGV(pMP->mnId)
 		// Rebuilds mpRefKF.  Requires mObservations.
 		if(!options[NO_SET_BAD] && pMP->mnId && pMP->mObservations.empty()){
 			cerr << "MP " << pMP->mnId << " without observations." << "  Set bad." << endl;
