@@ -72,7 +72,7 @@ From now on, you must use these locally generated files instead of the provided 
     // Now you want to load the map
     osmap.mapLoad("myFirstMap.yaml");
 
-5- Compile, run.
+5- Compile adding __protobuf__ library (-lprotobuf in gcc), run.
 
 
 ## About save options
