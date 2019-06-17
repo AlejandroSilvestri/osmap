@@ -48,17 +48,17 @@ Right now osmap aims monocular SLAM only, so it won't serialize some variables n
 
 Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because that project could still receive minor changes, this is the recipe to merge osmap with up to date orb-slam2.  It need some editing and compiling.
 
-1- Install Google's Protocol Buffers and generate __osmap.pb.cc__ and __osmap.pb.h__ with the following command line:
+1- __Install Google's Protocol Buffers__ and generate __osmap.pb.cc__ and __osmap.pb.h__ with the following command line:
 
     $ protoc --cpp_out=. osmap.proto
 
 From now on, you must use these locally generated files instead of the provided in this repository.
 
-2- Add Osmap files to ORB-SLAM2 project.  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
+2- __Add Osmap files to ORB-SLAM2 project.__  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
 
 3- Modify System.h .  This is the only "atomic" editing to ORB-SLAM2 files: comment or delete __private:__ declaration in [System.h](https://github.com/raulmur/ORB_SLAM2/blob/master/include/System.h#L125).  This is in line 125 since Dec 2016, last checked in 2019.
 
-4- Write the code to call save and load, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
+4- __Write the code to call save and load__, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
 
     ...
     #include "Osmap.h"
@@ -72,35 +72,33 @@ From now on, you must use these locally generated files instead of the provided 
     // Now you want to load the map
     osmap.mapLoad("myFirstMap.yaml");
 
-5- Compile adding __protobuf__ library (-lprotobuf in gcc), run.
+5- __Compile__ with your IDE or command line, adding protobuf library (-lprotobuf in gcc), run.
 
+OR
 
-## Adding Osmap with cmake
-Warning: work in progress.  This list of changes may be incomplete.  Not tested.
-
-Instead of compiling by hand or with an IDE, you can modify ORB-SLAM2 CMakeLists.txt.  You'll need to follow steps 1 to 4 from previous section.
-
-You will need to modify ORB-SLAM2 CMakeLists.txt with these additions:
+5 bis- __Compile with cmake.__  Warning: Not tested.  Instead of compiling by hand or with an IDE, you can modify ORB-SLAM2 CMakeLists.txt.  You will need to modify ORB-SLAM2 CMakeLists.txt with these additions:
 
     include(FindProtobuf)
     find_package(Protobuf REQUIRED)
-    if(NOT Protobuf_FOUND)
+    if(NOT PROTOBUF_FOUND)
       message(FATAL_ERROR "Protocol Buffers not found.")
-    endif()   
-
+    endif()
+    
     add_library(${PROJECT_NAME} SHARED
       src/Osmap.cpp
       src/osmap.pb.cc
     )
-
+    
     include_directories(
       ${PROTOBUF_INCLUDE_DIR}
     )
-
+    
     target_link_libraries(${PROJECT_NAME}
-      ${PROTOBUF_LIBRARY}
+      ${PROTOBUF_LIBRARIES}
     )
 
+
+Where? [right before building](https://github.com/raulmur/ORB_SLAM2/blob/f2e6f51cdc8d067655d90a78c06261378e07e8f3/CMakeLists.txt#L80).  You can really put these additions in many places inside CMakeLists.txt, after defining the project in line 2, and before building in line 80. 
 
 
 ## About save options
