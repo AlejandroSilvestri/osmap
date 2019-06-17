@@ -75,6 +75,34 @@ From now on, you must use these locally generated files instead of the provided 
 5- Compile adding __protobuf__ library (-lprotobuf in gcc), run.
 
 
+## Adding Osmap with cmake
+Warning: work in progress.  This list of changes may be incomplete.  Not tested.
+
+Instead of compiling by hand or with an IDE, you can modify ORB-SLAM2 CMakeLists.txt.  You'll need to follow steps 1 to 4 from previous section.
+
+You will need to modify ORB-SLAM2 CMakeLists.txt with these additions:
+
+    include(FindProtobuf)
+    find_package(Protobuf REQUIRED)
+    if(NOT Protobuf_FOUND)
+      message(FATAL_ERROR "Protocol Buffers not found.")
+    endif()   
+
+    add_library(${PROJECT_NAME} SHARED
+      src/Osmap.cpp
+      src/osmap.pb.cc
+    )
+
+    include_directories(
+      ${PROTOBUF_INCLUDE_DIR}
+    )
+
+    target_link_libraries(${PROJECT_NAME}
+      ${PROTOBUF_LIBRARY}
+    )
+
+
+
 ## About save options
 There are many options that let you optimize map file size.  Options must be set before calling mapSave.  Most relevant are:
 
