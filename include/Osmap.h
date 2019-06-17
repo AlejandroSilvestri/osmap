@@ -49,6 +49,7 @@
 
 #endif
 namespace ORB_SLAM2{
+class Osmap;
 
 /**
  * Wrapped MapPoint to let Osmap access protected properties without modifying MapPoint code.
