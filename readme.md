@@ -109,6 +109,21 @@ You can uninstall all versions of Protocol Buffers from your system, then instal
 
 Some skilled users edited CMakeLists.txt writing Protocol Buffers libraries full path instead of CMake variables.
 
+All kind of compilation errors with osmap.pb.cc and osmap.pb.h tell you have a problem with your protocol buffers installation.  First step: check versions of protoc and the library cmake uses.
+
+1- Check protoc version in a terminal
+
+    $ protoc --version
+    libprotoc 3.6.1
+
+Your version will be different of this one.  Newer, I hope.
+
+2- Check libprotobuf version cmakes found, looking in your long cmake output (the same output that gave you errors) something like this:
+
+    -- Found Protobuf: /usr/local/lib/libprotobuf.so;-lpthread (found version "3.6.1") 
+
+Both version should match.  If not, well, make them and try installation again.
+
 
 ## About save options
 There are many options that let you optimize map file size.  Options must be set before calling mapSave.  Most relevant are:
