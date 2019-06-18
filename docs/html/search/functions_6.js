@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['osmap',['Osmap',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a9e8450a0dc32b38942b470dc7ca1cbdb',1,'ORB_SLAM2::Osmap']]],
-  ['osmapkeyframe',['OsmapKeyFrame',['../class_o_r_b___s_l_a_m2_1_1_osmap_key_frame.html#a1bf27cc979c834efd48b21480ee3ffcd',1,'ORB_SLAM2::OsmapKeyFrame']]],
-  ['osmapmappoint',['OsmapMapPoint',['../class_o_r_b___s_l_a_m2_1_1_osmap_map_point.html#a025ba6183bae4f36ba3592889d5e7455',1,'ORB_SLAM2::OsmapMapPoint']]]
+  ['mapload',['mapLoad',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#af21baa698b40148a47df83ba2723f45c',1,'ORB_SLAM2::Osmap']]],
+  ['mappointsload',['MapPointsLoad',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a8fa48572bb8bcc90094c6cdb54344e22',1,'ORB_SLAM2::Osmap']]],
+  ['mappointssave',['MapPointsSave',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#ac42c6046026a08ebe9ff60b266acc26f',1,'ORB_SLAM2::Osmap']]],
+  ['mapsave',['mapSave',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a32698cf5a21bbbbe915c4103f7969421',1,'ORB_SLAM2::Osmap']]]
 ];

@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['map',['map',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#af20d340d42dbbf52a27f402eaea94159',1,'ORB_SLAM2::Osmap']]],
-  ['mapload',['mapLoad',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#aa5e44c7e436355456fec6cd5c6eab8c4',1,'ORB_SLAM2::Osmap']]],
-  ['mappointsload',['MapPointsLoad',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a8fa48572bb8bcc90094c6cdb54344e22',1,'ORB_SLAM2::Osmap']]],
-  ['mappointssave',['MapPointsSave',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#ac42c6046026a08ebe9ff60b266acc26f',1,'ORB_SLAM2::Osmap']]],
-  ['mapsave',['mapSave',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a32698cf5a21bbbbe915c4103f7969421',1,'ORB_SLAM2::Osmap']]]
+  ['log',['log',['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a0a1657f9a2da3a76f6fc1a3d08f6c8e8',1,'ORB_SLAM2::Osmap::log()'],['../class_o_r_b___s_l_a_m2_1_1_osmap.html#a667008047a8f3f35fa8e1ccb41e9f66f',1,'ORB_SLAM2::Osmap::log(const Head &amp;head, const Args &amp;... args)']]]
 ];
