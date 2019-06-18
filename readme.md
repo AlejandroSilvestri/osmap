@@ -56,7 +56,7 @@ From now on, you must use these locally generated files instead of the provided 
 
 2- __Add Osmap files to ORB-SLAM2 project.__  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
 
-3- Modify System.h .  This is the only "atomic" editing to ORB-SLAM2 files: comment or delete __private:__ declaration in [System.h](https://github.com/raulmur/ORB_SLAM2/blob/master/include/System.h#L125).  This is in line 125 since Dec 2016, last checked in 2019.
+3- Modify System.h .  This is the only "atomic" editing to ORB-SLAM2 files: comment or delete __private:__ declaration line in [System.h](https://github.com/raulmur/ORB_SLAM2/blob/master/include/System.h#L125).  This is in line 125 since Dec 2016, last checked in 2019.
 
 4- __Write the code to call save and load__, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
 
@@ -76,13 +76,10 @@ From now on, you must use these locally generated files instead of the provided 
 
 OR
 
-5 bis- __Compile with cmake.__  Warning: Not tested.  Instead of compiling by hand or with an IDE, you can modify ORB-SLAM2 CMakeLists.txt.  You will need to modify ORB-SLAM2 CMakeLists.txt with these additions:
+5 bis- __Compile with cmake.__  Instead of compiling by hand or with an IDE, you can modify ORB-SLAM2 CMakeLists.txt.  You will need to modify ORB-SLAM2 CMakeLists.txt with these additions:
 
     include(FindProtobuf)
     find_package(Protobuf REQUIRED)
-    if(NOT PROTOBUF_FOUND)
-      message(FATAL_ERROR "Protocol Buffers not found.")
-    endif()
     
     add_library(${PROJECT_NAME} SHARED
       src/Osmap.cpp
@@ -99,6 +96,18 @@ OR
 
 
 Where? [right before building](https://github.com/raulmur/ORB_SLAM2/blob/f2e6f51cdc8d067655d90a78c06261378e07e8f3/CMakeLists.txt#L80).  You can really put these additions in many places inside CMakeLists.txt, after defining the project in line 2, and before building in line 80. 
+
+
+### Known issues
+Some users experienced problems due to bad versions of Protocol Buffers, like:
+
+- Two different versions of Protocol Buffers installed, conflicting each other
+- protoc and libprotobuf.so belonging to different versions
+- Old version of Protocol Buffers
+
+You can uninstall all versions of Protocol Buffers from your system, then install the last stable version.
+
+Some skilled users edited CMakeLists.txt writing Protocol Buffers libraries full path instead of CMake variables.
 
 
 ## About save options
