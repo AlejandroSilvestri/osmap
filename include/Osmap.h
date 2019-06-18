@@ -406,11 +406,39 @@ public:
   void depurate();
 
   /**
-   * Works on vectorMapPoints and vectorKeyFrames.
+   * Rebuilding takes place right after loading a map from files, before the map is copied to ORB-SLAM2' sets.
+   *
+   * Works on Osmap::vectorMapPoints and Osmap::vectorKeyFrames.
    * After rebuilding, the elements in these vector should be copied to the map sets.
-   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set, as the default constructors provided in constructors.cpp show.
+   *
+   * rebuild() needs KeyPoints and MapPoints to be initialized with a lot of properties set,
+   * as the default constructors for OsmapKeyFrame and OsmapMapPoint show.
    *
    * @param noSetBad true to avoid bad mappoints and keyframes deletion on rebuilding.
+   *
+   * This method checks Osmap::verbose property to produce console output for debugging purposes.
+   *
+   *
+   * How rebuild works:
+   *
+   *  - Loops on every keyframe:
+   * 		- ComputeBOW, building BOW vectors from descriptors
+   * 		- Builds many pose matrices from pose
+   * 		- Builds the grid
+   * 		- Adds to KeyFrameDatabase
+   * 		- Builds its mappoints observations
+   * 		- UpdateConnections, building the spaning tree and the covisibility graph
+   *  - Sets KeyFrame::nNextId
+   *  - Retries UpdateConnections on isolated keyframes.
+   *  - Sets bad keyframes remaining isolated (avoided with noSetBad argument true)
+   *  - Sets map.mvpKeyFrameOrigins
+   *  - Travels keyframes looking for orphans, trying to assign a parent, thus including them in the spanning tree.
+   *  - Loops on every mappoint:
+   * 		- Sets bad mappoints without observations (avoided with noSetBad argument true)
+   * 		- Sets mpRefKF
+   * 		- UpdateNormalAndDepth, setting mNormalVector, mfMinDistance, mfMaxDistance
+   *  - Sets MapPoint::nNextId
+   *
    */
   void rebuild(bool noSetBad = false);
 

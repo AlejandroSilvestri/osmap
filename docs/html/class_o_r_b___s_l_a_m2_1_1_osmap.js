@@ -40,13 +40,15 @@ var class_o_r_b___s_l_a_m2_1_1_osmap =
     [ "getVectorKFromKeyframes", "class_o_r_b___s_l_a_m2_1_1_osmap.html#ac6e421ce4d9725573268c5a42dd37cfe", null ],
     [ "KeyFramesLoad", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a775d14c122b56f057f28ac99eeb7c801", null ],
     [ "KeyFramesSave", "class_o_r_b___s_l_a_m2_1_1_osmap.html#ac013a034151956fc5bf3f012b1776b59", null ],
-    [ "mapLoad", "class_o_r_b___s_l_a_m2_1_1_osmap.html#aa5e44c7e436355456fec6cd5c6eab8c4", null ],
+    [ "log", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a0a1657f9a2da3a76f6fc1a3d08f6c8e8", null ],
+    [ "log", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a667008047a8f3f35fa8e1ccb41e9f66f", null ],
+    [ "mapLoad", "class_o_r_b___s_l_a_m2_1_1_osmap.html#af21baa698b40148a47df83ba2723f45c", null ],
     [ "MapPointsLoad", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a8fa48572bb8bcc90094c6cdb54344e22", null ],
     [ "MapPointsSave", "class_o_r_b___s_l_a_m2_1_1_osmap.html#ac42c6046026a08ebe9ff60b266acc26f", null ],
     [ "mapSave", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a32698cf5a21bbbbe915c4103f7969421", null ],
     [ "parsePath", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a78b1896406be71fcc82acea1c395f54f", null ],
     [ "readDelimitedFrom", "class_o_r_b___s_l_a_m2_1_1_osmap.html#adf1dc42d77938c5431ec197f1ab15fea", null ],
-    [ "rebuild", "class_o_r_b___s_l_a_m2_1_1_osmap.html#addcd0d21af72a54204a6cda44f001eb8", null ],
+    [ "rebuild", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a2169ce8edf4eb86b329667b39f61eb0b", null ],
     [ "serialize", "class_o_r_b___s_l_a_m2_1_1_osmap.html#ac7e3d4086b5dfb826599865e246d810f", null ],
     [ "serialize", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a22b5c14f2235b7cb83ba3344fdb87d3b", null ],
     [ "serialize", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a282c0e8d92ec32d1beec6ea4cbcf9f03", null ],
@@ -71,5 +73,6 @@ var class_o_r_b___s_l_a_m2_1_1_osmap =
     [ "system", "class_o_r_b___s_l_a_m2_1_1_osmap.html#ade81b1dd7b95ce892811cd6e51d0a4ca", null ],
     [ "vectorK", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a5331f247d8b7c5ed9c8d635c2856c182", null ],
     [ "vectorKeyFrames", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a63f25a3baf53d9a37db367363f0781f5", null ],
-    [ "vectorMapPoints", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a39c934d185750067f4eeb87bbe494bbb", null ]
+    [ "vectorMapPoints", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a39c934d185750067f4eeb87bbe494bbb", null ],
+    [ "verbose", "class_o_r_b___s_l_a_m2_1_1_osmap.html#a80aaa92fd4421ba2e557e3ebae258941", null ]
 ];
