@@ -71,6 +71,8 @@ From now on, you must use these locally generated files instead of the provided 
     ...
     // Now you want to load the map
     osmap.mapLoad("myFirstMap.yaml");
+    
+    // If you want to start ORB-SLAM2 loading a map, ensure GrabImageMonocular (or GrabImageRGBD or GrabImageStereo) is invoked at least once, because they initialize some objects needed to load the map.
 
 5- __Compile__ with your IDE or command line, adding protobuf library (-lprotobuf in gcc), run.
 
