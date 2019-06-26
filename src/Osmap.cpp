@@ -509,14 +509,18 @@ void Osmap::rebuild(bool noSetBad){
 	log("Processing", vectorKeyFrames.size(), "keyframes");
 	for(auto *pKF : vectorKeyFrames){
 		LOGV(pKF);
+		LOGV(pKF->mnId);
 
 		pKF->mbNotErase = !pKF->mspLoopEdges.empty();
+		LOGV(pKF->mbNotErase);
 
 		// Build BoW vectors
 		pKF->ComputeBoW();
+		log("BoW computed");
 
 		// Build many pose matrices
 		pKF->SetPose(pKF->Tcw);
+		log("Pose set");
 
 		/*
 		 * Rebuilding grid.
@@ -527,6 +531,7 @@ void Osmap::rebuild(bool noSetBad){
 		for(int i=0; i<pKF->mnGridCols;i++)
 			for (int j=0; j<pKF->mnGridRows;j++)
 				grid[i][j].reserve(nReserve);
+		log("Grid built");
 
 		for(int i=0;i<pKF->N;i++){
 			const cv::KeyPoint &kp = pKF->mvKeysUn[i];
@@ -537,6 +542,7 @@ void Osmap::rebuild(bool noSetBad){
 			if(!(posX<0 || posX>=pKF->mnGridCols || posY<0 || posY>=pKF->mnGridRows))
 				grid[posX][posY].push_back(i);
 		}
+		log("Grid full");
 
 		pKF->mGrid.resize(pKF->mnGridCols);
 		for(int i=0; i < pKF->mnGridCols;i++){
@@ -544,6 +550,7 @@ void Osmap::rebuild(bool noSetBad){
 			for(int j=0; j < pKF->mnGridRows; j++)
 				pKF->mGrid[i][j] = grid[i][j];
 		}
+		log("Grid fitted");
 
 		// Append keyframe to the database
 		keyFrameDatabase.add(pKF);
@@ -555,6 +562,7 @@ void Osmap::rebuild(bool noSetBad){
 			if(pMP)
 				pMP->AddObservation(pKF, i);
 		}
+		log("Observations rebuilt");
 
 		// Calling UpdateConnections in mnId order rebuilds the covisibility graph and the spanning tree.
 		pKF->UpdateConnections();
