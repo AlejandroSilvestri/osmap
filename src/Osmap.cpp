@@ -833,7 +833,6 @@ void Osmap::serialize(const OsmapMapPoint &mappoint, SerializedMappoint *seriali
 
 OsmapMapPoint *Osmap::deserialize(const SerializedMappoint &serializedMappoint){
   OsmapMapPoint *pMappoint = new OsmapMapPoint(this);
-  //pMappoint->mpMap = &map;
 
   pMappoint->mnId        = serializedMappoint.id();
   pMappoint->mnVisible   = serializedMappoint.visible();
