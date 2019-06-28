@@ -178,20 +178,30 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 }
 
 void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
+#ifndef OSMAP_DUMMY_MAP
+	LOGV(system.mpTracker->mState)
+	// Initialize currentFrame via calling GrabImageMonocular just in case, with a dummy image.
+	if(system.mpTracker->mState = ORB_SLAM2::Tracking::NO_IMAGE_YET){
+		system.mpTracker->GrabImageMonocular(Mat::zeros(100, 100, CV_8U), 0);
+		// system.mTrackingState = system.mpTracker->mState;
+	}
+#endif
+
 	if(pauseThreads){
-		system.mpLocalMapper->Release();
-
-		// Limpia el mapa de todos los singletons
+		// Reset thr tracker to clean the map
+		system.mpLocalMapper->Release();	// Release local mapper just in case it's stopped, because if it is stopped it can't be reset
 		system.mpTracker->Reset();
-		// En este punto el sistema está reseteado.
+		// Here the system is reset, state is NO_IMAGE_YET
 
-		// Espera a que se detenga LocalMapping y  Viewer
+		// Stop LocalMapping and Viewer
 		system.mpLocalMapper->RequestStop();
 		system.mpViewer	    ->RequestStop();
-
 		while(!system.mpLocalMapper->isStopped()) usleep(1000);
 		while(!system.mpViewer     ->isStopped()) usleep(1000);
 	}
+
+	LOGV(system.mpLocalMapper->isStopped())
+	LOGV(system.mpViewer     ->isStopped())
 
 	string filename;
 	int intOptions;
@@ -274,7 +284,7 @@ void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 		system.mpViewer->Release();
 
 		// Tracking do this when going to LOST state.
-		// Involed after viewer.Release() because of mutex.
+		// Invoked after viewer.Release() because of mutex.
 		system.mpFrameDrawer->Update(system.mpTracker);
 	}
 }

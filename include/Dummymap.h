@@ -101,6 +101,7 @@ class System{
 public:
 	Map *mpMap;
 	KeyFrameDatabase *mpKeyFrameDatabase;
+
 	class Tracker{
 	public:
 		Frame mCurrentFrame;

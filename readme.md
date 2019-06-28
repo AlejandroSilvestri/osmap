@@ -99,6 +99,7 @@ Where? [right before building](https://github.com/raulmur/ORB_SLAM2/blob/f2e6f51
 
 
 ### Known issues
+#### Protocol buffers
 Some users experienced problems due to bad versions of Protocol Buffers, like:
 
 - Two different versions of Protocol Buffers installed, conflicting each other
@@ -123,6 +124,15 @@ Your version will be different of this one.  Newer, I hope.
     -- Found Protobuf: /usr/local/lib/libprotobuf.so;-lpthread (found version "3.6.1") 
 
 Both version should match.  If not, well, make them and try installation again.
+
+
+#### Segmentation fault error after loading
+Some users reported this error when loading a map right after starting Orb-SLAM2.
+They also reported an improvement by calling mapLoad with pauseThreads false, like:
+
+    osmap.mapLoad("myFirstMap.yaml", false, false);
+
+This issue is currently under investigation.  If you are debugging this, I'll appreciate if you can tell me the exact line in ORB-SLAM2 code rising the error, because I wasn't able to reproduce it.
 
 
 ## About save options
