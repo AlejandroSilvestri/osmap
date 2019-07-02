@@ -181,8 +181,9 @@ void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 #ifndef OSMAP_DUMMY_MAP
 	LOGV(system.mpTracker->mState)
 	// Initialize currentFrame via calling GrabImageMonocular just in case, with a dummy image.
-	if(system.mpTracker->mState = ORB_SLAM2::Tracking::NO_IMAGE_YET){
-		system.mpTracker->GrabImageMonocular(Mat::zeros(100, 100, CV_8U), 0);
+	if(system.mpTracker->mState == ORB_SLAM2::Tracking::NO_IMAGES_YET){
+		Mat m = Mat::zeros(100, 100, CV_8U);
+		system.mpTracker->GrabImageMonocular(m, 0.0);
 		// system.mTrackingState = system.mpTracker->mState;
 	}
 #endif
