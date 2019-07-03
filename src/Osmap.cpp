@@ -188,6 +188,17 @@ void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 	}
 #endif
 
+#if !defined OSMAP_DUMMY_MAP && !defined OS1
+	if(system.mpTracker->mlRelativeFramePoses.empty()){
+		// Add dummy point to trajectory recorder to avoid errors.  The point is in the origin of the map's reference system.
+		system.mpTracker->mlRelativeFramePoses.push_back(cv::Mat::eye(4,4,CV_32F));
+		system.mpTracker->mlpReferences.push_back(NULL);
+		system.mpTracker->mlFrameTimes.push_back(0.0);
+		system.mpTracker->mlbLost.push_back(true);
+	}
+#endif
+
+
 	if(pauseThreads){
 		// Reset thr tracker to clean the map
 		system.mpLocalMapper->Release();	// Release local mapper just in case it's stopped, because if it is stopped it can't be reset

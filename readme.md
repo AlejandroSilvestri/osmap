@@ -128,14 +128,10 @@ Your version will be different of this one.  Newer, I hope.
 Both version should match.  If not, well, make them and try installation again.
 
 
-#### Segmentation fault error after loading
-Some users reported this error when loading a map right after starting Orb-SLAM2.
-They also reported an improvement by calling mapLoad with pauseThreads false, like:
+#### Segmentation fault error
+Some users reported this error when loading a map right after starting Orb-SLAM2, and it was solved.
 
-    osmap.mapLoad("myFirstMap.yaml", false, false);
-
-This issue is currently under investigation.  If you are debugging this, I'll appreciate if you can tell me the exact line in ORB-SLAM2 code rising the error, because I wasn't able to reproduce it.
-
+If you have a seg fault crash, be sure you are using an updated Osmap and report it in the "Issues" tab.
 
 ## About save options
 There are many options that let you optimize map file size.  Options must be set before calling mapSave.  Most relevant are:
