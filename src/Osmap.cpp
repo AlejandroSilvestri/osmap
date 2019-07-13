@@ -184,20 +184,8 @@ void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 	if(system.mpTracker->mState == ORB_SLAM2::Tracking::NO_IMAGES_YET){
 		Mat m = Mat::zeros(100, 100, CV_8U);
 		system.mpTracker->GrabImageMonocular(m, 0.0);
-		// system.mTrackingState = system.mpTracker->mState;
 	}
 #endif
-
-#if !defined OSMAP_DUMMY_MAP && !defined OS1
-	if(system.mpTracker->mlRelativeFramePoses.empty()){
-		// Add dummy point to trajectory recorder to avoid errors.  The point is in the origin of the map's reference system.
-		system.mpTracker->mlRelativeFramePoses.push_back(cv::Mat::eye(4,4,CV_32F));
-		system.mpTracker->mlpReferences.push_back(NULL);
-		system.mpTracker->mlFrameTimes.push_back(0.0);
-		system.mpTracker->mlbLost.push_back(true);
-	}
-#endif
-
 
 	if(pauseThreads){
 		// Reset thr tracker to clean the map
@@ -211,6 +199,16 @@ void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 		while(!system.mpLocalMapper->isStopped()) usleep(1000);
 		while(!system.mpViewer     ->isStopped()) usleep(1000);
 	}
+
+#if !defined OSMAP_DUMMY_MAP && !defined OS1
+	if(system.mpTracker->mlRelativeFramePoses.empty()){
+		// Add dummy point to trajectory recorder to avoid errors.  The point is in the origin of the map's reference system.
+		system.mpTracker->mlRelativeFramePoses.push_back(cv::Mat::eye(4,4,CV_32F));
+		system.mpTracker->mlpReferences.push_back(NULL);
+		system.mpTracker->mlFrameTimes.push_back(0.0);
+		system.mpTracker->mlbLost.push_back(true);
+	}
+#endif
 
 	LOGV(system.mpLocalMapper->isStopped())
 	LOGV(system.mpViewer     ->isStopped())
