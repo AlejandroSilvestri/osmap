@@ -38,11 +38,11 @@ using namespace cv;
 
 namespace ORB_SLAM2{
 
-Osmap::Osmap(System &_system):
-	map(static_cast<OsmapMap&>(*_system.mpMap)),
-	keyFrameDatabase(*_system.mpKeyFrameDatabase),
+Osmap::Osmap(std::shared_ptr<ORB_SLAM2::System> _system):
+	map(static_cast<OsmapMap&>(*_system->mpMap)),
+	keyFrameDatabase(*_system->mpKeyFrameDatabase),
 	system(_system),
-	currentFrame(_system.mpTracker->mCurrentFrame)
+	currentFrame(_system->mpTracker->mCurrentFrame)
 {
 #ifndef OSMAP_DUMMY_MAP
 
@@ -68,8 +68,8 @@ Osmap::Osmap(System &_system):
 void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	// Stop threads
 	if(pauseThreads){
-		system.mpLocalMapper->RequestStop();
-		while(!system.mpLocalMapper->isStopped()) usleep(1000);
+		system->mpLocalMapper->RequestStop();
+		while(!system->mpLocalMapper->isStopped()) usleep(1000);
 	}
 
 	// Strip out .yaml if present
@@ -174,46 +174,46 @@ void Osmap::mapSave(const string givenFilename, bool pauseThreads){
 	clearVectors();
 
 	if(pauseThreads)
-	  system.mpViewer->Release();
+	  system->mpViewer->Release();
 }
 
 void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 #ifndef OSMAP_DUMMY_MAP
-	LOGV(system.mpTracker->mState)
+	LOGV(system->mpTracker->mState)
 	// Initialize currentFrame via calling GrabImageMonocular just in case, with a dummy image.
-	if(system.mpTracker->mState == ORB_SLAM2::Tracking::NO_IMAGES_YET){
+	if(system->mpTracker->mState == ORB_SLAM2::Tracking::NO_IMAGES_YET){
 		Mat m = Mat::zeros(100, 100, CV_8U);
-		system.mpTracker->GrabImageMonocular(m, 0.0);
-		// system.mTrackingState = system.mpTracker->mState;
+		system->mpTracker->GrabImageMonocular(m, 0.0);
+		// system->mTrackingState = system->mpTracker->mState;
 	}
 #endif
 
 #if !defined OSMAP_DUMMY_MAP && !defined OS1
-	if(system.mpTracker->mlRelativeFramePoses.empty()){
+	if(system->mpTracker->mlRelativeFramePoses.empty()){
 		// Add dummy point to trajectory recorder to avoid errors.  The point is in the origin of the map's reference system.
-		system.mpTracker->mlRelativeFramePoses.push_back(cv::Mat::eye(4,4,CV_32F));
-		system.mpTracker->mlpReferences.push_back(NULL);
-		system.mpTracker->mlFrameTimes.push_back(0.0);
-		system.mpTracker->mlbLost.push_back(true);
+		system->mpTracker->mlRelativeFramePoses.push_back(cv::Mat::eye(4,4,CV_32F));
+		system->mpTracker->mlpReferences.push_back(NULL);
+		system->mpTracker->mlFrameTimes.push_back(0.0);
+		system->mpTracker->mlbLost.push_back(true);
 	}
 #endif
 
 
 	if(pauseThreads){
 		// Reset thr tracker to clean the map
-		system.mpLocalMapper->Release();	// Release local mapper just in case it's stopped, because if it is stopped it can't be reset
-		system.mpTracker->Reset();
+		system->mpLocalMapper->Release();	// Release local mapper just in case it's stopped, because if it is stopped it can't be reset
+		system->mpTracker->Reset();
 		// Here the system is reset, state is NO_IMAGE_YET
 
 		// Stop LocalMapping and Viewer
-		system.mpLocalMapper->RequestStop();
-		system.mpViewer	    ->RequestStop();
-		while(!system.mpLocalMapper->isStopped()) usleep(1000);
-		while(!system.mpViewer     ->isStopped()) usleep(1000);
+		system->mpLocalMapper->RequestStop();
+		system->mpViewer	    ->RequestStop();
+		while(!system->mpLocalMapper->isStopped()) usleep(1000);
+		while(!system->mpViewer     ->isStopped()) usleep(1000);
 	}
 
-	LOGV(system.mpLocalMapper->isStopped())
-	LOGV(system.mpViewer     ->isStopped())
+	LOGV(system->mpLocalMapper->isStopped())
+	LOGV(system->mpViewer     ->isStopped())
 
 	string filename;
 	int intOptions;
@@ -286,18 +286,18 @@ void Osmap::mapLoad(string yamlFilename, bool noSetBad, bool pauseThreads){
 
 #ifndef OSMAP_DUMMY_MAP
 // Lost state, the system must relocalize itself in the just loaded map.
-	system.mpTracker->mState = ORB_SLAM2::Tracking::LOST;
+	system->mpTracker->mState = ORB_SLAM2::Tracking::LOST;
 #endif
 
 	if(pauseThreads){
 		// Resume threads
 
 		// Reactivate viewer.  Do not reactivate localMapper because the system resumes in "only tracking" mode immediatly after loading.
-		system.mpViewer->Release();
+		system->mpViewer->Release();
 
 		// Tracking do this when going to LOST state.
 		// Invoked after viewer.Release() because of mutex.
-		system.mpFrameDrawer->Update(system.mpTracker);
+		system->mpFrameDrawer->Update(system->mpTracker);
 	}
 }
 
