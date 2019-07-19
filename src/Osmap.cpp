@@ -593,6 +593,7 @@ void Osmap::rebuild(bool noSetBad){
 
 	// Next KeyFrame id
 	KeyFrame::nNextId = map.mnMaxKFid + 1;
+	Frame::nNextId = map.mnMaxKFid + 1;
 
 	// Retry on isolated keyframes
 	for(auto *pKF : vectorKeyFrames)
