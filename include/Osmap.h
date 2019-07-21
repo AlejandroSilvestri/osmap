@@ -224,7 +224,7 @@ public:
   KeyFrameDatabase &keyFrameDatabase;
 
   /** System, needed to populate new keyframes after construction on deserialization, with some configuration values.*/
-  System &system;
+  std::shared_ptr<ORB_SLAM2::System> system;
 
   /** Any frame, to copy configuration values from.  Constructor takes currentFrame from Tracker. */
   Frame &currentFrame;
@@ -277,7 +277,7 @@ public:
   /**
   Only constructor, the only way to set the orb-slam2 map.
   */
-  Osmap(System &_system);
+  Osmap(std::shared_ptr<ORB_SLAM2::System> _system);
 
   /**
   Saves the map to a set of files in the actual directory, with the extensionless name provided as the only argument and different extensions for each file.
