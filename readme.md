@@ -54,11 +54,11 @@ Because I don't pretend osmap be added to Raúl Mur's ORB-SLAM2, and because tha
 
 From now on, you must use these locally generated files instead of the provided in this repository.
 
-2- __Add Osmap files to ORB-SLAM2 project.__  Copy osmap.pb.cc and osmap.cpp to src folder, and osmap.pb.cc and osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
+2- __Add Osmap files to ORB-SLAM2 project.__  Copy osmap.pb.cc and Osmap.cpp to src folder, and osmap.pb.cc and Osmap.h files to include folder.  You don't need the extra files: nor dummymap.h, nor osmap.proto, etc.
 
 3- Modify System.h .  This is the only "atomic" editing to ORB-SLAM2 files: comment or delete __private:__ declaration line in [System.h](https://github.com/raulmur/ORB_SLAM2/blob/master/include/System.h#L125).  This is in line 125 since Dec 2016, last checked in 2019.
 
-4- __Write the code to call save and load__, usually attached to UI.  As an example, in Orb-Slam2's main.cc, this code will save and load a map:
+4- __Write the code to call save and load__, usually attached to UI.  As an example, in Orb-Slam2's main(), this code will save and load a map:
 
     ...
     #include "Osmap.h"
