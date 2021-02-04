@@ -156,3 +156,6 @@ You can turn on verbose mode to fill your console with a ton of boring data that
     osmap.verbose = true;
     
 When commenting an Osmap issue, please paste this data.  Usually the important part is the last one, some lines right before crashing.
+
+# OSMap status
+OSMap is finished as for March 2020.  It is no longer maintained, as there were no new issues for a year.
